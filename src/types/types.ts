@@ -312,3 +312,99 @@ export interface AuthTokenPermission {
   id: number
   permissionName: string
 }
+
+// Composite
+export interface CompositeRequest {
+  transactionRequest: TransactionCompositeRequest
+  categoryRequest: CategoryCompositeRequest
+}
+
+export interface TransactionCompositeRequest {
+  beginDate: Date | null
+  endDate: Date | null
+  merchant: string | null
+  categoryId: string | null
+  categoryTypeId: string | null
+}
+
+export interface CategoryCompositeRequest {
+  categoryTypeId: string | null
+}
+
+export interface CompositeResponse {
+  txns: TransactionComposite[]
+  cats: CategoryComposite[]
+  metadata: ResponseMetadata
+}
+
+export interface TransactionComposite {
+  id: string
+  txnDate: Date
+  merchant: string
+  totalAmount: number
+  notes: string
+  items: TransactionItemComposite[]
+}
+
+export interface TransactionItemComposite {
+  id: string
+  amount: number
+  category: CategoryComposite
+}
+
+export interface CategoryComposite {
+  id: string
+  name: string
+  categoryType: CategoryTypeComposite
+}
+
+export interface CategoryTypeComposite {
+  id: string
+  name: string
+}
+
+// Transactions
+export interface TransactionRequest {
+  txnDate: Date
+  merchant: string
+  totalAmount: number
+  notes: string
+  items: TransactionItemRequest[]
+}
+
+export interface TransactionItemRequest {
+  transactionId: string | null
+  categoryId: string
+  label: string
+  amount: number
+  txnType: string
+}
+
+export interface TransactionResponse {
+  data: TransactionWithItems[]
+  metadata: ResponseMetadata
+}
+
+export interface TransactionWithItems {
+  transaction: Transaction
+  items: TransactionItem[]
+}
+
+export interface Transaction {
+  id: string
+  txnDate: Date
+  merchant: string
+  totalAmount: number
+  notes: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface TransactionItem {
+  id: string
+  transactionId: string
+  categoryId: string
+  label: string
+  amount: number
+  txnType: string
+}
