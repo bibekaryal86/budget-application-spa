@@ -1,46 +1,31 @@
-import type { RequestMetadata } from '@types'
-
 export const INVALID_SESSION = 'Your session has expired. Please log in again.'
 export const ACCESS_TOKEN_KEY = 'access_token'
 
-export const DEFAULT_PARAMS: RequestMetadata = {
-  isIncludeHistory: false,
-  isIncludeDeleted: false,
-  platformId: '',
-  roleId: '',
-  isForceFetch: false,
-}
+export const TXN_TYPES = {
+  WANTS: 'WANTS',
+  NEEDS: 'NEEDS',
+  INCOME: 'INCOME',
+  SAVINGS: 'SAVINGS',
+  TRANSFER: 'TRANSFER',
+  OTHER: 'OTHER',
+} as const
+
+export type TxnTypes =
+  | typeof TXN_TYPES.WANTS
+  | typeof TXN_TYPES.NEEDS
+  | typeof TXN_TYPES.INCOME
+  | typeof TXN_TYPES.SAVINGS
+  | typeof TXN_TYPES.TRANSFER
+  | typeof TXN_TYPES.OTHER
 
 export const ACTION_TYPE = {
   NONE: '',
   CREATE: 'CREATE',
-  READ: 'READ',
-  READ_ONE: 'READ_ONE',
   UPDATE: 'UPDATE',
-  UPDATE_EMAIL: 'UPDATE_EMAIL',
-  UPDATE_PASSWORD: 'UPDATE_PASSWORD',
   DELETE: 'DELETE',
-  RESTORE: 'RESTORE',
-  ASSIGN: 'ASSIGN',
-  UNASSIGN: 'UNASSIGN',
-  VALIDATE: 'VALIDATE',
-  RESET: 'RESET',
 } as const
 
-export type ModalAction =
-  | typeof ACTION_TYPE.CREATE
-  | typeof ACTION_TYPE.UPDATE
-  | typeof ACTION_TYPE.DELETE
-  | typeof ACTION_TYPE.RESTORE
-
-export type ModalActionExtended =
-  | ModalAction
-  | typeof ACTION_TYPE.VALIDATE
-  | typeof ACTION_TYPE.RESET
-  | typeof ACTION_TYPE.UPDATE_EMAIL
-  | typeof ACTION_TYPE.UPDATE_PASSWORD
-
-export type PrpPprAction = typeof ACTION_TYPE.ASSIGN | typeof ACTION_TYPE.UNASSIGN
+export type ModalAction = typeof ACTION_TYPE.CREATE | typeof ACTION_TYPE.UPDATE | typeof ACTION_TYPE.DELETE
 
 // Theme Constants
 export const THEME_MODES = {

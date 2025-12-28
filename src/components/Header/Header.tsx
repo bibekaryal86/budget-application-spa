@@ -1,5 +1,5 @@
 import { ANIMATION, COLORS, THEME_MODES } from '@constants'
-import { Brightness4, Brightness7, Computer, People, AdminPanelSettings, Security, Logout } from '@mui/icons-material'
+import { Brightness4, Brightness7, Computer, Logout } from '@mui/icons-material'
 import {
   AppBar,
   Toolbar,
@@ -33,12 +33,7 @@ export const Header: React.FC = () => {
     })()
   }
 
-  const navigationItems = [
-    { path: '/platforms', label: 'Platforms', icon: <Computer sx={{ fontSize: 18 }} /> },
-    { path: '/profiles', label: 'Profiles', icon: <People sx={{ fontSize: 18 }} /> },
-    { path: '/roles', label: 'Roles', icon: <AdminPanelSettings sx={{ fontSize: 18 }} /> },
-    { path: '/permissions', label: 'Permissions', icon: <Security sx={{ fontSize: 18 }} /> },
-  ]
+  const navigationItems = [{ path: '/transactions', label: 'Transactions', icon: <Computer sx={{ fontSize: 18 }} /> }]
 
   return (
     <AppBar position='static' elevation={2}>
@@ -57,7 +52,7 @@ export const Header: React.FC = () => {
             gap: 1,
           }}
         >
-          Auth Service
+          Simple Budget Application
         </Typography>
 
         {isAuthenticated && (
