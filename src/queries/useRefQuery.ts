@@ -1,5 +1,5 @@
 import { refService } from '@services'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 export const useReadCategoryTypes = () =>
   useQuery({
@@ -30,10 +30,3 @@ export const useReadMerchants = () =>
     }),
     staleTime: 60_000,
   })
-
-export const useInvalidateMerchants = () => {
-  const queryClient = useQueryClient()
-  return () => {
-    void queryClient.invalidateQueries({ queryKey: ['merchants'] })
-  }
-}
