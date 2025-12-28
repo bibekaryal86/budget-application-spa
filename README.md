@@ -6,7 +6,7 @@ A modern, responsive admin portal built with React and TypeScript for managing p
 permissions. This application provides a comprehensive interface for system administrators to configure and manage
 access control across multiple platforms.
 
-This is the frontend for Auth-Service [https://github.com/bibekaryal86/auth-service]
+This is the frontend for Budget Application [https://github.com/bibekaryal86/budget-application]
 
 ## Features
 

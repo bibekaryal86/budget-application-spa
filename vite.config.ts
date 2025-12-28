@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 7001,
+    port: 7101,
     strictPort: true,
     open: false,
     cors: true,
