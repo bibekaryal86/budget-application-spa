@@ -1,2 +1,2 @@
 export { queryClient as query } from './queryClient.ts'
-export * from './useCategoryQuery.ts'
+export * from './useRefQuery.ts'

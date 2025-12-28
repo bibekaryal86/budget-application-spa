@@ -1,8 +1,5 @@
 # Personal Expenses Tracking System
 
-- In backend
-  - add txn_type to composite request
-  - add txn item details to composite response
 - In frontend
   - add nested tables in transactions, clicking will expand the transaction items
   - modal to create/edit transactions
