@@ -6,7 +6,7 @@ export const useReadCategoryTypes = () =>
     queryKey: ['categoryTypes'],
     queryFn: () => refService.readCategoryTypes(),
     select: (data) => ({
-      categoryTypes: data,
+      categoryTypes: data.data,
     }),
     staleTime: 60_000,
   })
@@ -16,7 +16,7 @@ export const useReadCategories = () =>
     queryKey: ['categories'],
     queryFn: () => refService.readCategories(),
     select: (data) => ({
-      categories: data,
+      categories: data.data,
     }),
     staleTime: 60_000,
   })

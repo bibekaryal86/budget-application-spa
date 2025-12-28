@@ -19,7 +19,6 @@ export type TxnTypes =
   | typeof TXN_TYPES.OTHER
 
 export const ACTION_TYPE = {
-  NONE: '',
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
