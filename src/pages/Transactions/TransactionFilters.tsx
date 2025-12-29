@@ -39,6 +39,8 @@ export const TransactionFilters: React.FC = () => {
   const { data: mData } = useReadMerchants()
 
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
+  const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
+  const categoryTypesList = useMemo(() => ctData?.categoryTypes ?? [], [ctData])
   const [showMerchantDropdown, setShowMerchantDropdown] = useState(false)
   const [merchantSearch, setMerchantSearch] = useState(selectedMerchant || '')
 
@@ -46,6 +48,44 @@ export const TransactionFilters: React.FC = () => {
     if (!merchantSearch) return merchantsList
     return merchantsList.filter((merchant) => merchant.toLowerCase().includes(merchantSearch.toLowerCase()))
   }, [merchantsList, merchantSearch])
+
+  const filteredCategories = useMemo(() => {
+    if (!categoriesList) return []
+
+    if (selectedCategoryTypeId) {
+      return categoriesList.filter((category) => category.categoryType.id === selectedCategoryTypeId)
+    }
+
+    if (selectedCategoryId) {
+      const selectedCategory = categoriesList.find((cat) => cat.id === selectedCategoryId)
+      if (selectedCategory) {
+        return categoriesList
+      }
+    }
+    return categoriesList
+  }, [categoriesList, selectedCategoryTypeId, selectedCategoryId])
+
+  const handleCategoryTypeChange = (value: string | null) => {
+    setSelectedCategoryTypeId(value)
+
+    if (value && selectedCategoryId) {
+      const selectedCategory = categoriesList?.find((cat) => cat.id === selectedCategoryId)
+      if (selectedCategory?.categoryType.id !== value) {
+        setSelectedCategoryId(null)
+      }
+    }
+  }
+
+  const handleCategoryChange = (value: string | null) => {
+    setSelectedCategoryId(value)
+
+    if (value && !selectedCategoryTypeId) {
+      const selectedCategory = categoriesList?.find((cat) => cat.id === value)
+      if (selectedCategory?.categoryType?.id) {
+        setSelectedCategoryTypeId(selectedCategory.categoryType.id)
+      }
+    }
+  }
 
   const handleMerchantSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -163,10 +203,10 @@ export const TransactionFilters: React.FC = () => {
               <Select
                 value={selectedCategoryTypeId || ''}
                 label='Category Type'
-                onChange={(e) => setSelectedCategoryTypeId(e.target.value || null)}
+                onChange={(e) => handleCategoryTypeChange(e.target.value || null)}
               >
                 <MenuItem value=''>All</MenuItem>
-                {ctData?.categoryTypes.map((type) => (
+                {categoryTypesList.map((type) => (
                   <MenuItem key={type.id} value={type.id}>
                     {type.name}
                   </MenuItem>
@@ -180,11 +220,10 @@ export const TransactionFilters: React.FC = () => {
               <Select
                 value={selectedCategoryId || ''}
                 label='Category'
-                onChange={(e) => setSelectedCategoryId(e.target.value || null)}
-                disabled={!selectedCategoryTypeId}
+                onChange={(e) => handleCategoryChange(e.target.value || null)}
               >
                 <MenuItem value=''>All</MenuItem>
-                {cData?.categories.map((category) => (
+                {filteredCategories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
                   </MenuItem>
