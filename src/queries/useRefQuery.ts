@@ -26,7 +26,7 @@ export const useReadMerchants = () =>
     queryKey: ['merchants'],
     queryFn: () => refService.readMerchants(),
     select: (data) => ({
-      merchants: data,
+      merchants: data.data,
     }),
     staleTime: 60_000,
   })

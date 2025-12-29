@@ -14,9 +14,9 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { useReadCategories, useReadCategoryTypes } from '@queries'
+import { useReadCategories, useReadCategoryTypes, useReadMerchants } from '@queries'
 import { useTxnStore } from '@stores'
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 
 export const TransactionFilters: React.FC = () => {
   const {
@@ -35,6 +35,40 @@ export const TransactionFilters: React.FC = () => {
 
   const { data: ctData } = useReadCategoryTypes()
   const { data: cData } = useReadCategories()
+  const { data: mData } = useReadMerchants()
+
+  const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
+  const [showMerchantDropdown, setShowMerchantDropdown] = useState(false)
+  const [merchantSearch, setMerchantSearch] = useState(selectedMerchant || '')
+
+  const filteredMerchants = useMemo(() => {
+    if (!merchantSearch) return merchantsList
+    return merchantsList.filter((merchant) => merchant.toLowerCase().includes(merchantSearch.toLowerCase()))
+  }, [merchantsList, merchantSearch])
+
+  const handleMerchantSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setMerchantSearch(value)
+    setShowMerchantDropdown(true)
+  }
+
+  const handleMerchantSelect = (merchant: string) => {
+    setSelectedMerchant(merchant)
+    setMerchantSearch(merchant)
+    setShowMerchantDropdown(false)
+  }
+
+  const handleMerchantBlur = () => {
+    setTimeout(() => {
+      setShowMerchantDropdown(false)
+    }, 200)
+  }
+
+  const handleMerchantFocus = () => {
+    if (merchantSearch) {
+      setShowMerchantDropdown(true)
+    }
+  }
 
   return (
     <Paper sx={{ p: 3, mb: 3 }}>
@@ -63,13 +97,44 @@ export const TransactionFilters: React.FC = () => {
           </LocalizationProvider>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-          <TextField
-            fullWidth
-            label='Merchant'
-            value={selectedMerchant || ''}
-            onChange={(e) => setSelectedMerchant(e.target.value || null)}
-            placeholder='Search merchant...'
-          />
+          <div style={{ position: 'relative' }}>
+            <TextField
+              fullWidth
+              label='Merchant'
+              value={merchantSearch}
+              onChange={handleMerchantSearchChange}
+              onFocus={handleMerchantFocus}
+              onBlur={handleMerchantBlur}
+              placeholder='Type to search...'
+            />
+            {showMerchantDropdown && filteredMerchants.length > 0 && (
+              <Paper
+                sx={{
+                  position: 'absolute',
+                  zIndex: 1300,
+                  width: '100%',
+                  maxHeight: 300,
+                  overflow: 'auto',
+                  mt: 0.5,
+                  boxShadow: 3,
+                }}
+              >
+                {filteredMerchants.map((merchant) => (
+                  <MenuItem
+                    key={merchant}
+                    onClick={() => handleMerchantSelect(merchant)}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      },
+                    }}
+                  >
+                    {merchant}
+                  </MenuItem>
+                ))}
+              </Paper>
+            )}
+          </div>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <FormControl fullWidth>

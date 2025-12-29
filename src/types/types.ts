@@ -1,7 +1,6 @@
 import { type AxiosRequestConfig } from 'axios'
 
-// UTILS
-
+// Utils
 export interface RequestConfig extends AxiosRequestConfig {
   showSpinner?: boolean
   showError?: boolean
@@ -67,6 +66,22 @@ export interface AuthTokenPermission {
   permissionName: string
 }
 
+// Auth Service
+export interface ProfilePasswordRequest {
+  email: string
+  password: string
+}
+
+export interface ProfilePasswordTokenResponse {
+  accessToken: string | null
+  authToken: AuthToken | null
+  responseMetadata: ResponseMetadata
+
+  // available only in non-prod envs
+  refreshToken: string | null
+  csrfToken: string | null
+}
+
 // Category Type
 export interface CategoryTypeRequest {
   name: string
@@ -87,8 +102,9 @@ export interface CategoryRequest {
   name: string
 }
 
-export interface Category extends CategoryRequest {
+export interface Category extends Omit<CategoryRequest, 'categoryTypeId'> {
   id: string
+  categoryType: CategoryType
 }
 
 export interface CategoryResponse {
@@ -105,8 +121,10 @@ export interface TransactionItemRequest {
   txnType: string
 }
 
-export interface TransactionItem extends TransactionItemRequest {
+export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
   id: string
+  transaction: TransactionItem | null
+  category: Category | null
 }
 
 export interface TransactionItemResponse {
@@ -120,69 +138,40 @@ export interface TransactionRequest {
   merchant: string
   totalAmount: number
   notes: string | null
-  items: TransactionItemResponse[]
+  items: TransactionItemRequest[]
 }
 
 export interface Transaction extends Omit<TransactionRequest, 'items'> {
   id: string
-}
-
-export interface TransactionWithItems {
-  transaction: Transaction
   items: TransactionItem[]
 }
 
 export interface TransactionResponse {
-  data: TransactionWithItems[]
+  data: Transaction[]
   metadata: ResponseMetadata
 }
 
-// Composite
-export interface CategoryCompositeRequest {
-  categoryTypeId: string | null
+export interface TransactionMerchants {
+  data: string[]
+  metadata: ResponseMetadata
 }
 
-export interface TransactionCompositeRequest {
+// Request Params
+export interface TransactionItemParams {
+  txnIds: string[] | []
+  catIds: string[] | []
+  txnTypes: string[] | []
+}
+
+export interface CategoryParams {
+  catTypeIds: string[] | []
+}
+
+export interface TransactionParams {
   beginDate: Date | null
   endDate: Date | null
-  merchant: string | null
-  categoryId: string | null
-  categoryTypeId: string | null
-}
-
-export interface CompositeRequest {
-  transactionComposite: TransactionCompositeRequest | null
-  categoryComposite: CategoryCompositeRequest | null
-}
-
-export interface CategoryTypeCompositeResponse {
-  id: string
-  name: string
-}
-
-export interface CategoryCompositeResponse {
-  id: string
-  name: string
-  categoryType: CategoryTypeCompositeResponse
-}
-
-export interface TransactionItemCompositeResponse {
-  id: string
-  amount: number
-  category: CategoryCompositeResponse
-}
-
-export interface TransactionCompositeResponse {
-  id: string
-  txnDate: Date
-  merchant: string
-  totalAmount: number
-  notes: string | null
-  items: TransactionItemCompositeResponse[]
-}
-
-export interface CompositeResponse {
-  txns: TransactionCompositeResponse[]
-  cats: CategoryCompositeResponse[]
-  metadata: ResponseMetadata
+  merchants: string[] | []
+  catIds: string[] | []
+  catTypeIds: string[] | []
+  txnTypes: string[] | []
 }

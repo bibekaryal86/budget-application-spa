@@ -1,10 +1,16 @@
 import { Security, People, AdminPanelSettings, Computer, ArrowForward } from '@mui/icons-material'
 import { Container, Typography, Box, Grid, Card, CardContent, Chip } from '@mui/material'
+import { useReadCategories, useReadCategoryTypes, useReadMerchants } from '@queries'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Home: React.FC = () => {
   const navigate = useNavigate()
+
+  // load ref tables after login
+  useReadCategoryTypes()
+  useReadCategories()
+  useReadMerchants()
 
   const managementCards = [
     {

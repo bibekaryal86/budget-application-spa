@@ -1,5 +1,5 @@
 import { type ModalAction } from '@constants'
-import type { TransactionWithItems } from '@types'
+import type { Transaction } from '@types'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
@@ -13,7 +13,7 @@ interface TransactionState {
   selectedCategoryTypeId: string | null
   selectedCategoryId: string | null
 
-  selectedTxn: TransactionWithItems | null
+  selectedTxn: Transaction | null
 
   setSelectedBeginDate: (v: Date | null) => void
   setSelectedEndDate: (v: Date | null) => void
@@ -21,9 +21,9 @@ interface TransactionState {
   setSelectedCategoryTypeId: (v: string | null) => void
   setSelectedCategoryId: (v: string | null) => void
 
-  setSelectedTxn: (v: TransactionWithItems | null) => void
+  setSelectedTxn: (v: Transaction | null) => void
 
-  openTxnModal: (action: ModalAction, txnWithItems?: TransactionWithItems | null) => void
+  openTxnModal: (action: ModalAction, txnWithItems?: Transaction | null) => void
   closeTxnModal: () => void
 
   resetProfileState: () => void
