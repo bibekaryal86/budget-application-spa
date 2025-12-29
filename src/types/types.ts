@@ -124,7 +124,7 @@ export interface TransactionItemRequest {
 export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
   id: string
   transaction: TransactionItem | null
-  category: Category | null
+  category: Category
 }
 
 export interface TransactionItemResponse {

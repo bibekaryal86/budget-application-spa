@@ -8,6 +8,7 @@ import { useTxnStore } from '@stores'
 import React, { useMemo } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
+import { TransactionsTable } from './TransactionTable.tsx'
 
 export const Transactions: React.FC = () => {
   const {
@@ -120,7 +121,7 @@ export const Transactions: React.FC = () => {
         </Paper>
       )}
 
-      {/*{!isLoading && !error && filteredTxns.length > 0 && <TransactionsTable transactions={filteredTxns} />}*/}
+      {!isLoading && !error && filteredTxns.length > 0 && <TransactionsTable transactions={filteredTxns} />}
 
       {!isLoading && !error && filteredTxns.length > 0 && (
         <Box display='flex' justifyContent='center' mt={3}>
