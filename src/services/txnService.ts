@@ -13,6 +13,7 @@ export const txnService = {
   updateTransaction: async (id: string, txnRequest: TransactionRequest): Promise<TransactionResponse> => {
     return await apiHelperCore.put<TransactionResponse>(`/v1/transactions/${id}`, txnRequest)
   },
+
   deleteTransaction: async (id: string): Promise<TransactionResponse> => {
     return await apiHelperCore.delete<TransactionResponse>(`/v1/transactions/${id}`)
   },

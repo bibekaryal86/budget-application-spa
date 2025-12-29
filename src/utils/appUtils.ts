@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 export const getNumber = (value: number | string | null | undefined): number =>
   value ? (isNaN(Number(value)) ? 0 : Number(value)) : 0
 
@@ -7,5 +9,13 @@ export const getString = (value: string | number | null | undefined): string => 
 
 export const getFormattedDate = (value: Date | null): string => {
   if (value === null) return '-'
-  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(value))
+  return format(new Date(value), 'yyyy-MM-dd')
+}
+
+export const getFormattedCurrency = (amount: number | null, currency: string = 'USD'): string => {
+  if (amount == null) return '-'
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount)
 }

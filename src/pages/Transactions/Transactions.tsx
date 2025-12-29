@@ -8,6 +8,7 @@ import { useTxnStore } from '@stores'
 import React, { useMemo } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
+import { TransactionModal } from './TransactionModal.tsx'
 import { TransactionsTable } from './TransactionTable.tsx'
 
 export const Transactions: React.FC = () => {
@@ -130,6 +131,7 @@ export const Transactions: React.FC = () => {
           </Typography>
         </Box>
       )}
+      <TransactionModal />
     </Container>
   )
 }

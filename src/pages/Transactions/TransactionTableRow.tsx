@@ -20,15 +20,9 @@ import {
 } from '@mui/material'
 import { useTxnStore } from '@stores'
 import type { Transaction } from '@types'
+import { getFormattedCurrency } from '@utils'
 import { format } from 'date-fns'
 import React, { useState } from 'react'
-
-const formatCurrency = (amount: number, currency: string = 'USD'): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-  }).format(amount)
-}
 
 interface TransactionTableRowProps {
   transaction: Transaction
@@ -45,7 +39,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
   }
 
   const handleDeleteClick = () => {
-    console.log('Delete transaction:', transaction.id)
     openTxnModal(ACTION_TYPE.DELETE, transaction)
   }
 
@@ -79,7 +72,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
               fontWeight: 'bold',
             }}
           >
-            {formatCurrency(transaction.totalAmount)}
+            {getFormattedCurrency(transaction.totalAmount)}
           </Typography>
         </TableCell>
 
@@ -149,7 +142,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                               fontWeight: 'medium',
                             }}
                           >
-                            {formatCurrency(item.amount)}
+                            {getFormattedCurrency(item.amount)}
                           </Typography>
                         </TableCell>
                       </TableRow>
