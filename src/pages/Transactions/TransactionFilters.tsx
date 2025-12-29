@@ -10,6 +10,7 @@ import {
   Paper,
   Stack,
   Grid,
+  Box,
 } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -70,128 +71,150 @@ export const TransactionFilters: React.FC = () => {
     }
   }
 
+  const handleClearFilters = () => {
+    resetProfileState()
+    setMerchantSearch('')
+  }
+
   return (
-    <Paper sx={{ p: 3, mb: 3 }}>
+    <Paper
+      sx={{
+        p: 3,
+        mb: 3,
+        backgroundColor: 'grey.50',
+        borderRadius: 2,
+      }}
+    >
       <Typography variant='h6' gutterBottom>
         Filters
       </Typography>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label='Start Date'
-              value={selectedBeginDate}
-              onChange={(date) => setSelectedBeginDate(date)}
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label='End Date'
-              value={selectedEndDate}
-              onChange={(date) => setSelectedEndDate(date)}
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-          <div style={{ position: 'relative' }}>
-            <TextField
-              fullWidth
-              label='Merchant'
-              value={merchantSearch}
-              onChange={handleMerchantSearchChange}
-              onFocus={handleMerchantFocus}
-              onBlur={handleMerchantBlur}
-              placeholder='Type to search...'
-            />
-            {showMerchantDropdown && filteredMerchants.length > 0 && (
-              <Paper
-                sx={{
-                  position: 'absolute',
-                  zIndex: 1300,
-                  width: '100%',
-                  maxHeight: 300,
-                  overflow: 'auto',
-                  mt: 0.5,
-                  boxShadow: 3,
-                }}
+      <Box sx={{ width: '100%' }}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent='center'
+          sx={{
+            margin: '0 auto',
+          }}
+        >
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label='Start Date'
+                value={selectedBeginDate}
+                onChange={(date) => setSelectedBeginDate(date)}
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label='End Date'
+                value={selectedEndDate}
+                onChange={(date) => setSelectedEndDate(date)}
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <div style={{ position: 'relative' }}>
+              <TextField
+                fullWidth
+                label='Merchant'
+                value={merchantSearch}
+                onChange={handleMerchantSearchChange}
+                onFocus={handleMerchantFocus}
+                onBlur={handleMerchantBlur}
+                placeholder='Type to search...'
+              />
+              {showMerchantDropdown && filteredMerchants.length > 0 && (
+                <Paper
+                  sx={{
+                    position: 'absolute',
+                    zIndex: 1300,
+                    width: '100%',
+                    maxHeight: 300,
+                    overflow: 'auto',
+                    mt: 0.5,
+                    boxShadow: 3,
+                  }}
+                >
+                  {filteredMerchants.map((merchant) => (
+                    <MenuItem
+                      key={merchant}
+                      onClick={() => handleMerchantSelect(merchant)}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'action.hover',
+                        },
+                      }}
+                    >
+                      {merchant}
+                    </MenuItem>
+                  ))}
+                </Paper>
+              )}
+            </div>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Category Type</InputLabel>
+              <Select
+                value={selectedCategoryTypeId || ''}
+                label='Category Type'
+                onChange={(e) => setSelectedCategoryTypeId(e.target.value || null)}
               >
-                {filteredMerchants.map((merchant) => (
-                  <MenuItem
-                    key={merchant}
-                    onClick={() => handleMerchantSelect(merchant)}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: 'action.hover',
-                      },
-                    }}
-                  >
-                    {merchant}
+                <MenuItem value=''>All</MenuItem>
+                {ctData?.categoryTypes.map((type) => (
+                  <MenuItem key={type.id} value={type.id}>
+                    {type.name}
                   </MenuItem>
                 ))}
-              </Paper>
-            )}
-          </div>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Category</InputLabel>
+              <Select
+                value={selectedCategoryId || ''}
+                label='Category'
+                onChange={(e) => setSelectedCategoryId(e.target.value || null)}
+                disabled={!selectedCategoryTypeId}
+              >
+                <MenuItem value=''>All</MenuItem>
+                {cData?.categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Stack direction='row' spacing={2} justifyContent='center'>
+              <Button
+                variant='outlined'
+                startIcon={<FilterAltOffIcon />}
+                onClick={handleClearFilters}
+                disabled={
+                  !(
+                    selectedBeginDate ||
+                    selectedEndDate ||
+                    selectedMerchant ||
+                    merchantSearch ||
+                    selectedCategoryTypeId ||
+                    selectedCategoryId
+                  )
+                }
+              >
+                Clear Filters
+              </Button>
+            </Stack>
+          </Grid>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-          <FormControl fullWidth>
-            <InputLabel>Category Type</InputLabel>
-            <Select
-              value={selectedCategoryTypeId || ''}
-              label='Category Type'
-              onChange={(e) => setSelectedCategoryTypeId(e.target.value || null)}
-            >
-              <MenuItem value=''>All</MenuItem>
-              {ctData?.categoryTypes.map((type) => (
-                <MenuItem key={type.id} value={type.id}>
-                  {type.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-          <FormControl fullWidth>
-            <InputLabel>Category</InputLabel>
-            <Select
-              value={selectedCategoryId || ''}
-              label='Category'
-              onChange={(e) => setSelectedCategoryId(e.target.value || null)}
-              disabled={!selectedCategoryTypeId}
-            >
-              <MenuItem value=''>All</MenuItem>
-              {cData?.categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid size={{ xs: 12, md: 12 }}>
-          <Stack direction='row' spacing={2} justifyContent='flex-end'>
-            <Button
-              variant='outlined'
-              startIcon={<FilterAltOffIcon />}
-              onClick={resetProfileState}
-              disabled={
-                !(
-                  selectedBeginDate ||
-                  selectedEndDate ||
-                  selectedMerchant ||
-                  selectedCategoryTypeId ||
-                  selectedCategoryId
-                )
-              }
-            >
-              Clear Filters
-            </Button>
-          </Stack>
-        </Grid>
-      </Grid>
+      </Box>
     </Paper>
   )
 }
