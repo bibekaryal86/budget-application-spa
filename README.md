@@ -1,9 +1,9 @@
 # Personal Expenses Tracking System
 
 - In frontend
-  - add nested tables in transactions, clicking will expand the transaction items
-  - modal to create/edit transactions
-  - modal to delete transaction or transaction item
+  - look at deprecated
+- In backend
+  - netty deprecated
 
 ## Overview
 
