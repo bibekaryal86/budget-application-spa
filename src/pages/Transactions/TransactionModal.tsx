@@ -201,6 +201,13 @@ export const TransactionModal: React.FC = () => {
 
   const handleCancelClose = () => setShowUnsavedWarning(false)
 
+  const handleConfirmClose = () => {
+    setShowUnsavedWarning(false)
+    closeTxnModal()
+    setTxnFormData(DefaultTransactionRequest)
+    setItemErrors({})
+  }
+
   const handleInputChange = (field: keyof Omit<TransactionRequest, 'items' | 'txnDate'>, value: string) => {
     setTxnFormData((prev) => ({
       ...prev,
@@ -543,7 +550,7 @@ export const TransactionModal: React.FC = () => {
               color='primary'
               startIcon={isLoading && <CircularProgress size={20} />}
             >
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? 'Saving...' : isCreate ? 'Create Transaction' : 'Update Transaction'}
             </Button>
           )}
         </DialogActions>
@@ -560,7 +567,7 @@ export const TransactionModal: React.FC = () => {
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 3 }}>
             <Button onClick={handleCancelClose}>Cancel</Button>
-            <Button onClick={handleClose} variant='contained' color='error'>
+            <Button onClick={handleConfirmClose} variant='contained' color='error'>
               Discard Changes
             </Button>
           </DialogActions>
