@@ -114,6 +114,7 @@ export interface CategoryResponse {
 
 // Transaction Item
 export interface TransactionItemRequest {
+  id: string | null
   transactionId: string | null
   categoryId: string
   label: string
@@ -134,7 +135,7 @@ export interface TransactionItemResponse {
 
 // Transaction
 export interface TransactionRequest {
-  txnDate: Date
+  txnDate: Date | null
   merchant: string
   totalAmount: number
   notes: string | null
