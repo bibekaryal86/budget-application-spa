@@ -458,7 +458,7 @@ export const TransactionModal: React.FC = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid sx={{ xs: 12, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <FormControl fullWidth error={!!itemErrors[`item-${index}-category`]}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
