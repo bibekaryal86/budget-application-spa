@@ -1,5 +1,5 @@
 import { ANIMATION, COLORS, THEME_MODES } from '@constants'
-import { Brightness4, Brightness7, Computer, Logout, Menu as MenuIcon } from '@mui/icons-material'
+import { Brightness4, Brightness7, Receipt, Logout, Menu as MenuIcon } from '@mui/icons-material'
 import {
   AppBar,
   Toolbar,
@@ -48,7 +48,7 @@ export const Header: React.FC = () => {
     })()
   }
 
-  const navigationItems = [{ path: '/transactions', label: 'Transactions', icon: <Computer /> }]
+  const navigationItems = [{ path: '/transactions', label: 'Transactions', icon: <Receipt /> }]
 
   return (
     <AppBar position='static' elevation={2}>
@@ -192,7 +192,7 @@ export const Header: React.FC = () => {
                     onClick={handleMenuClose}
                     selected={location.pathname === '/transactions'}
                   >
-                    <Computer sx={{ mr: 2 }} />
+                    <Receipt sx={{ mr: 2 }} />
                     Transactions
                   </MenuItem>
 
@@ -235,7 +235,7 @@ export const Header: React.FC = () => {
                         },
                       }}
                     >
-                      <Computer />
+                      <Receipt />
                     </IconButton>
                   </Tooltip>
 
