@@ -1,4 +1,4 @@
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, TXN_TYPE_LIST } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
@@ -34,7 +34,7 @@ import {
 } from '@queries'
 import { useAlertStore, useTxnStore } from '@stores'
 import type { Transaction, TransactionItem, TransactionItemRequest, TransactionRequest } from '@types'
-import { extractAxiosErrorMessage, getFormattedCurrency, getFormattedDate, getNumber, getString } from '@utils'
+import { extractAxiosErrorMessage, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
 import React, { useMemo, useState } from 'react'
 
 // const DefaultTransactionItemRequest: TransactionItemRequest = {
@@ -42,14 +42,14 @@ import React, { useMemo, useState } from 'react'
 //   transactionId: null,
 //   categoryId: '',
 //   label: '',
-//   amount: 0.0,
+//   amount: null,
 //   txnType: '',
 // }
 
 const DefaultTransactionRequest: TransactionRequest = {
   txnDate: null,
   merchant: '',
-  totalAmount: 0.0,
+  totalAmount: null,
   notes: '',
   items: [],
 }
@@ -88,7 +88,7 @@ function checkForChanges(formData: TransactionRequest, txn?: Transaction | null)
   return (
     formData.txnDate !== null ||
     formData.merchant.trim() !== '' ||
-    formData.totalAmount !== 0.0 ||
+    (formData.totalAmount != null && formData.totalAmount !== 0) ||
     formData.notes?.trim() !== '' ||
     hasItemsChanged(formData.items, [])
   )
@@ -134,8 +134,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
     if (
       req.categoryId != null ||
       (req.label != null && req.label.trim() !== '') ||
-      req.amount !== null ||
-      req.amount !== 0.0
+      (req.amount != null && req.amount !== 0)
     ) {
       return true
     }
@@ -224,7 +223,7 @@ export const TransactionModal: React.FC = () => {
     setMerchantSearch('')
   }
 
-  const handleInputChange = (field: keyof Omit<TransactionRequest, 'items' | 'txnDate'>, value: string) => {
+  const handleInputChange = (field: keyof Omit<TransactionRequest, 'items' | 'txnDate'>, value: string | number) => {
     setTxnFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -248,7 +247,7 @@ export const TransactionModal: React.FC = () => {
           transactionId: selectedTxn?.id || null,
           categoryId: '',
           label: '',
-          amount: 0.0,
+          amount: null,
           txnType: '',
         },
       ],
@@ -319,7 +318,7 @@ export const TransactionModal: React.FC = () => {
 
   return (
     <>
-      <Dialog open={isOpen} onClose={handleClose} maxWidth='md' fullWidth aria-labelledby='transaction-dialog-title'>
+      <Dialog open={isOpen} onClose={handleClose} maxWidth='xl' fullWidth aria-labelledby='transaction-dialog-title'>
         <DialogTitle id='transaction-dialog-title' sx={{ pb: 1 }}>
           <Box display='flex' alignItems='center' gap={1}>
             {isDelete ? (
@@ -455,16 +454,18 @@ export const TransactionModal: React.FC = () => {
                         label='Total Amount'
                         type='number'
                         value={selectedTxn?.totalAmount}
-                        onChange={(e) => handleInputChange('totalAmount', getString(getNumber(e.target.value)))}
+                        onChange={(e) => handleInputChange('totalAmount', e.target.value)}
                         error={!!itemErrors.totalAmount}
                         helperText={itemErrors.totalAmount}
                         required
-                        InputProps={{
-                          startAdornment: (
-                            <Typography color='text.secondary' mr={1}>
-                              $
-                            </Typography>
-                          ),
+                        slotProps={{
+                          input: {
+                            startAdornment: (
+                              <Typography color='text.secondary' mr={1}>
+                                $
+                              </Typography>
+                            ),
+                          },
                         }}
                       />
                     </Grid>
@@ -498,7 +499,7 @@ export const TransactionModal: React.FC = () => {
                   ) : (
                     <Stack spacing={2}>
                       {txnFormData.items.map((item, index) => (
-                        <Paper key={item.id} variant='outlined' sx={{ p: 2 }}>
+                        <Paper key={item.id ?? `new-${index}`} variant='outlined' sx={{ p: 2 }}>
                           <Box display='flex' justifyContent='space-between' alignItems='flex-start' mb={2}>
                             <Typography variant='subtitle2'>Item {index + 1}</Typography>
                             <IconButton size='small' onClick={() => handleRemoveItem(index)} color='error'>
@@ -507,15 +508,16 @@ export const TransactionModal: React.FC = () => {
                           </Box>
 
                           <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 8 }}>
                               <TextField
                                 fullWidth
                                 label='Label'
                                 value={item.label}
-                                onChange={(e) => handleItemChange(index, 'label', getString(e.target.value))}
+                                onChange={(e) => handleItemChange(index, 'label', e.target.value)}
                                 error={!!itemErrors[`item-${index}-label`]}
                                 helperText={itemErrors[`item-${index}-label`]}
                                 required
+                                placeholder='Enter item description'
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -524,20 +526,22 @@ export const TransactionModal: React.FC = () => {
                                 label='Amount'
                                 type='number'
                                 value={item.amount}
-                                onChange={(e) => handleItemChange(index, 'amount', getNumber(e.target.value))}
+                                onChange={(e) => handleItemChange(index, 'amount', e.target.value)}
                                 error={!!itemErrors[`item-${index}-amount`]}
                                 helperText={itemErrors[`item-${index}-amount`]}
                                 required
-                                InputProps={{
-                                  startAdornment: (
-                                    <Typography color='text.secondary' mr={1}>
-                                      $
-                                    </Typography>
-                                  ),
+                                slotProps={{
+                                  input: {
+                                    startAdornment: (
+                                      <Typography color='text.secondary' mr={1}>
+                                        $
+                                      </Typography>
+                                    ),
+                                  },
                                 }}
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 8 }}>
                               <FormControl fullWidth error={!!itemErrors[`item-${index}-category`]}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
@@ -564,6 +568,33 @@ export const TransactionModal: React.FC = () => {
                                 )}
                               </FormControl>
                             </Grid>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                              <FormControl fullWidth error={!!itemErrors[`item-${index}-type`]}>
+                                <InputLabel>Txn Type</InputLabel>
+                                <Select
+                                  value={item.txnType ?? ''}
+                                  label='Txn Type'
+                                  onChange={(e) => {
+                                    handleItemChange(index, 'txnType', e.target.value)
+                                  }}
+                                  required
+                                >
+                                  <MenuItem value=''>Select Type</MenuItem>
+
+                                  {TXN_TYPE_LIST.map((tt) => (
+                                    <MenuItem key={tt} value={tt}>
+                                      {tt}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+
+                                {itemErrors[`item-${index}-type`] && (
+                                  <Typography color='error' variant='caption'>
+                                    {itemErrors[`item-${index}-type`]}
+                                  </Typography>
+                                )}
+                              </FormControl>
+                            </Grid>
                           </Grid>
                         </Paper>
                       ))}
@@ -585,10 +616,11 @@ export const TransactionModal: React.FC = () => {
                           Total Amount
                         </Typography>
                         <Typography variant='h6' fontWeight='bold' color='primary'>
-                          {new Intl.NumberFormat('en-US', {
-                            style: 'currency',
-                            currency: 'USD',
-                          }).format(txnFormData.items.reduce((sum, item) => sum + (item.amount || 0), 0))}
+                          {getFormattedCurrency(
+                            txnFormData.items.length > 0
+                              ? txnFormData.items.reduce((sum, item) => sum + getNumber(item.amount), 0)
+                              : 0,
+                          )}
                         </Typography>
                       </Box>
                     </Paper>

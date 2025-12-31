@@ -1,8 +1,5 @@
 # Personal Expenses Tracking System
 
-- In frontend
-  - look at deprecated
-
 ## Overview
 
 A modern, responsive admin portal built with React and TypeScript for managing platforms, profiles, roles, and

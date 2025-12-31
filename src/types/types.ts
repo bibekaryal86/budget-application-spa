@@ -118,7 +118,7 @@ export interface TransactionItemRequest {
   transactionId: string | null
   categoryId: string
   label: string
-  amount: number
+  amount: number | null
   txnType: string
 }
 
@@ -137,8 +137,8 @@ export interface TransactionItemResponse {
 export interface TransactionRequest {
   txnDate: Date | null
   merchant: string
-  totalAmount: number
-  notes: string | null
+  totalAmount: number | null
+  notes: string
   items: TransactionItemRequest[]
 }
 

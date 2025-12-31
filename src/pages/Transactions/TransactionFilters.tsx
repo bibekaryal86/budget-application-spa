@@ -118,11 +118,13 @@ export const TransactionFilters: React.FC = () => {
 
   return (
     <Paper
+      elevation={0}
+      variant='outlined'
       sx={{
         p: 3,
         mb: 3,
-        backgroundColor: 'grey.50',
         borderRadius: 2,
+        backgroundColor: 'background.default',
       }}
     >
       <Typography variant='h6' gutterBottom>

@@ -10,6 +10,8 @@ export const TXN_TYPES = {
   OTHER: 'OTHER',
 } as const
 
+export const TXN_TYPE_LIST = Object.values(TXN_TYPES)
+
 export type TxnTypes =
   | typeof TXN_TYPES.WANTS
   | typeof TXN_TYPES.NEEDS

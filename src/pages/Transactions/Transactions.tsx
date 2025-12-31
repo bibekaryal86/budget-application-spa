@@ -78,17 +78,31 @@ export const Transactions: React.FC = () => {
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Typography variant='h4' component='h1' fontWeight='medium'>
-            Transactions
-          </Typography>
-          <Button variant='contained' onClick={() => openTxnModal(ACTION_TYPE.CREATE, null)}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent='space-between'
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          spacing={{ xs: 2, sm: 0 }}
+        >
+          <Box>
+            <Typography variant='h4' component='h1' fontWeight='medium'>
+              Transactions
+            </Typography>
+            <Typography variant='body1' color='text.secondary'>
+              Manage and view all your transactions
+            </Typography>
+          </Box>
+          <Button
+            variant='contained'
+            onClick={() => openTxnModal(ACTION_TYPE.CREATE, null)}
+            sx={{
+              width: { xs: '100%', sm: 'auto' },
+              mt: { xs: 1, sm: 0 },
+            }}
+          >
             Add New Transaction
           </Button>
         </Stack>
-        <Typography variant='body1' color='text.secondary'>
-          Manage and view all your transactions
-        </Typography>
       </Box>
 
       <TransactionFilters />
