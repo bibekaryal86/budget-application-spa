@@ -19,3 +19,8 @@ export const getFormattedCurrency = (amount: number | null, currency: string = '
     currency,
   }).format(amount)
 }
+
+export const getAmountColor = (amount: number | null): string => {
+  if (amount == null) return ''
+  return amount < 0 ? 'error.main' : 'success.main'
+}

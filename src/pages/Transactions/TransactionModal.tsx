@@ -169,12 +169,13 @@ export const TransactionModal: React.FC = () => {
   }, [merchantsList, merchantSearch])
 
   const isCreate = txnModalAction === ACTION_TYPE.CREATE
-  const isUpdate = txnModalAction === ACTION_TYPE.CREATE
+  const isUpdate = txnModalAction === ACTION_TYPE.UPDATE
   const isDelete = txnModalAction === ACTION_TYPE.DELETE
   const isOpen = isTxnModalOpen && (isCreate || ((isUpdate || isDelete) && !!selectedTxn))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    let successMsg = ''
     try {
       if (selectedTxn) {
         if (txnModalAction === ACTION_TYPE.UPDATE) {
@@ -182,11 +183,19 @@ export const TransactionModal: React.FC = () => {
             id: selectedTxn.id,
             payload: txnFormData,
           })
+          successMsg = 'Successfully Updated Transaction...'
         } else if (txnModalAction === ACTION_TYPE.DELETE) {
           await deleteTxn.mutateAsync({ id: selectedTxn.id })
+          successMsg = 'Successfully Deleted Transaction...'
         }
       } else if (txnModalAction === ACTION_TYPE.CREATE) {
         await createTxn.mutateAsync(txnFormData)
+        successMsg = 'Successfully Created Transaction...'
+      }
+
+      if (successMsg) {
+        showAlert('success', successMsg)
+        handleConfirmClose()
       }
     } catch (err) {
       const errorMessage = extractAxiosErrorMessage(err)
@@ -205,10 +214,7 @@ export const TransactionModal: React.FC = () => {
       if ((isCreate || isUpdate) && hasUnsavedChanges) {
         setShowUnsavedWarning(true)
       } else {
-        setShowUnsavedWarning(false)
-        closeTxnModal()
-        setTxnFormData(DefaultTransactionRequest)
-        setItemErrors({})
+        handleConfirmClose()
       }
     }
   }
@@ -216,11 +222,11 @@ export const TransactionModal: React.FC = () => {
   const handleCancelClose = () => setShowUnsavedWarning(false)
 
   const handleConfirmClose = () => {
-    setShowUnsavedWarning(false)
-    closeTxnModal()
     setTxnFormData(DefaultTransactionRequest)
-    setItemErrors({})
+    setShowUnsavedWarning(false)
     setMerchantSearch('')
+    setItemErrors({})
+    closeTxnModal()
   }
 
   const handleInputChange = (field: keyof Omit<TransactionRequest, 'items' | 'txnDate'>, value: string | number) => {
@@ -318,7 +324,7 @@ export const TransactionModal: React.FC = () => {
 
   return (
     <>
-      <Dialog open={isOpen} onClose={handleClose} maxWidth='xl' fullWidth aria-labelledby='transaction-dialog-title'>
+      <Dialog open={isOpen} onClose={handleClose} maxWidth='lg' fullWidth aria-labelledby='transaction-dialog-title'>
         <DialogTitle id='transaction-dialog-title' sx={{ pb: 1 }}>
           <Box display='flex' alignItems='center' gap={1}>
             {isDelete ? (
@@ -508,7 +514,7 @@ export const TransactionModal: React.FC = () => {
                           </Box>
 
                           <Grid container spacing={2}>
-                            <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <TextField
                                 fullWidth
                                 label='Label'
@@ -520,7 +526,7 @@ export const TransactionModal: React.FC = () => {
                                 placeholder='Enter item description'
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                               <TextField
                                 fullWidth
                                 label='Amount'
@@ -541,7 +547,7 @@ export const TransactionModal: React.FC = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 8 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <FormControl fullWidth error={!!itemErrors[`item-${index}-category`]}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
@@ -568,7 +574,7 @@ export const TransactionModal: React.FC = () => {
                                 )}
                               </FormControl>
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                               <FormControl fullWidth error={!!itemErrors[`item-${index}-type`]}>
                                 <InputLabel>Txn Type</InputLabel>
                                 <Select

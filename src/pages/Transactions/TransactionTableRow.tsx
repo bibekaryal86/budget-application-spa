@@ -20,8 +20,7 @@ import {
 } from '@mui/material'
 import { useTxnStore } from '@stores'
 import type { Transaction } from '@types'
-import { getFormattedCurrency } from '@utils'
-import { format } from 'date-fns'
+import { getAmountColor, getFormattedCurrency, getFormattedDate } from '@utils'
 import React, { useState } from 'react'
 
 interface TransactionTableRowProps {
@@ -34,7 +33,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
   const { openTxnModal } = useTxnStore()
 
   const handleEditClick = () => {
-    console.log('Edit transaction:', transaction.id)
+    console.log(transaction)
     openTxnModal(ACTION_TYPE.UPDATE, transaction)
   }
 
@@ -56,7 +55,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </IconButton>
         </TableCell>
 
-        <TableCell>{format(new Date(transaction.txnDate), 'yyyy-MM-dd')}</TableCell>
+        <TableCell>{getFormattedDate(transaction.txnDate)}</TableCell>
 
         <TableCell>
           <Typography variant='body2' fontWeight='medium'>
@@ -68,7 +67,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           <Typography
             variant='body2'
             sx={{
-              color: transaction.totalAmount < 0 ? 'error.main' : 'success.main',
+              color: getAmountColor(transaction.totalAmount),
               fontWeight: 'bold',
             }}
           >
@@ -138,7 +137,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                           <Typography
                             variant='body2'
                             sx={{
-                              color: item.amount < 0 ? 'error.main' : 'success.main',
+                              color: getAmountColor(item.amount),
                               fontWeight: 'medium',
                             }}
                           >

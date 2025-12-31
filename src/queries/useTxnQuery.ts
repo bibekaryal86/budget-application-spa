@@ -19,7 +19,8 @@ export const useCreateTransaction = () => {
     mutationFn: txnService.createTransaction,
 
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions', 'merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
     },
   })
 }
@@ -31,7 +32,8 @@ export const useUpdateTransaction = () => {
     mutationFn: ({ id, payload }: { id: string; payload: TransactionRequest }) =>
       txnService.updateTransaction(id, payload),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions', 'merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
     },
   })
 }
@@ -42,18 +44,16 @@ export const useDeleteTransaction = () => {
   return useMutation({
     mutationFn: ({ id }: { id: string }) => txnService.deleteTransaction(id),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions', 'merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
     },
   })
 }
 
-export const useInvalidatePlatforms = (id?: number | null) => {
+export const useInvalidateTransactionsMerchants = () => {
   const queryClient = useQueryClient()
   return () => {
-    if (id) {
-      void queryClient.invalidateQueries({ queryKey: ['platform', id] })
-    } else {
-      void queryClient.invalidateQueries({ queryKey: ['platforms'] })
-    }
+    void queryClient.invalidateQueries({ queryKey: ['transactions'] })
+    void queryClient.invalidateQueries({ queryKey: ['merchants'] })
   }
 }
