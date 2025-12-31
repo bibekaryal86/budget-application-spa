@@ -42,26 +42,83 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
 
   return (
     <>
-      <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => setExpanded(!expanded)}
-            disabled={!transaction.items || transaction.items.length === 0}
+      <TableRow
+        hover
+        sx={{
+          '& > *': { borderBottom: 'unset' },
+          cursor: transaction.items && transaction.items.length > 0 ? 'pointer' : 'default',
+          transition: 'background-color 0.2s',
+          '&:hover': {
+            backgroundColor: transaction.items && transaction.items.length > 0 ? 'action.hover' : undefined,
+          },
+          '&:active': {
+            backgroundColor: transaction.items && transaction.items.length > 0 ? 'action.selected' : undefined,
+          },
+        }}
+        onClick={(e) => {
+          // Only trigger if we didn't click on the icon button or action buttons
+          const target = e.target as HTMLElement
+          const isIconButton = target.closest('.expand-icon-button') || target.closest('.MuiIconButton-root')
+          const isActionButton = target.closest('.action-button') || target.closest('.MuiButton-root')
+
+          if (!isIconButton && !isActionButton && transaction.items && transaction.items.length > 0) {
+            setExpanded(!expanded)
+          }
+        }}
+      >
+        {/* Expand/Collapse Cell */}
+        <TableCell
+          sx={{
+            // Prevent click on this cell from triggering row click twice
+            pointerEvents: 'none',
+          }}
+        >
+          <Box
+            sx={{
+              pointerEvents: 'auto', // Re-enable pointer events for the icon only
+              display: 'inline-block',
+            }}
           >
-            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
+            <IconButton
+              className='expand-icon-button'
+              aria-label='expand row'
+              size='small'
+              onClick={(e) => {
+                e.stopPropagation()
+                setExpanded(!expanded)
+              }}
+              disabled={!transaction.items || transaction.items.length === 0}
+              sx={{
+                transition: 'transform 0.2s',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+                '&:active': {
+                  transform: 'scale(0.95)',
+                },
+                '&.Mui-disabled': {
+                  pointerEvents: 'none',
+                  opacity: 0.5,
+                },
+              }}
+            >
+              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
+          </Box>
         </TableCell>
 
+        {/* Date Cell */}
         <TableCell>{getFormattedDate(transaction.txnDate)}</TableCell>
 
+        {/* Merchant Cell */}
         <TableCell>
           <Typography variant='body2' fontWeight='medium'>
             {transaction.merchant}
           </Typography>
         </TableCell>
 
+        {/* Total Amount Cell */}
         <TableCell align='right'>
           <Typography
             variant='body2'
@@ -74,26 +131,82 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </Typography>
         </TableCell>
 
+        {/* Notes Cell */}
         <TableCell>
           <Typography variant='body2' color='text.secondary' noWrap sx={{ maxWidth: 200 }}>
             {transaction.notes || '-'}
           </Typography>
         </TableCell>
 
-        <TableCell align='right'>
-          <Stack direction='row' spacing={1} justifyContent='flex-end'>
-            <IconButton size='small' onClick={handleEditClick} title='Edit Transaction' color='primary'>
-              <EditIcon fontSize='small' />
-            </IconButton>
-            {isSuperUser && (
-              <IconButton size='small' onClick={handleDeleteClick} title='Delete Transaction' color='error'>
-                <DeleteIcon fontSize='small' />
+        {/* Actions Cell */}
+        <TableCell
+          align='right'
+          sx={{
+            // Prevent click on actions cell from triggering row expansion
+            pointerEvents: 'none',
+          }}
+        >
+          <Box
+            sx={{
+              pointerEvents: 'auto', // Re-enable pointer events for action buttons
+              display: 'inline-block',
+            }}
+          >
+            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+              <IconButton
+                className='action-button'
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleEditClick()
+                }}
+                title='Edit Transaction'
+                color='primary'
+                sx={{
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                    backgroundColor: 'primary.light',
+                    color: 'white',
+                  },
+                  '&:active': {
+                    transform: 'scale(0.95)',
+                  },
+                }}
+              >
+                <EditIcon fontSize='small' />
               </IconButton>
-            )}
-          </Stack>
+              {isSuperUser && (
+                <IconButton
+                  className='action-button'
+                  size='small'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDeleteClick()
+                  }}
+                  title='Delete Transaction'
+                  color='error'
+                  sx={{
+                    transition: 'all 0.2s',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                      backgroundColor: 'error.light',
+                      color: 'white',
+                    },
+                    '&:active': {
+                      transform: 'scale(0.95)',
+                    },
+                  }}
+                >
+                  <DeleteIcon fontSize='small' />
+                </IconButton>
+              )}
+            </Stack>
+          </Box>
         </TableCell>
       </TableRow>
 
+      {/* Expanded Details Row - unchanged */}
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={expanded} timeout='auto' unmountOnExit>
