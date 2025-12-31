@@ -178,9 +178,7 @@ export const TransactionModal: React.FC = () => {
     e.preventDefault()
     try {
       if (selectedTxn) {
-        if (txnModalAction === ACTION_TYPE.CREATE) {
-          await createTxn.mutateAsync(txnFormData)
-        } else if (txnModalAction === ACTION_TYPE.UPDATE) {
+        if (txnModalAction === ACTION_TYPE.UPDATE) {
           await updateTxn.mutateAsync({
             id: selectedTxn.id,
             payload: txnFormData,
@@ -188,6 +186,8 @@ export const TransactionModal: React.FC = () => {
         } else if (txnModalAction === ACTION_TYPE.DELETE) {
           await deleteTxn.mutateAsync({ id: selectedTxn.id })
         }
+      } else if (txnModalAction === ACTION_TYPE.CREATE) {
+        await createTxn.mutateAsync(txnFormData)
       }
     } catch (err) {
       const errorMessage = extractAxiosErrorMessage(err)
@@ -270,7 +270,7 @@ export const TransactionModal: React.FC = () => {
     setItemErrors(newErrors)
   }
 
-  const handleItemChange = (index: number, field: keyof TransactionItem, value: string | number) => {
+  const handleItemChange = (index: number, field: keyof TransactionItemRequest, value: string | number) => {
     setTxnFormData((prev) => ({
       ...prev,
       items: prev.items.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
@@ -316,7 +316,7 @@ export const TransactionModal: React.FC = () => {
   }
 
   if (!isOpen) return null
-  console.log(txnFormData)
+
   return (
     <>
       <Dialog open={isOpen} onClose={handleClose} maxWidth='md' fullWidth aria-labelledby='transaction-dialog-title'>
@@ -507,7 +507,7 @@ export const TransactionModal: React.FC = () => {
                           </Box>
 
                           <Grid container spacing={2}>
-                            <Grid sx={{ xs: 12, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <TextField
                                 fullWidth
                                 label='Label'
@@ -518,7 +518,7 @@ export const TransactionModal: React.FC = () => {
                                 required
                               />
                             </Grid>
-                            <Grid sx={{ xs: 12, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <TextField
                                 fullWidth
                                 label='Amount'
@@ -541,25 +541,18 @@ export const TransactionModal: React.FC = () => {
                               <FormControl fullWidth error={!!itemErrors[`item-${index}-category`]}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
-                                  value={item.categoryId}
+                                  value={item.categoryId || ''}
                                   label='Category'
                                   onChange={(e) => {
-                                    const category = { id: e.target.value, name: 'Selected Category' }
-                                    handleItemChange(index, 'category', category.id)
+                                    const categoryId = e.target.value
+                                    const selectedCategory = categoriesList?.find((cat) => cat.id === categoryId)
+                                    handleItemChange(index, 'categoryId', selectedCategory?.id || '')
                                   }}
                                   required
                                 >
                                   <MenuItem value=''>Select Category</MenuItem>
-                                  {categoriesList.map((category) => (
-                                    <MenuItem
-                                      key={category.id}
-                                      onClick={() => handleItemChange(index, 'category', category.id)}
-                                      sx={{
-                                        '&:hover': {
-                                          backgroundColor: 'action.hover',
-                                        },
-                                      }}
-                                    >
+                                  {categoriesList?.map((category) => (
+                                    <MenuItem key={category.id} value={category.id}>
                                       {category.name}
                                     </MenuItem>
                                   ))}
@@ -637,7 +630,7 @@ export const TransactionModal: React.FC = () => {
       {(isCreate || isUpdate) && (
         <Dialog open={showUnsavedWarning} onClose={handleCancelClose} maxWidth='xs' fullWidth>
           <DialogTitle>
-            <Typography variant='h6' fontWeight='bold'>
+            <Typography variant='h6' component='div' fontWeight='bold'>
               Unsaved Changes
             </Typography>
           </DialogTitle>
