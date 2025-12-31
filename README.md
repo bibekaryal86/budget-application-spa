@@ -1,5 +1,8 @@
 # Personal Expenses Tracking System
 
+TODO
+- Home Page
+
 ## Overview
 
 A modern, responsive admin portal built with React and TypeScript for managing platforms, profiles, roles, and
