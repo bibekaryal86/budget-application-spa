@@ -184,7 +184,7 @@ export const Login: React.FC = () => {
 
         <Typography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
           {mode === 'login'
-            ? 'Welcome to Simple Budget Application'
+            ? 'Welcome to Personal Expenses Tracking System'
             : mode === 'reset_init'
               ? 'Enter your email to reset'
               : 'Enter your email and new password'}

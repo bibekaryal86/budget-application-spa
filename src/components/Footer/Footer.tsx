@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
           &copy; {currentYear} Bibek Aryal
         </Typography>
         <Typography variant='caption' color='text.secondary' sx={{ mt: 0.5, display: 'block' }}>
-          Simple Expenses Tracking System
+          Personal Expenses Tracking System
         </Typography>
       </Box>
     </Paper>
