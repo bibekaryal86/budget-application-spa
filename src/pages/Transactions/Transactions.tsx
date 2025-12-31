@@ -19,6 +19,7 @@ export const Transactions: React.FC = () => {
     selectedCategoryId,
     selectedCategoryTypeId,
     openTxnModal,
+    selectedTxn,
   } = useTxnStore()
 
   const { data, isLoading, error } = useReadTransactions()
@@ -145,7 +146,7 @@ export const Transactions: React.FC = () => {
           </Typography>
         </Box>
       )}
-      <TransactionModal />
+      <TransactionModal key={selectedTxn?.id || 'new'} />
     </Container>
   )
 }

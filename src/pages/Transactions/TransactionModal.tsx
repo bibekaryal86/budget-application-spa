@@ -57,7 +57,7 @@ const DefaultTransactionRequest: TransactionRequest = {
 function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequest {
   if (txn) {
     return {
-      txnDate: txn.txnDate,
+      txnDate: txn.txnDate ? new Date(txn.txnDate) : null,
       merchant: txn.merchant,
       totalAmount: txn.totalAmount,
       notes: txn.notes,
@@ -76,13 +76,12 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
 
 function checkForChanges(formData: TransactionRequest, txn?: Transaction | null): boolean {
   if (txn) {
-    return (
-      formData.txnDate !== txn.txnDate ||
+    const txnChanges =
+      getFormattedDate(formData.txnDate) !== getFormattedDate(txn.txnDate) ||
       formData.merchant !== txn.merchant ||
       formData.totalAmount !== txn.totalAmount ||
-      formData.notes !== txn.notes ||
-      hasItemsChanged(formData.items, txn.items)
-    )
+      formData.notes !== txn.notes
+    return txnChanges || hasItemsChanged(formData.items, txn.items)
   }
 
   return (
@@ -203,14 +202,9 @@ export const TransactionModal: React.FC = () => {
     }
   }
 
-  const hasUnsavedChanges = useMemo(() => {
-    if (txnModalAction === ACTION_TYPE.CREATE || txnModalAction === ACTION_TYPE.UPDATE) {
-      return checkForChanges(txnFormData, selectedTxn)
-    }
-  }, [selectedTxn, txnFormData, txnModalAction])
-
   const handleClose = () => {
     if (!isLoading) {
+      const hasUnsavedChanges = (isCreate || isUpdate) && checkForChanges(txnFormData, selectedTxn)
       if ((isCreate || isUpdate) && hasUnsavedChanges) {
         setShowUnsavedWarning(true)
       } else {
