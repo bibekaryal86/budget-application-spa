@@ -556,44 +556,74 @@ export const TransactionModal: React.FC = () => {
                 <Divider />
 
                 <Box>
-                  <Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
+                  <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                    {' '}
                     <Typography variant='subtitle1' fontWeight='medium'>
                       Items ({txnFormData.items.length})
                     </Typography>
-                    <Button startIcon={<AddIcon />} onClick={handleAddItem} variant='outlined' size='small'>
+                    <Button
+                      startIcon={<AddIcon />}
+                      onClick={handleAddItem}
+                      variant='outlined'
+                      size='small'
+                      sx={{ py: 0.5 }}
+                    >
                       Add Item
                     </Button>
                   </Box>
 
                   {txnFormData.items.length === 0 ? (
-                    <Alert severity='info'>No items added. Click &#34;Add Item&#34; to add transaction items.</Alert>
+                    <Alert severity='info' sx={{ py: 1 }}>
+                      {' '}
+                      No items added. Click &quot;Add Item&quot; to add transaction items.
+                    </Alert>
                   ) : (
-                    <Stack spacing={2}>
+                    <Stack spacing={1}>
+                      {' '}
                       {txnFormData.items.map((item, index) => (
-                        <Paper key={item.id ?? `new-${index}`} variant='outlined' sx={{ p: 2 }}>
-                          <Box display='flex' justifyContent='space-between' alignItems='flex-start' mb={2}>
-                            <Typography variant='subtitle2'>Item {index + 1}</Typography>
-                            <IconButton size='small' onClick={() => handleRemoveItem(index)} color='error'>
-                              <DeleteIcon />
+                        <Paper
+                          key={item.id ?? `new-${index}`}
+                          variant='outlined'
+                          sx={{
+                            p: 1.5,
+                            '&:hover': { backgroundColor: 'action.hover' },
+                          }}
+                        >
+                          <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                            {' '}
+                            <Typography variant='subtitle2' sx={{ fontSize: '0.9rem' }}>
+                              {' '}
+                              Item {index + 1}
+                            </Typography>
+                            <IconButton
+                              size='small'
+                              onClick={() => handleRemoveItem(index)}
+                              color='error'
+                              sx={{ width: 30, height: 30 }}
+                            >
+                              <DeleteIcon fontSize='small' />
                             </IconButton>
                           </Box>
 
-                          <Grid container spacing={2}>
+                          <Grid container spacing={1}>
+                            {' '}
                             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <TextField
                                 fullWidth
+                                size='small'
                                 label='Label'
                                 value={item.label}
                                 onChange={(e) => handleItemChange(index, 'label', e.target.value)}
                                 error={!!itemErrors[`item-${index}-label`]}
                                 helperText={itemErrors[`item-${index}-label`]}
                                 required
-                                placeholder='Enter item description'
+                                placeholder='Item description'
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                               <TextField
                                 fullWidth
+                                size='small'
                                 label='Amount'
                                 type='number'
                                 value={item.amount}
@@ -604,7 +634,7 @@ export const TransactionModal: React.FC = () => {
                                 slotProps={{
                                   input: {
                                     startAdornment: (
-                                      <Typography color='text.secondary' mr={1}>
+                                      <Typography color='text.secondary' mr={1} fontSize='small'>
                                         $
                                       </Typography>
                                     ),
@@ -613,9 +643,10 @@ export const TransactionModal: React.FC = () => {
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                              <FormControl fullWidth error={!!itemErrors[`item-${index}-category`]}>
+                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-category`]}>
                                 <InputLabel>Category</InputLabel>
                                 <Select
+                                  size='small'
                                   value={item.categoryId || ''}
                                   label='Category'
                                   onChange={(e) => {
@@ -633,16 +664,17 @@ export const TransactionModal: React.FC = () => {
                                   ))}
                                 </Select>
                                 {itemErrors[`item-${index}-category`] && (
-                                  <Typography color='error' variant='caption'>
+                                  <Typography color='error' variant='caption' fontSize='small'>
                                     {itemErrors[`item-${index}-category`]}
                                   </Typography>
                                 )}
                               </FormControl>
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                              <FormControl fullWidth error={!!itemErrors[`item-${index}-type`]}>
+                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-type`]}>
                                 <InputLabel>Txn Type</InputLabel>
                                 <Select
+                                  size='small'
                                   value={item.txnType ?? ''}
                                   label='Txn Type'
                                   onChange={(e) => {
@@ -651,7 +683,6 @@ export const TransactionModal: React.FC = () => {
                                   required
                                 >
                                   <MenuItem value=''>Select Type</MenuItem>
-
                                   {TXN_TYPE_LIST.map((tt) => (
                                     <MenuItem key={tt} value={tt}>
                                       {tt}
@@ -659,7 +690,7 @@ export const TransactionModal: React.FC = () => {
                                   ))}
                                 </Select>
                                 {itemErrors[`item-${index}-txnType`] && (
-                                  <Typography color='error' variant='caption'>
+                                  <Typography color='error' variant='caption' fontSize='small'>
                                     {itemErrors[`item-${index}-txnType`]}
                                   </Typography>
                                 )}
@@ -675,17 +706,19 @@ export const TransactionModal: React.FC = () => {
                     <Paper
                       variant='outlined'
                       sx={{
-                        p: 2,
-                        mt: 2,
+                        p: 1,
+                        mt: 1,
                         backgroundColor: 'grey.50',
                         borderColor: 'primary.main',
                       }}
                     >
                       <Box display='flex' justifyContent='space-between' alignItems='center'>
-                        <Typography variant='subtitle1' fontWeight='bold'>
+                        <Typography variant='subtitle2' fontWeight='bold'>
+                          {' '}
                           Total Amount
                         </Typography>
-                        <Typography variant='h6' fontWeight='bold' color='primary'>
+                        <Typography variant='h6' fontWeight='bold' color='primary' fontSize='1rem'>
+                          {' '}
                           {getFormattedCurrency(
                             txnFormData.items.length > 0
                               ? txnFormData.items.reduce((sum, item) => sum + getNumber(item.amount), 0)
