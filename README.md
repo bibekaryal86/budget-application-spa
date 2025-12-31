@@ -2,8 +2,6 @@
 
 - In frontend
   - look at deprecated
-- In backend
-  - netty deprecated
 
 ## Overview
 

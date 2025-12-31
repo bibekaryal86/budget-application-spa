@@ -25,7 +25,13 @@ import Stack from '@mui/material/Stack'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { useCreateTransaction, useDeleteTransaction, useReadCategories, useUpdateTransaction } from '@queries'
+import {
+  useCreateTransaction,
+  useDeleteTransaction,
+  useReadCategories,
+  useReadMerchants,
+  useUpdateTransaction,
+} from '@queries'
 import { useAlertStore, useTxnStore } from '@stores'
 import type { Transaction, TransactionItem, TransactionItemRequest, TransactionRequest } from '@types'
 import { extractAxiosErrorMessage, getFormattedCurrency, getFormattedDate, getNumber, getString } from '@utils'
@@ -146,13 +152,22 @@ export const TransactionModal: React.FC = () => {
   const deleteTxn = useDeleteTransaction()
 
   const { data: cData } = useReadCategories()
+  const { data: mData } = useReadMerchants()
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
+  const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
 
   const isLoading = createTxn.isPending || updateTxn.isPending || deleteTxn.isPending
 
   const [txnFormData, setTxnFormData] = useState<TransactionRequest>({ ...getDefaultTransactionFormData(selectedTxn) })
   const [itemErrors, setItemErrors] = useState<Record<string, string>>({})
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false)
+  const [showMerchantDropdown, setShowMerchantDropdown] = useState(false)
+  const [merchantSearch, setMerchantSearch] = useState(selectedTxn?.merchant || '')
+
+  const filteredMerchants = useMemo(() => {
+    if (!merchantSearch) return merchantsList
+    return merchantsList.filter((merchant) => merchant.toLowerCase().includes(merchantSearch.toLowerCase()))
+  }, [merchantsList, merchantSearch])
 
   const isCreate = txnModalAction === ACTION_TYPE.CREATE
   const isUpdate = txnModalAction === ACTION_TYPE.CREATE
@@ -206,6 +221,7 @@ export const TransactionModal: React.FC = () => {
     closeTxnModal()
     setTxnFormData(DefaultTransactionRequest)
     setItemErrors({})
+    setMerchantSearch('')
   }
 
   const handleInputChange = (field: keyof Omit<TransactionRequest, 'items' | 'txnDate'>, value: string) => {
@@ -266,8 +282,41 @@ export const TransactionModal: React.FC = () => {
     }
   }
 
-  if (!isOpen) return null
+  const handleMerchantSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setMerchantSearch(value)
+    setShowMerchantDropdown(true)
+  }
 
+  const handleMerchantSelect = (merchant: string) => {
+    setTxnFormData((prev) => ({
+      ...prev,
+      merchant: merchant,
+    }))
+    setMerchantSearch(merchant)
+    setShowMerchantDropdown(false)
+  }
+
+  const handleMerchantBlur = () => {
+    setTimeout(() => {
+      setShowMerchantDropdown(false)
+      if (merchantSearch) {
+        setTxnFormData((prev) => ({
+          ...prev,
+          merchant: merchantSearch,
+        }))
+      }
+    }, 200)
+  }
+
+  const handleMerchantFocus = () => {
+    if (merchantSearch) {
+      setShowMerchantDropdown(true)
+    }
+  }
+
+  if (!isOpen) return null
+  console.log(txnFormData)
   return (
     <>
       <Dialog open={isOpen} onClose={handleClose} maxWidth='md' fullWidth aria-labelledby='transaction-dialog-title'>
@@ -344,7 +393,7 @@ export const TransactionModal: React.FC = () => {
                     Transaction Details
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <DatePicker
                         label='Date'
                         value={txnFormData.txnDate}
@@ -359,16 +408,46 @@ export const TransactionModal: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6 }}>
-                      <TextField
-                        fullWidth
-                        label='Merchant'
-                        value={txnFormData.merchant}
-                        onChange={(e) => handleInputChange('merchant', e.target.value)}
-                        error={!!itemErrors.merchant}
-                        helperText={itemErrors.merchant}
-                        required
-                      />
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <div style={{ position: 'relative' }}>
+                        <TextField
+                          fullWidth
+                          label='Merchant'
+                          value={merchantSearch}
+                          onChange={handleMerchantSearchChange}
+                          onFocus={handleMerchantFocus}
+                          onBlur={handleMerchantBlur}
+                          required
+                          placeholder='Type to search...'
+                        />
+                        {showMerchantDropdown && filteredMerchants.length > 0 && (
+                          <Paper
+                            sx={{
+                              position: 'absolute',
+                              zIndex: 1300,
+                              width: '100%',
+                              maxHeight: 300,
+                              overflow: 'auto',
+                              mt: 0.5,
+                              boxShadow: 3,
+                            }}
+                          >
+                            {filteredMerchants.map((merchant) => (
+                              <MenuItem
+                                key={merchant}
+                                onClick={() => handleMerchantSelect(merchant)}
+                                sx={{
+                                  '&:hover': {
+                                    backgroundColor: 'action.hover',
+                                  },
+                                }}
+                              >
+                                {merchant}
+                              </MenuItem>
+                            ))}
+                          </Paper>
+                        )}
+                      </div>
                     </Grid>
                     <Grid size={{ xs: 12, md: 4 }}>
                       <TextField
