@@ -135,7 +135,7 @@ export const Home: React.FC = () => {
     >
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' component='h1' gutterBottom fontWeight='bold'>
-          Your Financial Dashboard
+          Your Financial Dashboard (DUMMY DATA)
         </Typography>
         <Typography variant='body1' color='text.secondary' paragraph>
           Track your income, expenses, and savings at a glance
