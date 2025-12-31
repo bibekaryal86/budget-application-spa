@@ -20,6 +20,10 @@ export const getFormattedCurrency = (amount: number | null, currency: string = '
   }).format(amount)
 }
 
+export const getFormattedPercent = (value: number) => {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`
+}
+
 export const getAmountColor = (amount: number | null): string => {
   if (amount == null) return ''
   return amount < 0 ? 'error.main' : 'success.main'
