@@ -37,6 +37,11 @@ import type { Transaction, TransactionItem, TransactionItemRequest, TransactionR
 import { extractAxiosErrorMessage, getAmountColor, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
 import React, { useMemo, useState } from 'react'
 
+interface ValidationResult {
+  isValid: boolean
+  errors: Record<string, string>
+}
+
 // const DefaultTransactionItemRequest: TransactionItemRequest = {
 //   id: null,
 //   transactionId: null,
@@ -176,18 +181,26 @@ export const TransactionModal: React.FC = () => {
     e.preventDefault()
     let successMsg = ''
     try {
+      if (isUpdate || isCreate) {
+        const { isValid, errors } = validateTransactionForm(txnFormData)
+        if (!isValid) {
+          setItemErrors(errors)
+          return
+        }
+      }
+
       if (selectedTxn) {
-        if (txnModalAction === ACTION_TYPE.UPDATE) {
+        if (isUpdate) {
           await updateTxn.mutateAsync({
             id: selectedTxn.id,
             payload: txnFormData,
           })
           successMsg = 'Successfully Updated Transaction...'
-        } else if (txnModalAction === ACTION_TYPE.DELETE) {
+        } else if (isDelete) {
           await deleteTxn.mutateAsync({ id: selectedTxn.id })
           successMsg = 'Successfully Deleted Transaction...'
         }
-      } else if (txnModalAction === ACTION_TYPE.CREATE) {
+      } else if (isCreate) {
         await createTxn.mutateAsync(txnFormData)
         successMsg = 'Successfully Created Transaction...'
       }
@@ -199,6 +212,62 @@ export const TransactionModal: React.FC = () => {
     } catch (err) {
       const errorMessage = extractAxiosErrorMessage(err)
       showAlert('error', errorMessage)
+    }
+  }
+
+  const validateTransactionForm = (formData: TransactionRequest): ValidationResult => {
+    const errors: Record<string, string> = {}
+
+    if (!formData.txnDate) {
+      errors.txnDate = 'Date is required'
+    } else if (formData.txnDate > new Date()) {
+      errors.txnDate = 'Date cannot be in the future'
+    }
+
+    const merchant = formData.merchant.trim()
+    if (!merchant) {
+      errors.merchant = 'Merchant is required'
+    } else if (merchant.length > 200) {
+      errors.merchant = 'Merchant cannot exceed 200 characters'
+    }
+
+    const totalAmount = formData.totalAmount
+    if (!totalAmount || isNaN(totalAmount)) {
+      errors.totalAmount = 'Total Amount is required'
+    } else if (totalAmount <= 0) {
+      errors.totalAmount = 'Total Amount cannot be zero or negative'
+    } else if (Math.abs(totalAmount) > 10000) {
+      errors.totalAmount = 'Total Amount cannot exceed $10,000'
+    }
+
+    formData.items.forEach((item, index) => {
+      const label = item.label.trim()
+      if (!label) {
+        errors[`item-${index}-label`] = 'Label is required'
+      } else if (label.length > 200) {
+        errors[`item-${index}-label`] = 'Label cannot exceed 200 characters'
+      }
+
+      if (!item.amount || isNaN(item.amount)) {
+        errors[`item-${index}-amount`] = 'Amount is required'
+      } else if (item.amount <= 0) {
+        errors[`item-${index}-amount`] = 'Amount cannot be zero or negative'
+      } else if (Math.abs(item.amount) > 10000) {
+        errors[`item-${index}-amount`] = 'Amount cannot exceed $10,000'
+      }
+
+      if (!item.categoryId) {
+        errors[`item-${index}-category`] = 'Category is required'
+      }
+
+      if (!item.txnType) {
+        errors[`item-${index}-txnType`] = 'Type is required'
+      }
+    })
+
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors,
     }
   }
 
@@ -400,8 +469,8 @@ export const TransactionModal: React.FC = () => {
                         slotProps={{
                           textField: {
                             fullWidth: true,
-                            error: !!itemErrors.date,
-                            helperText: itemErrors.date,
+                            error: !!itemErrors.txnDate,
+                            helperText: itemErrors.txnDate,
                             required: true,
                           },
                         }}
@@ -417,6 +486,8 @@ export const TransactionModal: React.FC = () => {
                           onFocus={handleMerchantFocus}
                           onBlur={handleMerchantBlur}
                           required
+                          error={!!itemErrors.merchant}
+                          helperText={itemErrors.merchant}
                           placeholder='Type to search...'
                         />
                         {showMerchantDropdown && filteredMerchants.length > 0 && (
@@ -587,10 +658,9 @@ export const TransactionModal: React.FC = () => {
                                     </MenuItem>
                                   ))}
                                 </Select>
-
-                                {itemErrors[`item-${index}-type`] && (
+                                {itemErrors[`item-${index}-txnType`] && (
                                   <Typography color='error' variant='caption'>
-                                    {itemErrors[`item-${index}-type`]}
+                                    {itemErrors[`item-${index}-txnType`]}
                                   </Typography>
                                 )}
                               </FormControl>
