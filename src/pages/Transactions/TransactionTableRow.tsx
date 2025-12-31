@@ -33,7 +33,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
   const { openTxnModal } = useTxnStore()
 
   const handleEditClick = () => {
-    console.log(transaction)
     openTxnModal(ACTION_TYPE.UPDATE, transaction)
   }
 

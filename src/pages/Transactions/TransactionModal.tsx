@@ -34,7 +34,7 @@ import {
 } from '@queries'
 import { useAlertStore, useTxnStore } from '@stores'
 import type { Transaction, TransactionItem, TransactionItemRequest, TransactionRequest } from '@types'
-import { extractAxiosErrorMessage, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
+import { extractAxiosErrorMessage, getAmountColor, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
 import React, { useMemo, useState } from 'react'
 
 // const DefaultTransactionItemRequest: TransactionItemRequest = {
@@ -383,7 +383,7 @@ export const TransactionModal: React.FC = () => {
                   <Typography
                     variant='body2'
                     fontWeight='bold'
-                    color={selectedTxn?.totalAmount && selectedTxn.totalAmount < 0 ? 'error.main' : 'success.main'}
+                    color={getAmountColor(selectedTxn?.totalAmount || null)}
                   >
                     {getFormattedCurrency(selectedTxn?.totalAmount || null)}
                   </Typography>
