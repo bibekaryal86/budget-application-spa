@@ -27,7 +27,13 @@ import {
   Chip,
   Divider,
 } from '@mui/material'
-import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadTransactions } from '@queries'
+import {
+  useReadAccounts,
+  useReadCategories,
+  useReadCategoryTypes,
+  useReadMerchants,
+  useReadTransactions,
+} from '@queries'
 import { getAmountColor, getFormattedCurrency, getFormattedPercent, getNumber } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
@@ -39,6 +45,7 @@ export const Home: React.FC = () => {
   useReadCategoryTypes()
   useReadCategories()
   useReadMerchants()
+  useReadAccounts()
   const { data } = useReadTransactions()
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
 

@@ -1,4 +1,4 @@
-import type { CategoryResponse, CategoryTypeResponse, TransactionMerchants } from '@types'
+import type { AccountResponse, CategoryResponse, CategoryTypeResponse, TransactionMerchants } from '@types'
 import { apiHelperCore } from '@utils'
 
 export const refService = {
@@ -8,6 +8,10 @@ export const refService = {
 
   readCategories: async (): Promise<CategoryResponse> => {
     return await apiHelperCore.get<CategoryResponse>('/v1/categories')
+  },
+
+  readAccounts: async (): Promise<AccountResponse> => {
+    return await apiHelperCore.get<AccountResponse>('/v1/accounts')
   },
 
   readMerchants: async (): Promise<TransactionMerchants> => {

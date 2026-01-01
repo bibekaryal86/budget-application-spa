@@ -21,6 +21,16 @@ export const useReadCategories = () =>
     staleTime: 60_000,
   })
 
+export const useReadAccounts = () =>
+  useQuery({
+    queryKey: ['accounts'],
+    queryFn: () => refService.readAccounts(),
+    select: (data) => ({
+      accounts: data.data,
+    }),
+    staleTime: 60_000,
+  })
+
 export const useReadMerchants = () =>
   useQuery({
     queryKey: ['merchants'],

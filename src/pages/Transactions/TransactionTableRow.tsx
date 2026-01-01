@@ -75,7 +75,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
         >
           <Box
             sx={{
-              pointerEvents: 'auto', // Re-enable pointer events for the icon only
+              pointerEvents: 'auto',
               display: 'inline-block',
             }}
           >
@@ -108,17 +108,20 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </Box>
         </TableCell>
 
-        {/* Date Cell */}
         <TableCell>{getFormattedDate(transaction.txnDate)}</TableCell>
 
-        {/* Merchant Cell */}
         <TableCell>
           <Typography variant='body2' fontWeight='medium'>
             {transaction.merchant}
           </Typography>
         </TableCell>
 
-        {/* Total Amount Cell */}
+        <TableCell>
+          <Typography variant='body2' fontWeight='medium'>
+            {transaction.account.name}
+          </Typography>
+        </TableCell>
+
         <TableCell align='right'>
           <Typography
             variant='body2'
@@ -131,14 +134,12 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </Typography>
         </TableCell>
 
-        {/* Notes Cell */}
         <TableCell>
           <Typography variant='body2' color='text.secondary' noWrap sx={{ maxWidth: 200 }}>
             {transaction.notes || '-'}
           </Typography>
         </TableCell>
 
-        {/* Actions Cell */}
         <TableCell
           align='right'
           sx={{
@@ -148,7 +149,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
         >
           <Box
             sx={{
-              pointerEvents: 'auto', // Re-enable pointer events for action buttons
+              pointerEvents: 'auto',
               display: 'inline-block',
             }}
           >
@@ -243,7 +244,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                           <Typography variant='body2'>{item.label || '-'}</Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant='body2'>{item.txnType || '-'}</Typography>
+                          <Typography variant='body2'>{item.expType || '-'}</Typography>
                         </TableCell>
                         <TableCell align='right'>
                           <Typography

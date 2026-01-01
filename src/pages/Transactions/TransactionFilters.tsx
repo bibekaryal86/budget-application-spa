@@ -15,7 +15,7 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { useReadCategories, useReadCategoryTypes, useReadMerchants } from '@queries'
+import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts } from '@queries'
 import { useTxnStore } from '@stores'
 import React, { useMemo, useState } from 'react'
 
@@ -27,6 +27,8 @@ export const TransactionFilters: React.FC = () => {
     setSelectedEndDate,
     selectedMerchant,
     setSelectedMerchant,
+    selectedAccountId,
+    setSelectedAccountId,
     selectedCategoryId,
     setSelectedCategoryId,
     selectedCategoryTypeId,
@@ -37,7 +39,9 @@ export const TransactionFilters: React.FC = () => {
   const { data: ctData } = useReadCategoryTypes()
   const { data: cData } = useReadCategories()
   const { data: mData } = useReadMerchants()
+  const { data: aData } = useReadAccounts()
 
+  const accountsList = useMemo(() => aData?.accounts ?? [], [aData])
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
   const categoryTypesList = useMemo(() => ctData?.categoryTypes ?? [], [ctData])
@@ -201,6 +205,23 @@ export const TransactionFilters: React.FC = () => {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl fullWidth>
+              <InputLabel>Account</InputLabel>
+              <Select
+                value={selectedAccountId || ''}
+                label='Account'
+                onChange={(e) => setSelectedAccountId(e.target.value)}
+              >
+                <MenuItem value=''>All</MenuItem>
+                {accountsList.map((account) => (
+                  <MenuItem key={account.id} value={account.id}>
+                    {account.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <FormControl fullWidth>
               <InputLabel>Category Type</InputLabel>
               <Select
                 value={selectedCategoryTypeId || ''}
@@ -244,6 +265,7 @@ export const TransactionFilters: React.FC = () => {
                     selectedBeginDate ||
                     selectedEndDate ||
                     selectedMerchant ||
+                    selectedAccountId ||
                     merchantSearch ||
                     selectedCategoryTypeId ||
                     selectedCategoryId

@@ -16,6 +16,7 @@ export const TransactionsTable: React.FC<{ transactions: Transaction[] }> = ({ t
             <TableCell width={50} />
             <TableCell>Date</TableCell>
             <TableCell>Merchant</TableCell>
+            <TableCell>Account</TableCell>
             <TableCell align='right'>Total</TableCell>
             <TableCell>Notes</TableCell>
             <TableCell align='right'>Actions</TableCell>

@@ -16,6 +16,7 @@ export const Transactions: React.FC = () => {
     selectedBeginDate,
     selectedEndDate,
     selectedMerchant,
+    selectedAccountId,
     selectedCategoryId,
     selectedCategoryTypeId,
     openTxnModal,
@@ -29,12 +30,12 @@ export const Transactions: React.FC = () => {
     selectedBeginDate != null ||
     selectedEndDate != null ||
     selectedMerchant != null ||
+    selectedAccountId != null ||
     selectedCategoryTypeId != null ||
     selectedCategoryId != null
 
   const filteredTxns = useMemo(() => {
     return transactions.filter((txn) => {
-      // Date filtering
       if (selectedBeginDate && txn.txnDate) {
         const txnDate = new Date(txn.txnDate)
         if (txnDate < selectedBeginDate) return false
@@ -45,6 +46,10 @@ export const Transactions: React.FC = () => {
       }
 
       if (selectedMerchant && !txn.merchant?.toLowerCase().includes(selectedMerchant.toLowerCase())) {
+        return false
+      }
+
+      if (selectedAccountId && txn.account.id !== selectedAccountId) {
         return false
       }
 
@@ -74,7 +79,15 @@ export const Transactions: React.FC = () => {
 
       return hasMatchingItem || false
     })
-  }, [transactions, selectedBeginDate, selectedEndDate, selectedMerchant, selectedCategoryTypeId, selectedCategoryId])
+  }, [
+    transactions,
+    selectedBeginDate,
+    selectedEndDate,
+    selectedMerchant,
+    selectedAccountId,
+    selectedCategoryTypeId,
+    selectedCategoryId,
+  ])
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>

@@ -82,6 +82,23 @@ export interface ProfilePasswordTokenResponse {
   csrfToken: string | null
 }
 
+// Account
+export interface AccountRequest {
+  name: string
+  accountType: string
+  bankName: string
+  openingBalance: number
+  status: string
+}
+
+export interface Account extends AccountRequest {
+  id: string
+}
+
+export interface AccountResponse {
+  data: Account[]
+  metadata: ResponseMetadata
+}
 // Category Type
 export interface CategoryTypeRequest {
   name: string
@@ -119,7 +136,7 @@ export interface TransactionItemRequest {
   categoryId: string
   label: string
   amount: number | null
-  txnType: string
+  expType: string
 }
 
 export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
@@ -137,13 +154,15 @@ export interface TransactionItemResponse {
 export interface TransactionRequest {
   txnDate: Date | null
   merchant: string
+  accountId: string
   totalAmount: number | null
   notes: string
   items: TransactionItemRequest[]
 }
 
-export interface Transaction extends Omit<TransactionRequest, 'items'> {
+export interface Transaction extends Omit<TransactionRequest, 'accountId' | 'items'> {
   id: string
+  account: Account
   items: TransactionItem[]
 }
 
@@ -158,12 +177,6 @@ export interface TransactionMerchants {
 }
 
 // Request Params
-export interface TransactionItemParams {
-  txnIds: string[] | []
-  catIds: string[] | []
-  txnTypes: string[] | []
-}
-
 export interface CategoryParams {
   catTypeIds: string[] | []
 }
@@ -174,5 +187,6 @@ export interface TransactionParams {
   merchants: string[] | []
   catIds: string[] | []
   catTypeIds: string[] | []
-  txnTypes: string[] | []
+  accIds: string[] | []
+  expTypes: string[] | []
 }

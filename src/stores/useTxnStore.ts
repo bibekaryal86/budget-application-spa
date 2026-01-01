@@ -10,6 +10,7 @@ interface TransactionState {
   selectedBeginDate: Date | null
   selectedEndDate: Date | null
   selectedMerchant: string | null
+  selectedAccountId: string | null
   selectedCategoryTypeId: string | null
   selectedCategoryId: string | null
 
@@ -18,6 +19,7 @@ interface TransactionState {
   setSelectedBeginDate: (v: Date | null) => void
   setSelectedEndDate: (v: Date | null) => void
   setSelectedMerchant: (v: string | null) => void
+  setSelectedAccountId: (v: string | null) => void
   setSelectedCategoryTypeId: (v: string | null) => void
   setSelectedCategoryId: (v: string | null) => void
 
@@ -37,6 +39,7 @@ export const useTxnStore = create<TransactionState>()(
       selectedBeginDate: null,
       selectedEndDate: null,
       selectedMerchant: null,
+      selectedAccountId: null,
       selectedCategoryTypeId: null,
       selectedCategoryId: null,
       selectedTxn: null,
@@ -46,6 +49,8 @@ export const useTxnStore = create<TransactionState>()(
       setSelectedEndDate: (v) => set({ selectedEndDate: v }, false, 'txn/setSelectedEndDate'),
 
       setSelectedMerchant: (v) => set({ selectedMerchant: v }, false, 'txn/setSelectedMerchant'),
+
+      setSelectedAccountId: (v) => set({ selectedAccountId: v }, false, 'txn/setSelectedAccountId'),
 
       setSelectedCategoryTypeId: (v) => set({ selectedCategoryTypeId: v }, false, 'txn/setSelectedCategoryTypeId'),
 
@@ -83,6 +88,7 @@ export const useTxnStore = create<TransactionState>()(
             selectedBeginDate: null,
             selectedEndDate: null,
             selectedMerchant: null,
+            selectedAccountId: null,
             selectedCategoryTypeId: null,
             selectedCategoryId: null,
             selectedTxn: null,

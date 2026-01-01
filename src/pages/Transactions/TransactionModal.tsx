@@ -1,4 +1,4 @@
-import { ACTION_TYPE, TXN_TYPE_LIST } from '@constants'
+import { ACTION_TYPE, EXP_TYPES_LIST } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
@@ -28,6 +28,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import {
   useCreateTransaction,
   useDeleteTransaction,
+  useReadAccounts,
   useReadCategories,
   useReadMerchants,
   useUpdateTransaction,
@@ -48,12 +49,13 @@ interface ValidationResult {
 //   categoryId: '',
 //   label: '',
 //   amount: null,
-//   txnType: '',
+//   expType: '',
 // }
 
 const DefaultTransactionRequest: TransactionRequest = {
   txnDate: null,
   merchant: '',
+  accountId: '',
   totalAmount: null,
   notes: '',
   items: [],
@@ -64,6 +66,7 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
     return {
       txnDate: txn.txnDate ? new Date(txn.txnDate) : null,
       merchant: txn.merchant,
+      accountId: txn.account.id,
       totalAmount: txn.totalAmount,
       notes: txn.notes,
       items: txn.items.map((i) => ({
@@ -72,7 +75,7 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
         categoryId: i.category.id,
         label: i.label,
         amount: i.amount,
-        txnType: i.txnType,
+        expType: i.expType,
       })),
     }
   }
@@ -84,6 +87,7 @@ function checkForChanges(formData: TransactionRequest, txn?: Transaction | null)
     const txnChanges =
       getFormattedDate(formData.txnDate) !== getFormattedDate(txn.txnDate) ||
       formData.merchant !== txn.merchant ||
+      formData.accountId !== txn.account.id ||
       formData.totalAmount !== txn.totalAmount ||
       formData.notes !== txn.notes
     return txnChanges || hasItemsChanged(formData.items, txn.items)
@@ -92,6 +96,7 @@ function checkForChanges(formData: TransactionRequest, txn?: Transaction | null)
   return (
     formData.txnDate !== null ||
     formData.merchant.trim() !== '' ||
+    formData.accountId !== '' ||
     (formData.totalAmount != null && formData.totalAmount !== 0) ||
     formData.notes?.trim() !== '' ||
     hasItemsChanged(formData.items, [])
@@ -123,7 +128,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
         existing.category.id !== req.categoryId ||
         existing.label !== req.label ||
         existing.amount !== req.amount ||
-        existing.txnType !== req.txnType
+        existing.expType !== req.expType
       ) {
         return true
       }
@@ -138,7 +143,8 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
     if (
       req.categoryId != null ||
       (req.label != null && req.label.trim() !== '') ||
-      (req.amount != null && req.amount !== 0)
+      (req.amount != null && req.amount !== 0) ||
+      (req.expType != null && req.expType !== '')
     ) {
       return true
     }
@@ -154,8 +160,10 @@ export const TransactionModal: React.FC = () => {
   const updateTxn = useUpdateTransaction()
   const deleteTxn = useDeleteTransaction()
 
+  const { data: aData } = useReadAccounts()
   const { data: cData } = useReadCategories()
   const { data: mData } = useReadMerchants()
+  const accountsList = useMemo(() => aData?.accounts ?? [], [aData])
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
 
@@ -231,6 +239,10 @@ export const TransactionModal: React.FC = () => {
       errors.merchant = 'Merchant cannot exceed 200 characters'
     }
 
+    if (!formData.accountId) {
+      errors.account = 'AccountId is required'
+    }
+
     const totalAmount = formData.totalAmount
     if (!totalAmount || isNaN(totalAmount)) {
       errors.totalAmount = 'Total Amount is required'
@@ -258,10 +270,6 @@ export const TransactionModal: React.FC = () => {
 
       if (!item.categoryId) {
         errors[`item-${index}-category`] = 'Category is required'
-      }
-
-      if (!item.txnType) {
-        errors[`item-${index}-txnType`] = 'Type is required'
       }
     })
 
@@ -317,7 +325,7 @@ export const TransactionModal: React.FC = () => {
           categoryId: '',
           label: '',
           amount: null,
-          txnType: '',
+          expType: '',
         },
       ],
     }))
@@ -461,7 +469,7 @@ export const TransactionModal: React.FC = () => {
                     Transaction Details
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                       <DatePicker
                         label='Date'
                         value={txnFormData.txnDate}
@@ -519,7 +527,35 @@ export const TransactionModal: React.FC = () => {
                         )}
                       </div>
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
+                      <FormControl fullWidth size='medium' error={!!itemErrors.account}>
+                        <InputLabel>Account</InputLabel>
+                        <Select
+                          size='medium'
+                          value={txnFormData.accountId || ''}
+                          label='Account'
+                          onChange={(e) => {
+                            const accountId = e.target.value
+                            const selectedAccount = accountsList?.find((acc) => acc.id === accountId)
+                            handleInputChange('accountId', selectedAccount?.id || '')
+                          }}
+                          required
+                        >
+                          <MenuItem value=''>Select Account</MenuItem>
+                          {accountsList?.map((account) => (
+                            <MenuItem key={account.id} value={account.id}>
+                              {account.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {itemErrors.account && (
+                          <Typography color='error' variant='caption' fontSize='small'>
+                            {itemErrors.account}
+                          </Typography>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 2 }}>
                       <TextField
                         fullWidth
                         label='Total Amount'
@@ -675,23 +711,23 @@ export const TransactionModal: React.FC = () => {
                                 <InputLabel>Txn Type</InputLabel>
                                 <Select
                                   size='small'
-                                  value={item.txnType ?? ''}
+                                  value={item.expType ?? ''}
                                   label='Txn Type'
                                   onChange={(e) => {
-                                    handleItemChange(index, 'txnType', e.target.value)
+                                    handleItemChange(index, 'expType', e.target.value)
                                   }}
                                   required
                                 >
                                   <MenuItem value=''>Select Type</MenuItem>
-                                  {TXN_TYPE_LIST.map((tt) => (
+                                  {EXP_TYPES_LIST.map((tt) => (
                                     <MenuItem key={tt} value={tt}>
                                       {tt}
                                     </MenuItem>
                                   ))}
                                 </Select>
-                                {itemErrors[`item-${index}-txnType`] && (
+                                {itemErrors[`item-${index}-expType`] && (
                                   <Typography color='error' variant='caption' fontSize='small'>
-                                    {itemErrors[`item-${index}-txnType`]}
+                                    {itemErrors[`item-${index}-expType`]}
                                   </Typography>
                                 )}
                               </FormControl>

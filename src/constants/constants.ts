@@ -4,21 +4,11 @@ export const ACCESS_TOKEN_KEY = 'access_token'
 export const TXN_TYPES = {
   WANTS: 'WANTS',
   NEEDS: 'NEEDS',
-  INCOME: 'INCOME',
-  SAVINGS: 'SAVINGS',
-  TRANSFER: 'TRANSFER',
-  OTHER: 'OTHER',
 } as const
 
-export const TXN_TYPE_LIST = Object.values(TXN_TYPES)
+export const EXP_TYPES_LIST = Object.values(TXN_TYPES)
 
-export type TxnTypes =
-  | typeof TXN_TYPES.WANTS
-  | typeof TXN_TYPES.NEEDS
-  | typeof TXN_TYPES.INCOME
-  | typeof TXN_TYPES.SAVINGS
-  | typeof TXN_TYPES.TRANSFER
-  | typeof TXN_TYPES.OTHER
+export type ExpTypes = typeof TXN_TYPES.WANTS | typeof TXN_TYPES.NEEDS
 
 export const ACTION_TYPE = {
   CREATE: 'CREATE',
