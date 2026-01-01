@@ -18,6 +18,8 @@ import {
   Paper,
   Select,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -723,24 +725,25 @@ export const TransactionModal: React.FC = () => {
                               </FormControl>
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-type`]}>
-                                <InputLabel>Exp Type</InputLabel>
-                                <Select
+                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-expType`]}>
+                                <ToggleButtonGroup
+                                  exclusive
                                   size='small'
-                                  value={item.expType ?? ''}
-                                  label='Exp Type'
-                                  onChange={(e) => {
-                                    handleItemChange(index, 'expType', e.target.value)
+                                  fullWidth
+                                  value={item.expType ?? null}
+                                  onChange={(_, value) => {
+                                    if (value !== null) {
+                                      handleItemChange(index, 'expType', value)
+                                    }
                                   }}
-                                  required
                                 >
-                                  <MenuItem value=''>Select Type</MenuItem>
-                                  {EXP_TYPES_LIST.map((tt) => (
-                                    <MenuItem key={tt} value={tt}>
-                                      {tt}
-                                    </MenuItem>
+                                  {EXP_TYPES_LIST.map((type) => (
+                                    <ToggleButton key={type} value={type}>
+                                      {type}
+                                    </ToggleButton>
                                   ))}
-                                </Select>
+                                </ToggleButtonGroup>
+
                                 {itemErrors[`item-${index}-expType`] && (
                                   <Typography color='error' variant='caption' fontSize='small'>
                                     {itemErrors[`item-${index}-expType`]}
