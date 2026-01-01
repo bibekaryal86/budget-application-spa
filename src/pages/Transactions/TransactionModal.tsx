@@ -1,4 +1,4 @@
-import { ACTION_TYPE, EXP_TYPES_LIST } from '@constants'
+import { ACTION_TYPE, EXP_TYPES_LIST, NO_EXP_CAT_TYPES } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
@@ -270,6 +270,16 @@ export const TransactionModal: React.FC = () => {
 
       if (!item.categoryId) {
         errors[`item-${index}-category`] = 'Category is required'
+      } else {
+        const category = categoriesList.find((cat) => cat.id === item.categoryId)
+        const categoryTypeName = category?.categoryType.name
+        if (categoryTypeName && !NO_EXP_CAT_TYPES.includes(categoryTypeName)) {
+          if (!item.expType) {
+            errors[`item-${index}-expType`] = 'Expense type is required'
+          }
+        } else {
+          item.expType = ''
+        }
       }
     })
 
@@ -395,7 +405,13 @@ export const TransactionModal: React.FC = () => {
 
   return (
     <>
-      <Dialog open={isOpen} onClose={handleClose} maxWidth='lg' fullWidth aria-labelledby='transaction-dialog-title'>
+      <Dialog
+        open={isOpen}
+        onClose={handleClose}
+        maxWidth={isDelete ? 'sm' : 'lg'}
+        fullWidth
+        aria-labelledby='transaction-dialog-title'
+      >
         <DialogTitle id='transaction-dialog-title' sx={{ pb: 1 }}>
           <Box display='flex' alignItems='center' gap={1}>
             {isDelete ? (
@@ -708,11 +724,11 @@ export const TransactionModal: React.FC = () => {
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                               <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-type`]}>
-                                <InputLabel>Txn Type</InputLabel>
+                                <InputLabel>Exp Type</InputLabel>
                                 <Select
                                   size='small'
                                   value={item.expType ?? ''}
-                                  label='Txn Type'
+                                  label='Exp Type'
                                   onChange={(e) => {
                                     handleItemChange(index, 'expType', e.target.value)
                                   }}

@@ -1,14 +1,20 @@
 export const INVALID_SESSION = 'Your session has expired. Please log in again.'
 export const ACCESS_TOKEN_KEY = 'access_token'
 
+export const NO_EXPENSE_CATEGORY_TYPES = {
+  INCOME: 'INCOME',
+  SAVINGS: 'SAVINGS',
+  TRANSFER: 'TRANSFER',
+} as unknown
+
+export const NO_EXP_CAT_TYPES = Object.values(NO_EXPENSE_CATEGORY_TYPES as string[])
+
 export const TXN_TYPES = {
   WANTS: 'WANTS',
   NEEDS: 'NEEDS',
 } as const
 
 export const EXP_TYPES_LIST = Object.values(TXN_TYPES)
-
-export type ExpTypes = typeof TXN_TYPES.WANTS | typeof TXN_TYPES.NEEDS
 
 export const ACTION_TYPE = {
   CREATE: 'CREATE',
