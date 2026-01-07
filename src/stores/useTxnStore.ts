@@ -28,7 +28,7 @@ interface TransactionState {
   openTxnModal: (action: ModalAction, txnWithItems?: Transaction | null) => void
   closeTxnModal: () => void
 
-  resetProfileState: () => void
+  resetTxnState: () => void
 }
 
 export const useTxnStore = create<TransactionState>()(
@@ -80,7 +80,7 @@ export const useTxnStore = create<TransactionState>()(
           'txn/closeTxnModal',
         ),
 
-      resetProfileState: () =>
+      resetTxnState: () =>
         set(
           {
             isTxnModalOpen: false,

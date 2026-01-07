@@ -33,7 +33,7 @@ export const TransactionFilters: React.FC = () => {
     setSelectedCategoryId,
     selectedCategoryTypeId,
     setSelectedCategoryTypeId,
-    resetProfileState,
+    resetTxnState,
   } = useTxnStore()
 
   const { data: ctData } = useReadCategoryTypes()
@@ -116,7 +116,7 @@ export const TransactionFilters: React.FC = () => {
   }
 
   const handleClearFilters = () => {
-    resetProfileState()
+    resetTxnState()
     setMerchantSearch('')
   }
 

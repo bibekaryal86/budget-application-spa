@@ -99,6 +99,26 @@ export interface AccountResponse {
   data: Account[]
   metadata: ResponseMetadata
 }
+
+// Budget
+export interface BudgetRequest {
+  categoryId: string
+  budgetMonth: number
+  budgetYear: number
+  amount: number
+  notes: string
+}
+
+export interface Budget extends Omit<BudgetRequest, 'categoryId'> {
+  id: string
+  category: Category
+}
+
+export interface BudgetResponse {
+  data: Budget[]
+  metadata: ResponseMetadata
+}
+
 // Category Type
 export interface CategoryTypeRequest {
   name: string
