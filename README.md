@@ -2,6 +2,9 @@
 
 TODO
 - Home Page
+  - Show unbudgeted but with txn
+  - Show overbudget items
+  - Show under budget items
 
 ## Overview
 
