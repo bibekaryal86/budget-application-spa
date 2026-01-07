@@ -207,7 +207,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
         </TableCell>
       </TableRow>
 
-      {/* Expanded Details Row - unchanged */}
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={expanded} timeout='auto' unmountOnExit>

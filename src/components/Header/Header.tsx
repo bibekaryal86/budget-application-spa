@@ -1,5 +1,5 @@
 import { ANIMATION, COLORS, THEME_MODES } from '@constants'
-import { Brightness4, Brightness7, Receipt, Logout, Menu as MenuIcon } from '@mui/icons-material'
+import { Brightness4, Brightness7, Receipt, Logout, Menu as MenuIcon, AccountBalanceWallet } from '@mui/icons-material'
 import {
   AppBar,
   Toolbar,
@@ -48,7 +48,10 @@ export const Header: React.FC = () => {
     })()
   }
 
-  const navigationItems = [{ path: '/transactions', label: 'Transactions', icon: <Receipt /> }]
+  const navigationItems = [
+    { path: '/transactions', label: 'Transactions', icon: <Receipt /> },
+    { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet /> },
+  ]
 
   return (
     <AppBar position='static' elevation={2}>
@@ -196,6 +199,17 @@ export const Header: React.FC = () => {
                     Transactions
                   </MenuItem>
 
+                  {/* Budgets menu item */}
+                  <MenuItem
+                    component={Link}
+                    to='/budgets'
+                    onClick={handleMenuClose}
+                    selected={location.pathname === '/budgets'}
+                  >
+                    <AccountBalanceWallet sx={{ mr: 2 }} />
+                    Budgets
+                  </MenuItem>
+
                   {/* Theme toggle menu item */}
                   <MenuItem
                     onClick={() => {
@@ -236,6 +250,22 @@ export const Header: React.FC = () => {
                       }}
                     >
                       <Receipt />
+                    </IconButton>
+                  </Tooltip>
+
+                  {/* Quick access icon for Budgets */}
+                  <Tooltip title='Budgets'>
+                    <IconButton
+                      color='inherit'
+                      component={Link}
+                      to='/budgets'
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <AccountBalanceWallet />
                     </IconButton>
                   </Tooltip>
 

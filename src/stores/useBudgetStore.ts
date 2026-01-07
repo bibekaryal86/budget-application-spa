@@ -13,9 +13,13 @@ interface BudgetState {
 
   selectedBudget: Budget | null
 
-  setSelectedMonth: (v: number | null) => void
-  setSelectedYear: (v: number | null) => void
-  setSelectedCategoryId: (v: string | null) => void
+  setBudgetFilters: (filters: {
+    selectedMonth: number | null
+    selectedYear: number | null
+    selectedCategoryId: string | null
+  }) => void
+
+  clearBudgetFilters: () => void
 
   setSelectedBudget: (v: Budget | null) => void
 
@@ -35,11 +39,26 @@ export const useBudgetStore = create<BudgetState>()(
       selectedCategoryId: null,
       selectedBudget: null,
 
-      setSelectedMonth: (v) => set({ selectedMonth: v }, false, 'budget/setSelectedMonth'),
+      setBudgetFilters: (filters) =>
+        set(
+          (state) => ({
+            ...state,
+            ...filters,
+          }),
+          false,
+          'budget/setBudgetFilters',
+        ),
 
-      setSelectedYear: (v) => set({ selectedYear: v }, false, 'budget/setSelectedYear'),
-
-      setSelectedCategoryId: (v) => set({ selectedCategoryId: v }, false, 'budget/setSelectedCategoryId'),
+      clearBudgetFilters: () =>
+        set(
+          {
+            selectedMonth: null,
+            selectedYear: null,
+            selectedCategoryId: null,
+          },
+          false,
+          'budget/clearBudgetFilters',
+        ),
 
       setSelectedBudget: (t) => set({ selectedBudget: t }, false, 'budget/setSelectedBudget'),
 

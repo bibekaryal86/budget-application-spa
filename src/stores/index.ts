@@ -4,3 +4,4 @@ export { useAuthStore, getAccessToken, setAccessToken, removeAccessToken } from 
 export { useSpinnerStore } from './useSpinnerStore.ts'
 export { useThemeStore } from './useThemeStore.ts'
 export { useTxnStore } from './useTxnStore.ts'
+export { useBudgetStore } from './useBudgetStore.ts'
