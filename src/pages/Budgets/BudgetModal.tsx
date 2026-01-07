@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -164,6 +165,7 @@ export const BudgetModal: React.FC = () => {
       if ((isCreate || isUpdate) && hasUnsavedChanges) {
         setShowUnsavedWarning(true)
       } else {
+        setErrors({})
         handleConfirmClose()
       }
     }
@@ -173,6 +175,7 @@ export const BudgetModal: React.FC = () => {
 
   const handleConfirmClose = () => {
     setBudgetFormData(DefaultBudgetRequest)
+    setErrors({})
     setShowUnsavedWarning(false)
     closeBudgetModal()
   }
@@ -188,13 +191,7 @@ export const BudgetModal: React.FC = () => {
 
   return (
     <>
-      <Dialog
-        open={isOpen}
-        onClose={handleClose}
-        maxWidth={isDelete ? 'sm' : 'lg'}
-        fullWidth
-        aria-labelledby='budget-dialog-title'
-      >
+      <Dialog open={isOpen} onClose={handleClose} maxWidth='sm' fullWidth aria-labelledby='budget-dialog-title'>
         <DialogTitle id='budget-dialog-title' sx={{ pb: 1 }}>
           <Box display='flex' alignItems='center' gap={1}>
             {isDelete ? (
@@ -260,87 +257,95 @@ export const BudgetModal: React.FC = () => {
             </>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
-              <FormControl fullWidth error={!!errors.categoryId} required>
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={budgetFormData.categoryId}
-                  label='Category'
-                  onChange={(e) => handleInputChange('categoryId', e.target.value)}
-                >
-                  {categoriesList.map((cat) => (
-                    <MenuItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.categoryId && (
-                  <Typography variant='caption' color='error'>
-                    {errors.categoryId}
-                  </Typography>
-                )}
-              </FormControl>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 8 }}>
+                  <FormControl fullWidth error={!!errors.categoryId} required>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      value={budgetFormData.categoryId}
+                      label='Category'
+                      onChange={(e) => handleInputChange('categoryId', e.target.value)}
+                    >
+                      {categoriesList.map((cat) => (
+                        <MenuItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.categoryId && (
+                      <Typography variant='caption' color='error'>
+                        {errors.categoryId}
+                      </Typography>
+                    )}
+                  </FormControl>
+                </Grid>
 
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <FormControl fullWidth error={!!errors.budgetMonth} required>
-                  <InputLabel>Month</InputLabel>
-                  <Select
-                    value={budgetFormData.budgetMonth}
-                    label='Month'
-                    onChange={(e) => handleInputChange('budgetMonth', e.target.value)}
-                  >
-                    {months.map((month) => (
-                      <MenuItem key={month.value} value={month.value}>
-                        {month.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.budgetMonth && (
-                    <Typography variant='caption' color='error'>
-                      {errors.budgetMonth}
-                    </Typography>
-                  )}
-                </FormControl>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    label='Budget Amount'
+                    type='number'
+                    value={budgetFormData.amount}
+                    onChange={(e) => handleInputChange('amount', e.target.value)}
+                    error={!!errors.amount}
+                    helperText={errors.amount}
+                    fullWidth
+                    required
+                    InputProps={{
+                      startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
+                      inputProps: {
+                        min: 0.01,
+                        max: 1000000000,
+                        step: 0.01,
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <FormControl fullWidth error={!!errors.budgetMonth} required>
+                    <InputLabel>Month</InputLabel>
+                    <Select
+                      value={budgetFormData.budgetMonth}
+                      label='Month'
+                      onChange={(e) => handleInputChange('budgetMonth', e.target.value)}
+                    >
+                      {months.map((month) => (
+                        <MenuItem key={month.value} value={month.value}>
+                          {month.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.budgetMonth && (
+                      <Typography variant='caption' color='error'>
+                        {errors.budgetMonth}
+                      </Typography>
+                    )}
+                  </FormControl>
+                </Grid>
 
-                <FormControl fullWidth error={!!errors.budgetYear} required>
-                  <InputLabel>Year</InputLabel>
-                  <Select
-                    value={budgetFormData.budgetYear}
-                    label='Year'
-                    onChange={(e) => handleInputChange('budgetYear', e.target.value)}
-                  >
-                    {years.map((year) => (
-                      <MenuItem key={year} value={year}>
-                        {year}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.budgetYear && (
-                    <Typography variant='caption' color='error'>
-                      {errors.budgetYear}
-                    </Typography>
-                  )}
-                </FormControl>
-              </Box>
-
-              <TextField
-                label='Budget Amount'
-                type='number'
-                value={budgetFormData.amount}
-                onChange={(e) => handleInputChange('amount', e.target.value)}
-                error={!!errors.amount}
-                helperText={errors.amount}
-                fullWidth
-                required
-                InputProps={{
-                  startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
-                  inputProps: {
-                    min: 0.01,
-                    max: 1000000000,
-                    step: 0.01,
-                  },
-                }}
-              />
-
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <FormControl fullWidth error={!!errors.budgetYear} required>
+                    <InputLabel>Year</InputLabel>
+                    <Select
+                      value={budgetFormData.budgetYear}
+                      label='Year'
+                      onChange={(e) => handleInputChange('budgetYear', e.target.value)}
+                    >
+                      {years.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.budgetYear && (
+                      <Typography variant='caption' color='error'>
+                        {errors.budgetYear}
+                      </Typography>
+                    )}
+                  </FormControl>
+                </Grid>
+              </Grid>
               <TextField
                 label='Notes'
                 value={budgetFormData.notes}

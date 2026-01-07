@@ -34,8 +34,8 @@ export const useBudgetStore = create<BudgetState>()(
     (set) => ({
       isBudgetModalOpen: false,
       budgetModalAction: null,
-      selectedMonth: null,
-      selectedYear: null,
+      selectedMonth: new Date().getMonth() + 1,
+      selectedYear: new Date().getFullYear(),
       selectedCategoryId: null,
       selectedBudget: null,
 
@@ -52,8 +52,8 @@ export const useBudgetStore = create<BudgetState>()(
       clearBudgetFilters: () =>
         set(
           {
-            selectedMonth: null,
-            selectedYear: null,
+            selectedMonth: new Date().getMonth() + 1,
+            selectedYear: new Date().getFullYear(),
             selectedCategoryId: null,
           },
           false,
@@ -89,8 +89,8 @@ export const useBudgetStore = create<BudgetState>()(
           {
             isBudgetModalOpen: false,
             budgetModalAction: null,
-            selectedMonth: null,
-            selectedYear: null,
+            selectedMonth: new Date().getMonth() + 1,
+            selectedYear: new Date().getFullYear(),
             selectedCategoryId: null,
             selectedBudget: null,
           },
