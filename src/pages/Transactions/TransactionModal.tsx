@@ -2,6 +2,7 @@ import { ACTION_TYPE, EXP_TYPES_LIST, NO_EXP_CAT_TYPES } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -13,10 +14,8 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   MenuItem,
   Paper,
-  Select,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -540,32 +539,35 @@ export const TransactionModal: React.FC = () => {
                       </div>
                     </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>
-                      <FormControl fullWidth size='medium' error={!!itemErrors.account}>
-                        <InputLabel>Account</InputLabel>
-                        <Select
-                          size='medium'
-                          value={txnFormData.accountId || ''}
-                          label='Account'
-                          onChange={(e) => {
-                            const accountId = e.target.value
-                            const selectedAccount = accountsList?.find((acc) => acc.id === accountId)
-                            handleInputChange('accountId', selectedAccount?.id || '')
-                          }}
-                          required
-                        >
-                          <MenuItem value=''>Select Account</MenuItem>
-                          {accountsList?.map((account) => (
-                            <MenuItem key={account.id} value={account.id}>
-                              {account.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {itemErrors.account && (
-                          <Typography color='error' variant='caption' fontSize='small'>
-                            {itemErrors.account}
-                          </Typography>
-                        )}
-                      </FormControl>
+                      <Autocomplete
+                        fullWidth
+                        options={accountsList || []}
+                        getOptionLabel={(option) => option.name || ''}
+                        value={accountsList?.find((acc) => acc.id === txnFormData.accountId) || null}
+                        onChange={(_, newValue) => {
+                          handleInputChange('accountId', newValue?.id || '')
+                        }}
+                        renderInput={(params) => {
+                          const { InputLabelProps, ...rest } = params
+
+                          return (
+                            <TextField
+                              {...rest}
+                              label='Account'
+                              required
+                              error={!!itemErrors.account}
+                              helperText={itemErrors.account}
+                              size='medium'
+                              slotProps={{
+                                inputLabel: {
+                                  className: InputLabelProps?.className ?? '',
+                                },
+                              }}
+                            />
+                          )
+                        }}
+                        size='medium'
+                      />
                     </Grid>
                     <Grid size={{ xs: 12, md: 2 }}>
                       <TextField
@@ -691,32 +693,35 @@ export const TransactionModal: React.FC = () => {
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-category`]}>
-                                <InputLabel>Category</InputLabel>
-                                <Select
-                                  size='small'
-                                  value={item.categoryId || ''}
-                                  label='Category'
-                                  onChange={(e) => {
-                                    const categoryId = e.target.value
-                                    const selectedCategory = categoriesList?.find((cat) => cat.id === categoryId)
-                                    handleItemChange(index, 'categoryId', selectedCategory?.id || '')
-                                  }}
-                                  required
-                                >
-                                  <MenuItem value=''>Select Category</MenuItem>
-                                  {categoriesList?.map((category) => (
-                                    <MenuItem key={category.id} value={category.id}>
-                                      {category.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                {itemErrors[`item-${index}-category`] && (
-                                  <Typography color='error' variant='caption' fontSize='small'>
-                                    {itemErrors[`item-${index}-category`]}
-                                  </Typography>
-                                )}
-                              </FormControl>
+                              <Autocomplete
+                                fullWidth
+                                size='small'
+                                options={categoriesList || []}
+                                getOptionLabel={(option) => option.name || ''}
+                                value={categoriesList?.find((cat) => cat.id === item.categoryId) || null}
+                                onChange={(_, newValue) => {
+                                  handleItemChange(index, 'categoryId', newValue?.id || '')
+                                }}
+                                renderInput={(params) => {
+                                  const { InputLabelProps, ...rest } = params
+
+                                  return (
+                                    <TextField
+                                      {...rest}
+                                      label='Category'
+                                      required
+                                      error={!!itemErrors[`item-${index}-category`]}
+                                      helperText={itemErrors[`item-${index}-category`]}
+                                      size='small'
+                                      slotProps={{
+                                        inputLabel: {
+                                          className: InputLabelProps?.className ?? '',
+                                        },
+                                      }}
+                                    />
+                                  )
+                                }}
+                              />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                               <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-expType`]}>

@@ -1,17 +1,5 @@
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import {
-  Typography,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Button,
-  Paper,
-  Stack,
-  Grid,
-  Box,
-} from '@mui/material'
+import { Typography, TextField, MenuItem, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -204,55 +192,79 @@ export const TransactionFilters: React.FC = () => {
             </div>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Account</InputLabel>
-              <Select
-                value={selectedAccountId || ''}
-                label='Account'
-                onChange={(e) => setSelectedAccountId(e.target.value)}
-              >
-                <MenuItem value=''>All</MenuItem>
-                {accountsList.map((account) => (
-                  <MenuItem key={account.id} value={account.id}>
-                    {account.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              fullWidth
+              size='medium'
+              options={accountsList}
+              getOptionLabel={(o) => o.name}
+              value={accountsList.find((a) => a.id === selectedAccountId) || null}
+              onChange={(_, v) => setSelectedAccountId(v?.id || '')}
+              renderInput={(params) => {
+                const { InputLabelProps, ...rest } = params
+                return (
+                  <TextField
+                    {...rest}
+                    label='Account'
+                    size='medium'
+                    slotProps={{
+                      inputLabel: {
+                        className: InputLabelProps?.className ?? '',
+                      },
+                    }}
+                  />
+                )
+              }}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Category Type</InputLabel>
-              <Select
-                value={selectedCategoryTypeId || ''}
-                label='Category Type'
-                onChange={(e) => handleCategoryTypeChange(e.target.value || null)}
-              >
-                <MenuItem value=''>All</MenuItem>
-                {categoryTypesList.map((type) => (
-                  <MenuItem key={type.id} value={type.id}>
-                    {type.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              fullWidth
+              size='medium'
+              options={categoryTypesList}
+              getOptionLabel={(o) => o.name}
+              value={categoryTypesList.find((t) => t.id === selectedCategoryTypeId) || null}
+              onChange={(_, v) => handleCategoryTypeChange(v?.id || null)}
+              renderInput={(params) => {
+                const { InputLabelProps, ...rest } = params
+                return (
+                  <TextField
+                    {...rest}
+                    label='Category Type'
+                    size='medium'
+                    slotProps={{
+                      inputLabel: {
+                        className: InputLabelProps?.className ?? '',
+                      },
+                    }}
+                  />
+                )
+              }}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={selectedCategoryId || ''}
-                label='Category'
-                onChange={(e) => handleCategoryChange(e.target.value || null)}
-              >
-                <MenuItem value=''>All</MenuItem>
-                {filteredCategories.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              fullWidth
+              size='medium'
+              options={filteredCategories}
+              getOptionLabel={(o) => o.name}
+              value={filteredCategories.find((c) => c.id === selectedCategoryId) || null}
+              onChange={(_, v) => handleCategoryChange(v?.id || null)}
+              renderInput={(params) => {
+                const { InputLabelProps, ...rest } = params
+                return (
+                  <TextField
+                    {...rest}
+                    label='Category'
+                    size='medium'
+                    slotProps={{
+                      inputLabel: {
+                        className: InputLabelProps?.className ?? '',
+                      },
+                    }}
+                  />
+                )
+              }}
+            />
           </Grid>
           <Grid size={{ xs: 12, md: 12 }}>
             <Stack direction='row' spacing={2} justifyContent='center'>
