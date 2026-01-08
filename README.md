@@ -157,6 +157,3 @@ This creates a clean separation:
 - Show/hide components based on permissions
   - eg: do not show create button if user does not have create permissions
 - Tests
-
-Make Categories Dropdown Searchable
-txn type income and investment and expenses can't co exist in same txn
