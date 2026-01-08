@@ -134,12 +134,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </Typography>
         </TableCell>
 
-        <TableCell>
-          <Typography variant='body2' color='text.secondary' noWrap sx={{ maxWidth: 200 }}>
-            {transaction.notes || '-'}
-          </Typography>
-        </TableCell>
-
         <TableCell
           align='right'
           sx={{
