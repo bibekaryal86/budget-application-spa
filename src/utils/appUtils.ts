@@ -1,3 +1,4 @@
+import { NO_EXPENSE_CATEGORY_TYPES } from '@constants'
 import type { Transaction, TransactionItem } from '@types'
 import { format } from 'date-fns'
 
@@ -38,8 +39,8 @@ export const getTxnAmountColor = (txn: Transaction | null): string => {
 export const getTxnItemAmountColor = (item: TransactionItem): string => {
   if (item == null) return ''
   const catTypeName = item.category.categoryType.name
-  if (catTypeName === 'TRANSFER') return ''
-  if (catTypeName === 'INCOME') return 'success.main'
-  if (catTypeName === 'SAVINGS') return 'warning.main'
+  if (catTypeName === NO_EXPENSE_CATEGORY_TYPES.TRANSFER) return ''
+  if (catTypeName === NO_EXPENSE_CATEGORY_TYPES.SAVINGS) return 'warning.main'
+  if (catTypeName === NO_EXPENSE_CATEGORY_TYPES.INCOME) return 'success.main'
   return 'error.main'
 }

@@ -5,9 +5,9 @@ export const NO_EXPENSE_CATEGORY_TYPES = {
   INCOME: 'INCOME',
   SAVINGS: 'SAVINGS',
   TRANSFER: 'TRANSFER',
-} as unknown
+} as const
 
-export const NO_EXP_CAT_TYPES = Object.values(NO_EXPENSE_CATEGORY_TYPES as string[])
+export const NO_EXP_CAT_TYPES = Object.values(NO_EXPENSE_CATEGORY_TYPES) as readonly string[]
 
 export const TXN_TYPES = {
   WANTS: 'WANTS',
