@@ -159,3 +159,4 @@ This creates a clean separation:
 - Tests
 
 Make Categories Dropdown Searchable
+txn type income and investment and expenses can't co exist in same txn

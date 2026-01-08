@@ -37,7 +37,7 @@ import {
 } from '@queries'
 import { useAlertStore, useTxnStore } from '@stores'
 import type { Transaction, TransactionItem, TransactionItemRequest, TransactionRequest } from '@types'
-import { extractAxiosErrorMessage, getAmountColor, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
+import { extractAxiosErrorMessage, getTxnAmountColor, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
 import React, { useMemo, useState } from 'react'
 
 interface ValidationResult {
@@ -467,11 +467,7 @@ export const TransactionModal: React.FC = () => {
                   <Typography variant='body2' color='text.secondary'>
                     Amount:
                   </Typography>
-                  <Typography
-                    variant='body2'
-                    fontWeight='bold'
-                    color={getAmountColor(selectedTxn?.totalAmount || null)}
-                  >
+                  <Typography variant='body2' fontWeight='bold' color={getTxnAmountColor(selectedTxn || null)}>
                     {getFormattedCurrency(selectedTxn?.totalAmount || null)}
                   </Typography>
                 </Box>
@@ -529,7 +525,7 @@ export const TransactionModal: React.FC = () => {
                             {filteredMerchants.map((merchant) => (
                               <MenuItem
                                 key={merchant}
-                                onClick={() => handleMerchantSelect(merchant)}
+                                onMouseDown={() => handleMerchantSelect(merchant)}
                                 sx={{
                                   '&:hover': {
                                     backgroundColor: 'action.hover',

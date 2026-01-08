@@ -1,3 +1,4 @@
+import type { Transaction, TransactionItem } from '@types'
 import { format } from 'date-fns'
 
 export const getNumber = (value: number | string | null | undefined): number =>
@@ -27,4 +28,18 @@ export const getFormattedPercent = (value: number) => {
 export const getAmountColor = (amount: number | null): string => {
   if (amount == null) return ''
   return amount < 0 ? 'error.main' : 'success.main'
+}
+
+export const getTxnAmountColor = (txn: Transaction | null): string => {
+  if (txn == null || txn.items.length === 0) return ''
+  return getTxnItemAmountColor(txn.items[0])
+}
+
+export const getTxnItemAmountColor = (item: TransactionItem): string => {
+  if (item == null) return ''
+  const catTypeName = item.category.categoryType.name
+  if (catTypeName === 'TRANSFER') return ''
+  if (catTypeName === 'INCOME') return 'success.main'
+  if (catTypeName === 'SAVINGS') return 'warning.main'
+  return 'error.main'
 }

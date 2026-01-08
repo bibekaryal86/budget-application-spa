@@ -20,7 +20,7 @@ import {
 } from '@mui/material'
 import { useTxnStore } from '@stores'
 import type { Transaction } from '@types'
-import { getAmountColor, getFormattedCurrency, getFormattedDate } from '@utils'
+import { getTxnAmountColor, getTxnItemAmountColor, getFormattedCurrency, getFormattedDate } from '@utils'
 import React, { useState } from 'react'
 
 interface TransactionTableRowProps {
@@ -126,7 +126,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           <Typography
             variant='body2'
             sx={{
-              color: getAmountColor(transaction.totalAmount),
+              color: getTxnAmountColor(transaction),
               fontWeight: 'bold',
             }}
           >
@@ -243,7 +243,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                           <Typography
                             variant='body2'
                             sx={{
-                              color: getAmountColor(item.amount),
+                              color: getTxnItemAmountColor(item),
                               fontWeight: 'medium',
                             }}
                           >
