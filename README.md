@@ -157,3 +157,5 @@ This creates a clean separation:
 - Show/hide components based on permissions
   - eg: do not show create button if user does not have create permissions
 - Tests
+
+Make Categories Dropdown Searchable

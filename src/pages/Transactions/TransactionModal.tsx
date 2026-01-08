@@ -377,23 +377,21 @@ export const TransactionModal: React.FC = () => {
   }
 
   const handleMerchantSelect = (merchant: string) => {
+    setMerchantSearch(merchant)
     setTxnFormData((prev) => ({
       ...prev,
-      merchant: merchant,
+      merchant,
     }))
-    setMerchantSearch(merchant)
     setShowMerchantDropdown(false)
   }
 
-  const handleMerchantBlur = () => {
+  const handleMerchantBlur = (merchant: string) => {
     setTimeout(() => {
       setShowMerchantDropdown(false)
-      if (merchantSearch) {
-        setTxnFormData((prev) => ({
-          ...prev,
-          merchant: merchantSearch,
-        }))
-      }
+      setTxnFormData((prev) => ({
+        ...prev,
+        merchant: merchant,
+      }))
     }, 200)
   }
 
@@ -510,7 +508,7 @@ export const TransactionModal: React.FC = () => {
                           value={merchantSearch}
                           onChange={handleMerchantSearchChange}
                           onFocus={handleMerchantFocus}
-                          onBlur={handleMerchantBlur}
+                          onBlur={(e) => handleMerchantBlur(e.target.value)}
                           required
                           error={!!itemErrors.merchant}
                           helperText={itemErrors.merchant}
