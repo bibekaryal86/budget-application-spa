@@ -32,6 +32,7 @@ import {
   useReadCategories,
   useReadCategoryTypes,
   useReadMerchants,
+  useReadTags,
   useReadTransactions,
 } from '@queries'
 import { getAmountColor, getFormattedCurrency, getFormattedPercent, getNumber } from '@utils'
@@ -45,6 +46,7 @@ export const Home: React.FC = () => {
   useReadCategoryTypes()
   useReadCategories()
   useReadMerchants()
+  useReadTags()
   useReadAccounts()
   const { data } = useReadTransactions()
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])

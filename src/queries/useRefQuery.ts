@@ -40,3 +40,13 @@ export const useReadMerchants = () =>
     }),
     staleTime: 60_000,
   })
+
+export const useReadTags = () =>
+  useQuery({
+    queryKey: ['tags'],
+    queryFn: () => refService.readTags(),
+    select: (data) => ({
+      tags: data.data,
+    }),
+    staleTime: 60_000,
+  })
