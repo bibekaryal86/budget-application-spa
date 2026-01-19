@@ -1,4 +1,4 @@
-import { AutoComplete } from '@components'
+import { AutoComplete, AutoCompleteMultiple } from '@components'
 import { ACTION_TYPE } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
@@ -29,6 +29,7 @@ import {
   useReadAccounts,
   useReadCategories,
   useReadMerchants,
+  useReadTags,
   useUpdateTransaction,
 } from '@queries'
 import { useAlertStore, useTxnStore } from '@stores'
@@ -152,8 +153,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
 }
 
 export const TransactionModal: React.FC = () => {
-  const { isTxnModalOpen, txnModalAction, selectedTxn, selectedMerchant, setSelectedMerchant, closeTxnModal } =
-    useTxnStore()
+  const { isTxnModalOpen, txnModalAction, selectedTxn, closeTxnModal } = useTxnStore()
   const { showAlert } = useAlertStore()
   const createTxn = useCreateTransaction()
   const updateTxn = useUpdateTransaction()
@@ -162,9 +162,11 @@ export const TransactionModal: React.FC = () => {
   const { data: aData } = useReadAccounts()
   const { data: cData } = useReadCategories()
   const { data: mData } = useReadMerchants()
+  const { data: tData } = useReadTags()
   const accountsList = useMemo(() => aData?.accounts ?? [], [aData])
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
+  const tagsList = useMemo(() => tData?.tags ?? [], [tData])
 
   const isLoading = createTxn.isPending || updateTxn.isPending || deleteTxn.isPending
 
@@ -287,7 +289,6 @@ export const TransactionModal: React.FC = () => {
   const handleConfirmClose = () => {
     setTxnFormData(DefaultTransactionRequest)
     setShowUnsavedWarning(false)
-    setSelectedMerchant('')
     setItemErrors({})
     closeTxnModal()
   }
@@ -347,6 +348,20 @@ export const TransactionModal: React.FC = () => {
     if (itemErrors[`item-${index}-${field}`]) {
       const newErrors = { ...itemErrors }
       delete newErrors[`item-${index}-${field}`]
+      setItemErrors(newErrors)
+    }
+  }
+
+  const handleTagsChange = (index: number, value: string[]) => {
+    setTxnFormData((prev) => ({
+      ...prev,
+      items: prev.items.map((item, i) => (i === index ? { ...item, tags: value } : item)),
+    }))
+
+    const errorKey = `item-${index}-tags`
+    if (itemErrors[errorKey]) {
+      const newErrors = { ...itemErrors }
+      delete newErrors[errorKey]
       setItemErrors(newErrors)
     }
   }
@@ -448,8 +463,8 @@ export const TransactionModal: React.FC = () => {
                     </Grid>
                     <Grid size={{ xs: 12, md: 2.5 }}>
                       <AutoComplete
-                        value={selectedMerchant || ''}
-                        onChange={setSelectedMerchant}
+                        value={txnFormData.merchant || ''}
+                        onChange={(event) => handleInputChange('merchant', event)}
                         dataList={merchantsList}
                         label='Merchant'
                       />
@@ -637,6 +652,18 @@ export const TransactionModal: React.FC = () => {
                                     />
                                   )
                                 }}
+                              />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 6, md: 4.5 }}>
+                              <AutoCompleteMultiple
+                                value={item.tags || []}
+                                onChange={(tags: string[]) => handleTagsChange(index, tags)}
+                                options={tagsList || []}
+                                label='Tags'
+                                placeholder='Hit Enter to Add Tags...'
+                                size='small'
+                                error={!!itemErrors[`item-${index}-tags`]}
+                                helperText={itemErrors[`item-${index}-tags`]}
                               />
                             </Grid>
                           </Grid>
