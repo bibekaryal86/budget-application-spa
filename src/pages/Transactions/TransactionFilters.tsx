@@ -1,11 +1,12 @@
+import { MerchantAutocomplete } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import { Typography, TextField, MenuItem, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
+import { Typography, TextField, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts } from '@queries'
 import { useTxnStore } from '@stores'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 export const TransactionFilters: React.FC = () => {
   const {
@@ -33,13 +34,6 @@ export const TransactionFilters: React.FC = () => {
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
   const categoryTypesList = useMemo(() => ctData?.categoryTypes ?? [], [ctData])
-  const [showMerchantDropdown, setShowMerchantDropdown] = useState(false)
-  const [merchantSearch, setMerchantSearch] = useState(selectedMerchant || '')
-
-  const filteredMerchants = useMemo(() => {
-    if (!merchantSearch) return merchantsList
-    return merchantsList.filter((merchant) => merchant.toLowerCase().includes(merchantSearch.toLowerCase()))
-  }, [merchantsList, merchantSearch])
 
   const filteredCategories = useMemo(() => {
     if (!categoriesList) return []
@@ -79,33 +73,8 @@ export const TransactionFilters: React.FC = () => {
     }
   }
 
-  const handleMerchantSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setMerchantSearch(value)
-    setShowMerchantDropdown(true)
-  }
-
-  const handleMerchantSelect = (merchant: string) => {
-    setSelectedMerchant(merchant)
-    setMerchantSearch(merchant)
-    setShowMerchantDropdown(false)
-  }
-
-  const handleMerchantBlur = () => {
-    setTimeout(() => {
-      setShowMerchantDropdown(false)
-    }, 200)
-  }
-
-  const handleMerchantFocus = () => {
-    if (merchantSearch) {
-      setShowMerchantDropdown(true)
-    }
-  }
-
   const handleClearFilters = () => {
     resetTxnState()
-    setMerchantSearch('')
   }
 
   return (
@@ -152,44 +121,13 @@ export const TransactionFilters: React.FC = () => {
             </LocalizationProvider>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <div style={{ position: 'relative' }}>
-              <TextField
-                fullWidth
-                label='Merchant'
-                value={merchantSearch}
-                onChange={handleMerchantSearchChange}
-                onFocus={handleMerchantFocus}
-                onBlur={handleMerchantBlur}
-                placeholder='Type to search...'
-              />
-              {showMerchantDropdown && filteredMerchants.length > 0 && (
-                <Paper
-                  sx={{
-                    position: 'absolute',
-                    zIndex: 1300,
-                    width: '100%',
-                    maxHeight: 300,
-                    overflow: 'auto',
-                    mt: 0.5,
-                    boxShadow: 3,
-                  }}
-                >
-                  {filteredMerchants.map((merchant) => (
-                    <MenuItem
-                      key={merchant}
-                      onClick={() => handleMerchantSelect(merchant)}
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'action.hover',
-                        },
-                      }}
-                    >
-                      {merchant}
-                    </MenuItem>
-                  ))}
-                </Paper>
-              )}
-            </div>
+            <MerchantAutocomplete
+              value={selectedMerchant || ''}
+              onChange={setSelectedMerchant}
+              merchants={merchantsList}
+              label='Merchant'
+              placeholder='Type to search...'
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Autocomplete
@@ -278,7 +216,7 @@ export const TransactionFilters: React.FC = () => {
                     selectedEndDate ||
                     selectedMerchant ||
                     selectedAccountId ||
-                    merchantSearch ||
+                    selectedMerchant ||
                     selectedCategoryTypeId ||
                     selectedCategoryId
                   )

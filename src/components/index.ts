@@ -1,4 +1,5 @@
 export { Alert } from './Alert/Alert.tsx'
+export { MerchantAutocomplete } from './Autocomplete/MerchantAutocomplete.tsx'
 export { Footer } from './Footer/Footer.tsx'
 export { Header } from './Header/Header.tsx'
 export { PageLayout } from './Layout/PageLayout.tsx'

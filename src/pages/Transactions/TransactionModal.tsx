@@ -1,3 +1,4 @@
+import { MerchantAutocomplete } from '@components'
 import { ACTION_TYPE, EXP_TYPES_LIST, NO_EXP_CAT_TYPES } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
@@ -14,7 +15,6 @@ import {
   FormControl,
   Grid,
   IconButton,
-  MenuItem,
   Paper,
   TextField,
   ToggleButton,
@@ -156,7 +156,8 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
 }
 
 export const TransactionModal: React.FC = () => {
-  const { isTxnModalOpen, txnModalAction, selectedTxn, closeTxnModal } = useTxnStore()
+  const { isTxnModalOpen, txnModalAction, selectedTxn, selectedMerchant, setSelectedMerchant, closeTxnModal } =
+    useTxnStore()
   const { showAlert } = useAlertStore()
   const createTxn = useCreateTransaction()
   const updateTxn = useUpdateTransaction()
@@ -174,13 +175,6 @@ export const TransactionModal: React.FC = () => {
   const [txnFormData, setTxnFormData] = useState<TransactionRequest>({ ...getDefaultTransactionFormData(selectedTxn) })
   const [itemErrors, setItemErrors] = useState<Record<string, string>>({})
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false)
-  const [showMerchantDropdown, setShowMerchantDropdown] = useState(false)
-  const [merchantSearch, setMerchantSearch] = useState(selectedTxn?.merchant || '')
-
-  const filteredMerchants = useMemo(() => {
-    if (!merchantSearch) return merchantsList
-    return merchantsList.filter((merchant) => merchant.toLowerCase().includes(merchantSearch.toLowerCase()))
-  }, [merchantsList, merchantSearch])
 
   const isCreate = txnModalAction === ACTION_TYPE.CREATE
   const isUpdate = txnModalAction === ACTION_TYPE.UPDATE
@@ -307,7 +301,7 @@ export const TransactionModal: React.FC = () => {
   const handleConfirmClose = () => {
     setTxnFormData(DefaultTransactionRequest)
     setShowUnsavedWarning(false)
-    setMerchantSearch('')
+    setSelectedMerchant('')
     setItemErrors({})
     closeTxnModal()
   }
@@ -368,37 +362,6 @@ export const TransactionModal: React.FC = () => {
       const newErrors = { ...itemErrors }
       delete newErrors[`item-${index}-${field}`]
       setItemErrors(newErrors)
-    }
-  }
-
-  const handleMerchantSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setMerchantSearch(value)
-    setShowMerchantDropdown(true)
-  }
-
-  const handleMerchantSelect = (merchant: string) => {
-    setMerchantSearch(merchant)
-    setTxnFormData((prev) => ({
-      ...prev,
-      merchant,
-    }))
-    setShowMerchantDropdown(false)
-  }
-
-  const handleMerchantBlur = (merchant: string) => {
-    setTimeout(() => {
-      setShowMerchantDropdown(false)
-      setTxnFormData((prev) => ({
-        ...prev,
-        merchant: merchant,
-      }))
-    }, 200)
-  }
-
-  const handleMerchantFocus = () => {
-    if (merchantSearch) {
-      setShowMerchantDropdown(true)
     }
   }
 
@@ -498,47 +461,13 @@ export const TransactionModal: React.FC = () => {
                       />
                     </Grid>
                     <Grid size={{ xs: 12, md: 4 }}>
-                      <div style={{ position: 'relative' }}>
-                        <TextField
-                          fullWidth
-                          label='Merchant'
-                          value={merchantSearch}
-                          onChange={handleMerchantSearchChange}
-                          onFocus={handleMerchantFocus}
-                          onBlur={(e) => handleMerchantBlur(e.target.value)}
-                          required
-                          error={!!itemErrors.merchant}
-                          helperText={itemErrors.merchant}
-                          placeholder='Type to search...'
-                        />
-                        {showMerchantDropdown && filteredMerchants.length > 0 && (
-                          <Paper
-                            sx={{
-                              position: 'absolute',
-                              zIndex: 1300,
-                              width: '100%',
-                              maxHeight: 300,
-                              overflow: 'auto',
-                              mt: 0.5,
-                              boxShadow: 3,
-                            }}
-                          >
-                            {filteredMerchants.map((merchant) => (
-                              <MenuItem
-                                key={merchant}
-                                onMouseDown={() => handleMerchantSelect(merchant)}
-                                sx={{
-                                  '&:hover': {
-                                    backgroundColor: 'action.hover',
-                                  },
-                                }}
-                              >
-                                {merchant}
-                              </MenuItem>
-                            ))}
-                          </Paper>
-                        )}
-                      </div>
+                      <MerchantAutocomplete
+                        value={selectedMerchant || ''}
+                        onChange={setSelectedMerchant}
+                        merchants={merchantsList}
+                        label='Merchant'
+                        placeholder='Type to search...'
+                      />
                     </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>
                       <Autocomplete
