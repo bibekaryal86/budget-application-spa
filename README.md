@@ -5,6 +5,7 @@ TODO
   - Show unbudgeted but with txn
   - Show overbudget items
   - Show under budget items
+  - Show Transactions without Tags
 
 ## Overview
 

@@ -157,16 +157,22 @@ export interface TransactionItemRequest {
   label: string
   amount: number | null
   expType: string
+  tags: string[] | []
 }
 
 export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
   id: string
-  transaction: TransactionItem | null
+  transaction: Transaction | null
   category: Category
 }
 
 export interface TransactionItemResponse {
   data: TransactionItem[]
+  metadata: ResponseMetadata
+}
+
+export interface TransactionItemTags {
+  data: string[]
   metadata: ResponseMetadata
 }
 

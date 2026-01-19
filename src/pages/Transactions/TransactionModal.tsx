@@ -77,6 +77,7 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
         label: i.label,
         amount: i.amount,
         expType: i.expType,
+        tags: i.tags,
       })),
     }
   }
@@ -337,6 +338,7 @@ export const TransactionModal: React.FC = () => {
           label: '',
           amount: null,
           expType: '',
+          tags: [],
         },
       ],
     }))
