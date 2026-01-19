@@ -1,4 +1,4 @@
-import { MerchantAutocomplete } from '@components'
+import { AutoComplete } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
 import { Typography, TextField, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -121,12 +121,11 @@ export const TransactionFilters: React.FC = () => {
             </LocalizationProvider>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <MerchantAutocomplete
+            <AutoComplete
               value={selectedMerchant || ''}
               onChange={setSelectedMerchant}
-              merchants={merchantsList}
+              dataList={merchantsList}
               label='Merchant'
-              placeholder='Type to search...'
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>

@@ -1,4 +1,4 @@
-import { MerchantAutocomplete } from '@components'
+import { AutoComplete } from '@components'
 import { ACTION_TYPE, EXP_TYPES_LIST, NO_EXP_CAT_TYPES } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
@@ -461,12 +461,11 @@ export const TransactionModal: React.FC = () => {
                       />
                     </Grid>
                     <Grid size={{ xs: 12, md: 4 }}>
-                      <MerchantAutocomplete
+                      <AutoComplete
                         value={selectedMerchant || ''}
                         onChange={setSelectedMerchant}
-                        merchants={merchantsList}
+                        dataList={merchantsList}
                         label='Merchant'
-                        placeholder='Type to search...'
                       />
                     </Grid>
                     <Grid size={{ xs: 12, md: 3 }}>

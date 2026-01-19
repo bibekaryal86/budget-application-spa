@@ -1,21 +1,21 @@
 import { TextField, Paper, MenuItem, type TextFieldProps } from '@mui/material'
 import React, { useMemo, useState } from 'react'
 
-export interface MerchantAutocompleteProps {
+interface AutoCompleteProps {
   value: string
   onChange: (merchant: string) => void
-  merchants: string[]
-  label?: string
+  dataList: string[]
+  label: string
   placeholder?: string
   fullWidth?: boolean
   TextFieldProps?: Partial<TextFieldProps>
 }
 
-export const MerchantAutocomplete: React.FC<MerchantAutocompleteProps> = ({
+export const AutoComplete: React.FC<AutoCompleteProps> = ({
   value,
   onChange,
-  merchants,
-  label = 'Merchant',
+  dataList: dataList,
+  label,
   placeholder = 'Type to search...',
   fullWidth = true,
   TextFieldProps = {},
@@ -23,10 +23,10 @@ export const MerchantAutocomplete: React.FC<MerchantAutocompleteProps> = ({
   const [showDropdown, setShowDropdown] = useState(false)
   const [search, setSearch] = useState(value || '')
 
-  const filteredMerchants = useMemo(() => {
-    if (!search) return merchants
-    return merchants.filter((merchant) => merchant.toLowerCase().includes(search.toLowerCase()))
-  }, [merchants, search])
+  const filteredDataList = useMemo(() => {
+    if (!search) return dataList
+    return dataList.filter((merchant) => merchant.toLowerCase().includes(search.toLowerCase()))
+  }, [dataList, search])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -64,7 +64,7 @@ export const MerchantAutocomplete: React.FC<MerchantAutocompleteProps> = ({
         placeholder={placeholder}
         {...TextFieldProps}
       />
-      {showDropdown && filteredMerchants.length > 0 && (
+      {showDropdown && filteredDataList.length > 0 && (
         <Paper
           sx={{
             position: 'absolute',
@@ -76,17 +76,17 @@ export const MerchantAutocomplete: React.FC<MerchantAutocompleteProps> = ({
             boxShadow: 3,
           }}
         >
-          {filteredMerchants.map((merchant) => (
+          {filteredDataList.map((value) => (
             <MenuItem
-              key={merchant}
-              onClick={() => handleSelect(merchant)}
+              key={value}
+              onClick={() => handleSelect(value)}
               sx={{
                 '&:hover': {
                   backgroundColor: 'action.hover',
                 },
               }}
             >
-              {merchant}
+              {value}
             </MenuItem>
           ))}
         </Paper>
