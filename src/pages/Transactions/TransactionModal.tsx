@@ -1,5 +1,5 @@
 import { AutoComplete } from '@components'
-import { ACTION_TYPE, EXP_TYPES_LIST, NO_EXP_CAT_TYPES } from '@constants'
+import { ACTION_TYPE } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
@@ -12,13 +12,10 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  FormControl,
   Grid,
   IconButton,
   Paper,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -50,7 +47,7 @@ interface ValidationResult {
 //   categoryId: '',
 //   label: '',
 //   amount: null,
-//   expType: '',
+//   tags: [],
 // }
 
 const DefaultTransactionRequest: TransactionRequest = {
@@ -76,7 +73,6 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
         categoryId: i.category.id,
         label: i.label,
         amount: i.amount,
-        expType: i.expType,
         tags: i.tags,
       })),
     }
@@ -130,7 +126,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
         existing.category.id !== req.categoryId ||
         existing.label !== req.label ||
         existing.amount !== req.amount ||
-        existing.expType !== req.expType
+        existing.tags !== req.tags
       ) {
         return true
       }
@@ -146,7 +142,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
       req.categoryId != null ||
       (req.label != null && req.label.trim() !== '') ||
       (req.amount != null && req.amount !== 0) ||
-      (req.expType != null && req.expType !== '')
+      (req.tags != null && req.tags.length > 0)
     ) {
       return true
     }
@@ -266,16 +262,6 @@ export const TransactionModal: React.FC = () => {
 
       if (!item.categoryId) {
         errors[`item-${index}-category`] = 'Category is required'
-      } else {
-        const category = categoriesList.find((cat) => cat.id === item.categoryId)
-        const categoryTypeName = category?.categoryType.name
-        if (categoryTypeName && !NO_EXP_CAT_TYPES.includes(categoryTypeName)) {
-          if (!item.expType) {
-            errors[`item-${index}-expType`] = 'Expense type is required'
-          }
-        } else {
-          item.expType = ''
-        }
       }
     })
 
@@ -444,8 +430,8 @@ export const TransactionModal: React.FC = () => {
                   <Typography variant='subtitle1' gutterBottom fontWeight='medium'>
                     Transaction Details
                   </Typography>
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 3 }}>
+                  <Grid container spacing={1}>
+                    <Grid size={{ xs: 12, md: 2 }}>
                       <DatePicker
                         label='Date'
                         value={txnFormData.txnDate}
@@ -460,7 +446,7 @@ export const TransactionModal: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={{ xs: 12, md: 2.5 }}>
                       <AutoComplete
                         value={selectedMerchant || ''}
                         onChange={setSelectedMerchant}
@@ -468,7 +454,7 @@ export const TransactionModal: React.FC = () => {
                         label='Merchant'
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 3 }}>
+                    <Grid size={{ xs: 12, md: 2 }}>
                       <Autocomplete
                         fullWidth
                         options={accountsList || []}
@@ -499,7 +485,7 @@ export const TransactionModal: React.FC = () => {
                         size='medium'
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 2 }}>
+                    <Grid size={{ xs: 12, md: 1.5 }}>
                       <TextField
                         fullWidth
                         label='Total Amount'
@@ -520,14 +506,14 @@ export const TransactionModal: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12 }}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                       <TextField
                         fullWidth
                         label='Notes'
                         value={txnFormData.notes}
                         onChange={(e) => handleInputChange('notes', e.target.value)}
                         multiline
-                        rows={2}
+                        rows={1}
                       />
                     </Grid>
                   </Grid>
@@ -587,7 +573,7 @@ export const TransactionModal: React.FC = () => {
 
                           <Grid container spacing={1}>
                             {' '}
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                               <TextField
                                 fullWidth
                                 size='small'
@@ -600,7 +586,7 @@ export const TransactionModal: React.FC = () => {
                                 placeholder='Item description'
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 1.5 }}>
                               <TextField
                                 fullWidth
                                 size='small'
@@ -622,7 +608,7 @@ export const TransactionModal: React.FC = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                               <Autocomplete
                                 fullWidth
                                 size='small'
@@ -652,33 +638,6 @@ export const TransactionModal: React.FC = () => {
                                   )
                                 }}
                               />
-                            </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                              <FormControl fullWidth size='small' error={!!itemErrors[`item-${index}-expType`]}>
-                                <ToggleButtonGroup
-                                  exclusive
-                                  size='small'
-                                  fullWidth
-                                  value={item.expType ?? null}
-                                  onChange={(_, value) => {
-                                    if (value !== null) {
-                                      handleItemChange(index, 'expType', value)
-                                    }
-                                  }}
-                                >
-                                  {EXP_TYPES_LIST.map((type) => (
-                                    <ToggleButton key={type} value={type}>
-                                      {type}
-                                    </ToggleButton>
-                                  ))}
-                                </ToggleButtonGroup>
-
-                                {itemErrors[`item-${index}-expType`] && (
-                                  <Typography color='error' variant='caption' fontSize='small'>
-                                    {itemErrors[`item-${index}-expType`]}
-                                  </Typography>
-                                )}
-                              </FormControl>
                             </Grid>
                           </Grid>
                         </Paper>

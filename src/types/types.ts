@@ -156,7 +156,6 @@ export interface TransactionItemRequest {
   categoryId: string
   label: string
   amount: number | null
-  expType: string
   tags: string[] | []
 }
 

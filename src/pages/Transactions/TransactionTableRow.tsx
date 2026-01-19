@@ -66,7 +66,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           }
         }}
       >
-        {/* Expand/Collapse Cell */}
         <TableCell
           sx={{
             // Prevent click on this cell from triggering row click twice
@@ -218,7 +217,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                     <TableRow>
                       <TableCell>Category</TableCell>
                       <TableCell>Label</TableCell>
-                      <TableCell>Type</TableCell>
                       <TableCell align='right'>Amount</TableCell>
                     </TableRow>
                   </TableHead>
@@ -235,9 +233,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                         </TableCell>
                         <TableCell>
                           <Typography variant='body2'>{item.label || '-'}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant='body2'>{item.expType || '-'}</Typography>
                         </TableCell>
                         <TableCell align='right'>
                           <Typography
