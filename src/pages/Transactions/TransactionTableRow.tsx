@@ -216,6 +216,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                   <TableHead>
                     <TableRow>
                       <TableCell>Category</TableCell>
+                      <TableCell>Tags</TableCell>
                       <TableCell>Label</TableCell>
                       <TableCell align='right'>Amount</TableCell>
                     </TableRow>
@@ -230,6 +231,15 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                             variant='outlined'
                             sx={{ fontSize: '0.75rem' }}
                           />
+                        </TableCell>
+                        <TableCell>
+                          {item.tags?.length ? (
+                            item.tags.map((tag, index) => (
+                              <Chip key={index} label={tag} size='small' sx={{ mr: 0.5 }} />
+                            ))
+                          ) : (
+                            <Typography variant='body2'>-</Typography>
+                          )}
                         </TableCell>
                         <TableCell>
                           <Typography variant='body2'>{item.label || '-'}</Typography>

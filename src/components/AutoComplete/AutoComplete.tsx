@@ -14,7 +14,7 @@ interface AutoCompleteProps {
 export const AutoComplete: React.FC<AutoCompleteProps> = ({
   value,
   onChange,
-  dataList: dataList,
+  dataList,
   label,
   placeholder = 'Type to search...',
   fullWidth = true,
@@ -31,6 +31,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearch(value)
+    onChange(value)
     setShowDropdown(true)
   }
 

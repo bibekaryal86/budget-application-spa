@@ -467,6 +467,7 @@ export const TransactionModal: React.FC = () => {
                         onChange={(event) => handleInputChange('merchant', event)}
                         dataList={merchantsList}
                         label='Merchant'
+                        TextFieldProps={{ error: !!itemErrors.merchant, helperText: itemErrors.merchant }}
                       />
                     </Grid>
                     <Grid size={{ xs: 12, md: 2 }}>

@@ -21,6 +21,7 @@ export const useCreateTransaction = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['transactions'] })
       void queryClient.invalidateQueries({ queryKey: ['merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['tags'] })
     },
   })
 }
@@ -34,6 +35,7 @@ export const useUpdateTransaction = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['transactions'] })
       void queryClient.invalidateQueries({ queryKey: ['merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['tags'] })
     },
   })
 }
@@ -46,6 +48,7 @@ export const useDeleteTransaction = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['transactions'] })
       void queryClient.invalidateQueries({ queryKey: ['merchants'] })
+      void queryClient.invalidateQueries({ queryKey: ['tags'] })
     },
   })
 }
@@ -55,5 +58,6 @@ export const useInvalidateTransactionsMerchants = () => {
   return () => {
     void queryClient.invalidateQueries({ queryKey: ['transactions'] })
     void queryClient.invalidateQueries({ queryKey: ['merchants'] })
+    void queryClient.invalidateQueries({ queryKey: ['tags'] })
   }
 }
