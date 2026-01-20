@@ -217,8 +217,8 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                     <TableRow>
                       <TableCell>Category</TableCell>
                       <TableCell>Tags</TableCell>
-                      <TableCell>Label</TableCell>
                       <TableCell align='right'>Amount</TableCell>
+                      <TableCell>Notes</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -241,9 +241,6 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                             <Typography variant='body2'>-</Typography>
                           )}
                         </TableCell>
-                        <TableCell>
-                          <Typography variant='body2'>{item.label || '-'}</Typography>
-                        </TableCell>
                         <TableCell align='right'>
                           <Typography
                             variant='body2'
@@ -254,6 +251,9 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                           >
                             {getFormattedCurrency(item.amount)}
                           </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant='body2'>{item.notes || '-'}</Typography>
                         </TableCell>
                       </TableRow>
                     ))}

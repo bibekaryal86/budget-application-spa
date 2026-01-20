@@ -154,9 +154,9 @@ export interface TransactionItemRequest {
   id: string | null
   transactionId: string | null
   categoryId: string
-  label: string
   amount: number | null
   tags: string[] | []
+  notes: string | null
 }
 
 export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
@@ -181,7 +181,6 @@ export interface TransactionRequest {
   merchant: string
   accountId: string
   totalAmount: number | null
-  notes: string
   items: TransactionItemRequest[]
 }
 
