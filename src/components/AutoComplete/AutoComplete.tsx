@@ -21,23 +21,20 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
   TextFieldProps = {},
 }) => {
   const [showDropdown, setShowDropdown] = useState(false)
-  const [search, setSearch] = useState(value || '')
 
   const filteredDataList = useMemo(() => {
-    if (!search) return dataList
-    return dataList.filter((merchant) => merchant.toLowerCase().includes(search.toLowerCase()))
-  }, [dataList, search])
+    if (!value) return dataList
+    return dataList.filter((merchant) => merchant.toLowerCase().includes(value.toLowerCase()))
+  }, [dataList, value])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setSearch(value)
     onChange(value)
     setShowDropdown(true)
   }
 
   const handleSelect = (merchant: string) => {
     onChange(merchant)
-    setSearch(merchant)
     setShowDropdown(false)
   }
 
@@ -48,7 +45,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
   }
 
   const handleFocus = () => {
-    if (search) {
+    if (value) {
       setShowDropdown(true)
     }
   }
@@ -58,7 +55,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
       <TextField
         fullWidth={fullWidth}
         label={label}
-        value={search}
+        value={value}
         onChange={handleSearchChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
