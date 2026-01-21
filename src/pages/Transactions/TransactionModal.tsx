@@ -524,7 +524,7 @@ export const TransactionModal: React.FC = () => {
                 <Divider />
 
                 <Box>
-                  <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                  <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.5}>
                     {' '}
                     <Typography variant='subtitle1' fontWeight='medium'>
                       Items ({txnFormData.items.length})
@@ -546,14 +546,14 @@ export const TransactionModal: React.FC = () => {
                       No items added. Click &quot;Add Item&quot; to add transaction items.
                     </Alert>
                   ) : (
-                    <Stack spacing={1}>
+                    <Stack spacing={0.5}>
                       {' '}
                       {txnFormData.items.map((item, index) => (
                         <Paper
                           key={item.id ?? `new-${index}`}
                           variant='outlined'
                           sx={{
-                            p: 1.5,
+                            p: 0.5,
                             '&:hover': { backgroundColor: 'action.hover' },
                           }}
                         >
@@ -573,7 +573,7 @@ export const TransactionModal: React.FC = () => {
                             </IconButton>
                           </Box>
 
-                          <Grid container spacing={1}>
+                          <Grid container spacing={0.5}>
                             {' '}
                             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                               <Autocomplete

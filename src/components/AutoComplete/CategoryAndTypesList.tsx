@@ -1,4 +1,4 @@
-import { TextField, Autocomplete, Box } from '@mui/material'
+import { TextField, Autocomplete, Box, type TextFieldProps } from '@mui/material'
 import type { Category, CategoryType } from '@types'
 import React, { useMemo } from 'react'
 
@@ -9,6 +9,10 @@ interface CategoryAndTypesListProps {
   setSelectedCategoryId: (categoryId: string) => void
   categoryTypesList: CategoryType[]
   categoriesList: Category[]
+  TextFieldPropsCategoryType?: Partial<TextFieldProps>
+  TextFieldPropsCategory?: Partial<TextFieldProps>
+  size?: 'small' | 'medium'
+  fullWidth?: boolean
 }
 
 export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
@@ -18,6 +22,10 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
   setSelectedCategoryId,
   categoryTypesList,
   categoriesList,
+  TextFieldPropsCategoryType = {},
+  TextFieldPropsCategory = {},
+  size = 'medium',
+  fullWidth = true,
 }) => {
   const filteredCategories = useMemo(() => {
     if (!categoriesList) return []
@@ -67,7 +75,7 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
       }}
     >
       <Autocomplete
-        fullWidth
+        fullWidth={fullWidth}
         size='small'
         options={categoryTypesList}
         getOptionLabel={(o) => o.name}
@@ -79,7 +87,8 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
             <TextField
               {...rest}
               label='Category Type'
-              size='small'
+              size={size}
+              {...TextFieldPropsCategoryType}
               slotProps={{
                 inputLabel: {
                   className: InputLabelProps?.className ?? '',
@@ -90,7 +99,7 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
         }}
       />
       <Autocomplete
-        fullWidth
+        fullWidth={fullWidth}
         size='small'
         options={filteredCategories}
         getOptionLabel={(o) => o.name}
@@ -102,7 +111,8 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
             <TextField
               {...rest}
               label='Category'
-              size='small'
+              size={size}
+              {...TextFieldPropsCategory}
               slotProps={{
                 inputLabel: {
                   className: InputLabelProps?.className ?? '',
