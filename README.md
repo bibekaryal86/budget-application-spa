@@ -6,6 +6,7 @@ TODO
   - Show overbudget items
   - Show under budget items
   - Show Transactions without Tags
+  - Report page shows categories and tags for a given month
 
 ## Overview
 
