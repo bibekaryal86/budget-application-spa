@@ -7,6 +7,7 @@ TODO
   - Show under budget items
   - Show Transactions without Tags
   - Report page shows categories and tags for a given month
+  - Click on Incomes/Expenses/Savings lead to transactions/reports page
 
 ## Overview
 
