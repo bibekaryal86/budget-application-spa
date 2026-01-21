@@ -126,6 +126,7 @@ export const TransactionFilters: React.FC = () => {
               setSelectedCategoryId={setSelectedCategoryId}
               categoryTypesList={categoryTypesList}
               categoriesList={categoriesList}
+              size='small'
             />
           </Grid>
 
