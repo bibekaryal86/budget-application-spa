@@ -200,6 +200,25 @@ export interface TransactionMerchants {
   metadata: ResponseMetadata
 }
 
+// Reports
+export interface TransactionSummary {
+  beginDate: Date
+  endDate: Date
+  incomes: number
+  expenses: number
+  savings: number
+}
+
+export interface TransactionSummaries {
+  currentMonth: TransactionSummary
+  previousMonth: TransactionSummary
+}
+
+export interface TransactionSummaryResponse {
+  txnSummaries: TransactionSummaries
+  metadata: ResponseMetadata
+}
+
 // Request Params
 export interface CategoryParams {
   catTypeIds: string[] | []
@@ -213,4 +232,9 @@ export interface TransactionParams {
   catTypeIds: string[] | []
   accIds: string[] | []
   expTypes: string[] | []
+}
+
+export interface TransactionSummaryParams {
+  beginDate: Date | null
+  endDate: Date | null
 }

@@ -1,6 +1,8 @@
 import { txnService } from '@services'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import type { TransactionRequest } from '@types'
+
+import { useInvalidateTransactionQueryKeys } from './queryClient.ts'
 
 export const useReadTransactions = () =>
   useQuery({
@@ -13,51 +15,35 @@ export const useReadTransactions = () =>
   })
 
 export const useCreateTransaction = () => {
-  const queryClient = useQueryClient()
-
+  const invalidateTransactionQueryKeys = useInvalidateTransactionQueryKeys()
   return useMutation({
     mutationFn: txnService.createTransaction,
 
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
-      void queryClient.invalidateQueries({ queryKey: ['tags'] })
+      invalidateTransactionQueryKeys()
     },
   })
 }
 
 export const useUpdateTransaction = () => {
-  const queryClient = useQueryClient()
+  const invalidateTransactionQueryKeys = useInvalidateTransactionQueryKeys()
 
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: TransactionRequest }) =>
       txnService.updateTransaction(id, payload),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
-      void queryClient.invalidateQueries({ queryKey: ['tags'] })
+      invalidateTransactionQueryKeys()
     },
   })
 }
 
 export const useDeleteTransaction = () => {
-  const queryClient = useQueryClient()
+  const invalidateTransactionQueryKeys = useInvalidateTransactionQueryKeys()
 
   return useMutation({
     mutationFn: ({ id }: { id: string }) => txnService.deleteTransaction(id),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      void queryClient.invalidateQueries({ queryKey: ['merchants'] })
-      void queryClient.invalidateQueries({ queryKey: ['tags'] })
+      invalidateTransactionQueryKeys()
     },
   })
-}
-
-export const useInvalidateTransactionsMerchants = () => {
-  const queryClient = useQueryClient()
-  return () => {
-    void queryClient.invalidateQueries({ queryKey: ['transactions'] })
-    void queryClient.invalidateQueries({ queryKey: ['merchants'] })
-    void queryClient.invalidateQueries({ queryKey: ['tags'] })
-  }
 }

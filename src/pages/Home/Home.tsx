@@ -1,7 +1,6 @@
 import {
   TrendingUp,
   TrendingDown,
-  AccountBalance,
   Savings,
   Receipt,
   CalendarToday,
@@ -35,7 +34,8 @@ import {
   useReadTags,
   useReadTransactions,
 } from '@queries'
-import { getAmountColor, getFormattedCurrency, getFormattedPercent, getNumber } from '@utils'
+import { useReadTransactionSummaries } from '@queries'
+import { getAmountColor, getFormattedCurrency, getFormattedPercent } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -51,49 +51,42 @@ export const Home: React.FC = () => {
   const { data } = useReadTransactions()
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
 
+  const { data: tData } = useReadTransactionSummaries()
+
   // Calculate financial metrics
   const financialMetrics = useMemo(() => {
-    const currentMonth = format(new Date(), 'yyyy-MM')
-    const lastMonth = format(new Date(new Date().setMonth(new Date().getMonth() - 1)), 'yyyy-MM')
+    const txnSummaries = tData?.txnSummaries || null
+    if (!txnSummaries)
+      return {
+        currentIncome: 0,
+        currentExpenses: 0,
+        currentSavings: 0,
+        incomeChange: 0,
+        expenseChange: 0,
+        savingsChange: 0,
+      }
 
-    const currentMonthTransactions = transactions.filter(
-      (t) => t.txnDate && format(new Date(t.txnDate), 'yyyy-MM') === currentMonth,
-    )
-    const lastMonthTransactions = transactions.filter(
-      (t) => t.txnDate && format(new Date(t.txnDate), 'yyyy-MM') === lastMonth,
-    )
+    const currentIncome = txnSummaries.currentMonth.incomes || 0
+    const currentExpenses = txnSummaries.currentMonth.expenses || 0
+    const currentSavings = txnSummaries.currentMonth.savings || 0
 
-    const currentIncome = currentMonthTransactions
-      .filter((t) => getNumber(t.totalAmount) > 0)
-      .reduce((sum, t) => sum + getNumber(t.totalAmount), 0)
-
-    const currentExpenses = currentMonthTransactions
-      .filter((t) => getNumber(t.totalAmount) < 0)
-      .reduce((sum, t) => sum + Math.abs(getNumber(t.totalAmount)), 0)
-
-    const lastIncome = lastMonthTransactions
-      .filter((t) => getNumber(t.totalAmount) > 0)
-      .reduce((sum, t) => sum + getNumber(t.totalAmount), 0)
-
-    const lastExpenses = lastMonthTransactions
-      .filter((t) => getNumber(t.totalAmount) < 0)
-      .reduce((sum, t) => sum + Math.abs(getNumber(t.totalAmount)), 0)
+    const lastIncome = txnSummaries.previousMonth.incomes || 0
+    const lastExpenses = txnSummaries.previousMonth.expenses || 0
+    const lastSavings = txnSummaries.previousMonth.savings || 0
 
     const incomeChange = lastIncome > 0 ? ((currentIncome - lastIncome) / lastIncome) * 100 : 0
     const expenseChange = lastExpenses > 0 ? ((currentExpenses - lastExpenses) / lastExpenses) * 100 : 0
-    const netBalance = currentIncome - currentExpenses
-    const savingsRate = currentIncome > 0 ? ((currentIncome - currentExpenses) / currentIncome) * 100 : 0
+    const savingsChange = lastSavings > 0 ? ((currentSavings - lastSavings) / lastSavings) * 100 : 0
 
     return {
       currentIncome,
       currentExpenses,
-      netBalance,
-      savingsRate,
+      currentSavings,
       incomeChange,
       expenseChange,
-      transactionCount: currentMonthTransactions.length,
+      savingsChange,
     }
-  }, [transactions])
+  }, [tData])
 
   // Get recent transactions
   const recentTransactions = useMemo(() => {
@@ -158,30 +151,6 @@ export const Home: React.FC = () => {
               <Box display='flex' alignItems='center' justifyContent='space-between'>
                 <Box>
                   <Typography variant='body2' color='text.secondary' gutterBottom>
-                    Net Balance
-                  </Typography>
-                  <Typography variant='h4' component='div' fontWeight='bold'>
-                    {getFormattedCurrency(financialMetrics.netBalance)}
-                  </Typography>
-                  <Chip
-                    label={financialMetrics.netBalance >= 0 ? 'Positive' : 'Negative'}
-                    size='small'
-                    color={financialMetrics.netBalance >= 0 ? 'success' : 'error'}
-                    sx={{ mt: 1 }}
-                  />
-                </Box>
-                <AccountBalance sx={{ fontSize: 48, color: 'primary.main', opacity: 0.8 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid sx={{ xs: 12, md: 3 }}>
-          <Card elevation={2}>
-            <CardContent>
-              <Box display='flex' alignItems='center' justifyContent='space-between'>
-                <Box>
-                  <Typography variant='body2' color='text.secondary' gutterBottom>
                     Income (This Month)
                   </Typography>
                   <Typography variant='h4' component='div' fontWeight='bold' color='success.main'>
@@ -240,36 +209,27 @@ export const Home: React.FC = () => {
           <Card elevation={2}>
             <CardContent>
               <Box display='flex' alignItems='center' justifyContent='space-between'>
-                <Box sx={{ width: '100%' }}>
+                <Box>
                   <Typography variant='body2' color='text.secondary' gutterBottom>
-                    Savings Rate
+                    Savings (This Month)
                   </Typography>
-                  <Typography variant='h4' component='div' fontWeight='bold'>
-                    {financialMetrics.savingsRate.toFixed(1)}%
+                  <Typography variant='h4' component='div' fontWeight='bold' color='error.main'>
+                    {getFormattedCurrency(financialMetrics.currentSavings)}
                   </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <LinearProgress
-                      variant='determinate'
-                      value={Math.min(financialMetrics.savingsRate, 100)}
-                      color={
-                        financialMetrics.savingsRate >= 20
-                          ? 'success'
-                          : financialMetrics.savingsRate >= 10
-                            ? 'warning'
-                            : 'error'
-                      }
-                      sx={{ height: 8, borderRadius: 4 }}
-                    />
-                    <Box display='flex' justifyContent='space-between' sx={{ mt: 0.5 }}>
-                      <Typography variant='caption' color='text.secondary'>
-                        0%
-                      </Typography>
-                      <Typography variant='caption' color='text.secondary'>
-                        100%
-                      </Typography>
-                    </Box>
+                  <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                    <TrendingDown fontSize='small' color={financialMetrics.savingsChange <= 0 ? 'success' : 'error'} />
+                    <Typography
+                      variant='body2'
+                      color={financialMetrics.savingsChange <= 0 ? 'success.main' : 'error.main'}
+                    >
+                      {getFormattedPercent(financialMetrics.savingsChange)}
+                    </Typography>
+                    <Typography variant='body2' color='text.secondary'>
+                      vs last month
+                    </Typography>
                   </Box>
                 </Box>
+                <Receipt sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
               </Box>
             </CardContent>
           </Card>
@@ -375,7 +335,7 @@ export const Home: React.FC = () => {
                   Transactions this month
                 </Typography>
                 <Typography variant='h5' fontWeight='bold'>
-                  {financialMetrics.transactionCount}
+                  {0}
                 </Typography>
               </Box>
               <Divider />
