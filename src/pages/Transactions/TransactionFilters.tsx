@@ -67,7 +67,7 @@ export const TransactionFilters: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Start Date'
-                value={selectedBeginDate ? new Date(selectedBeginDate) : null}
+                value={selectedBeginDate ? new Date(selectedBeginDate + 'T00:00:00') : null}
                 onChange={(date) => setSelectedBeginDate(getFormattedDate(date))}
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />

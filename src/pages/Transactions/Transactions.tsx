@@ -16,7 +16,9 @@ import { TransactionsTable } from './TransactionTable.tsx'
 export const Transactions: React.FC = () => {
   const {
     selectedBeginDate,
+    setSelectedBeginDate,
     selectedEndDate,
+    setSelectedEndDate,
     selectedMerchant,
     selectedAccountId,
     selectedCategoryId,
@@ -32,6 +34,13 @@ export const Transactions: React.FC = () => {
     endDate: selectedEndDate || getEndOfMonth(now),
   })
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
+
+  if (!selectedBeginDate) {
+    setSelectedBeginDate(getBeginningOfMonth(now))
+  }
+  if (!selectedEndDate) {
+    setSelectedEndDate(getEndOfMonth(now))
+  }
 
   const hasActiveFilters =
     selectedBeginDate != null ||
