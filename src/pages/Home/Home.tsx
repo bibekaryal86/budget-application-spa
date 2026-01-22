@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Receipt, AttachMoney, ArrowForward } from '@mui/icons-material'
+import { TrendingUp, TrendingDown, Receipt, AttachMoney, ArrowForward, TrendingFlat } from '@mui/icons-material'
 import {
   Container,
   Typography,
@@ -23,7 +23,7 @@ import {
 } from '@queries'
 import { useReadTransactionSummaries } from '@queries'
 import { defaultTransactionParams } from '@types'
-import { getAmountColor, getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getFormattedPercent } from '@utils'
+import { getAmountColor, getBeginningOfMonth, getEndOfMonth, getFormattedCurrency } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -68,9 +68,9 @@ export const Home: React.FC = () => {
     const lastExpenses = txnSummaries.previousMonth.expenses || 0
     const lastSavings = txnSummaries.previousMonth.savings || 0
 
-    const incomeChange = lastIncome > 0 ? ((currentIncome - lastIncome) / lastIncome) * 100 : 0
-    const expenseChange = lastExpenses > 0 ? ((currentExpenses - lastExpenses) / lastExpenses) * 100 : 0
-    const savingsChange = lastSavings > 0 ? ((currentSavings - lastSavings) / lastSavings) * 100 : 0
+    const incomeChange = currentIncome - lastIncome
+    const expenseChange = currentExpenses - lastExpenses
+    const savingsChange = currentSavings - lastSavings
 
     return {
       currentIncome,
@@ -86,6 +86,17 @@ export const Home: React.FC = () => {
   const recentTransactions = useMemo(() => {
     return transactions.slice(0, 7)
   }, [transactions])
+
+  const getTrendingIcon = (isExpense: boolean, change: number) => {
+    if (change === 0) {
+      return <TrendingFlat fontSize='small' color='action' />
+    }
+    const isUp = change > 0
+    const isGood = (isExpense && !isUp) || (!isExpense && isUp)
+    const color = isGood ? 'success' : 'error'
+
+    return isUp ? <TrendingUp fontSize='small' color={color} /> : <TrendingDown fontSize='small' color={color} />
+  }
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
@@ -129,10 +140,10 @@ export const Home: React.FC = () => {
                         {getFormattedCurrency(financialMetrics.currentIncome)}
                       </Typography>
                       <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        <TrendingUp fontSize='small' color={financialMetrics.incomeChange >= 0 ? 'success' : 'error'} />
+                        {getTrendingIcon(false, financialMetrics.incomeChange)}
                         <Typography
                           variant='body2'
-                          color={financialMetrics.incomeChange >= 0 ? 'success.main' : 'error.main'}
+                          color={financialMetrics.incomeChange > 0 ? 'success.main' : 'error.main'}
                         >
                           {getFormattedCurrency(financialMetrics.incomeChange)}
                         </Typography>
@@ -159,15 +170,12 @@ export const Home: React.FC = () => {
                         {getFormattedCurrency(financialMetrics.currentExpenses)}
                       </Typography>
                       <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        <TrendingDown
-                          fontSize='small'
-                          color={financialMetrics.expenseChange <= 0 ? 'success' : 'error'}
-                        />
+                        {getTrendingIcon(true, financialMetrics.expenseChange)}
                         <Typography
                           variant='body2'
-                          color={financialMetrics.expenseChange <= 0 ? 'success.main' : 'error.main'}
+                          color={financialMetrics.expenseChange < 0 ? 'success.main' : 'error.main'}
                         >
-                          {getFormattedPercent(financialMetrics.expenseChange)}
+                          {getFormattedCurrency(financialMetrics.expenseChange)}
                         </Typography>
                         <Typography variant='body2' color='text.secondary'>
                           vs last month
@@ -192,22 +200,19 @@ export const Home: React.FC = () => {
                         {getFormattedCurrency(financialMetrics.currentSavings)}
                       </Typography>
                       <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        <TrendingDown
-                          fontSize='small'
-                          color={financialMetrics.savingsChange <= 0 ? 'success' : 'error'}
-                        />
+                        {getTrendingIcon(false, financialMetrics.savingsChange)}
                         <Typography
                           variant='body2'
-                          color={financialMetrics.savingsChange <= 0 ? 'success.main' : 'error.main'}
+                          color={financialMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
                         >
-                          {getFormattedPercent(financialMetrics.savingsChange)}
+                          {getFormattedCurrency(financialMetrics.savingsChange)}
                         </Typography>
                         <Typography variant='body2' color='text.secondary'>
                           vs last month
                         </Typography>
                       </Box>
                     </Box>
-                    <Receipt sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
+                    <AttachMoney sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
                   </Box>
                 </CardContent>
               </Card>
