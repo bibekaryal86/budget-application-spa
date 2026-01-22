@@ -175,7 +175,7 @@ class ApiHelper {
     }
   }
 
-  async get<T>(url: string, params?: Record<string, unknown>, config: RequestConfig = {}): Promise<T> {
+  async get<T, P = Record<string, unknown>>(url: string, params?: P, config: RequestConfig = {}): Promise<T> {
     return this.request<T>({
       method: 'GET',
       url,

@@ -44,3 +44,9 @@ export const getTxnItemAmountColor = (item: TransactionItem): string => {
   if (catTypeName === NO_EXPENSE_CATEGORY_TYPES.INCOME) return 'success.main'
   return 'error.main'
 }
+
+export const getBeginningOfMonth = (date: Date): string =>
+  getFormattedDate(new Date(date.getFullYear(), date.getMonth(), 1))
+
+export const getEndOfMonth = (date: Date): string =>
+  getFormattedDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))

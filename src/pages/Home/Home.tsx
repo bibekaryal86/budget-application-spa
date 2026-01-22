@@ -35,27 +35,34 @@ import {
   useReadTransactions,
 } from '@queries'
 import { useReadTransactionSummaries } from '@queries'
-import { getAmountColor, getFormattedCurrency, getFormattedPercent } from '@utils'
+import { defaultTransactionParams } from '@types'
+import { getAmountColor, getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getFormattedPercent } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Home: React.FC = () => {
   const navigate = useNavigate()
-  // load ref tables after login
+  // load ref tables on login
   useReadCategoryTypes()
   useReadCategories()
   useReadMerchants()
   useReadTags()
   useReadAccounts()
-  const { data } = useReadTransactions()
-  const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
 
-  const { data: tData } = useReadTransactionSummaries()
+  const now = new Date()
+  const { data: tData } = useReadTransactions({
+    ...defaultTransactionParams,
+    beginDate: getBeginningOfMonth(now),
+    endDate: getEndOfMonth(now),
+  })
+  const transactions = useMemo(() => tData?.transactions ?? [], [tData?.transactions])
+
+  const { data: tsData } = useReadTransactionSummaries()
 
   // Calculate financial metrics
   const financialMetrics = useMemo(() => {
-    const txnSummaries = tData?.txnSummaries || null
+    const txnSummaries = tsData?.txnSummaries || null
     if (!txnSummaries)
       return {
         currentIncome: 0,
@@ -86,13 +93,11 @@ export const Home: React.FC = () => {
       expenseChange,
       savingsChange,
     }
-  }, [tData])
+  }, [tsData])
 
   // Get recent transactions
   const recentTransactions = useMemo(() => {
-    return [...transactions]
-      .sort((a, b) => new Date(b.txnDate || '').getTime() - new Date(a.txnDate || '').getTime())
-      .slice(0, 5)
+    return transactions.slice(0, 10)
   }, [transactions])
 
   // Quick action cards

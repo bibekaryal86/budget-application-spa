@@ -1,4 +1,4 @@
-import type { TransactionRequest, TransactionResponse } from '@types'
+import type { TransactionParams, TransactionRequest, TransactionResponse } from '@types'
 import { apiHelperCore } from '@utils'
 
 export const txnService = {
@@ -6,8 +6,8 @@ export const txnService = {
     return await apiHelperCore.post<TransactionResponse>('/v1/transactions', txnRequest)
   },
 
-  readTransactions: async (): Promise<TransactionResponse> => {
-    return await apiHelperCore.get<TransactionResponse>('/v1/transactions')
+  readTransactions: async (params: TransactionParams): Promise<TransactionResponse> => {
+    return await apiHelperCore.get<TransactionResponse, TransactionParams>('/v1/transactions', params)
   },
 
   updateTransaction: async (id: string, txnRequest: TransactionRequest): Promise<TransactionResponse> => {

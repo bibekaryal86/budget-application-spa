@@ -225,13 +225,23 @@ export interface CategoryParams {
 }
 
 export interface TransactionParams {
-  beginDate: Date | null
-  endDate: Date | null
+  beginDate: string | null
+  endDate: string | null
   merchants: string[] | []
   catIds: string[] | []
   catTypeIds: string[] | []
   accIds: string[] | []
-  expTypes: string[] | []
+  tags: string[] | []
+}
+
+export const defaultTransactionParams: TransactionParams = {
+  beginDate: null,
+  endDate: null,
+  merchants: [],
+  catIds: [],
+  catTypeIds: [],
+  accIds: [],
+  tags: [],
 }
 
 export interface TransactionSummaryParams {
