@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts } from '@queries'
 import { useTxnStore } from '@stores'
+import { getFormattedDate } from '@utils'
 import React, { useMemo } from 'react'
 
 export const TransactionFilters: React.FC = () => {
@@ -66,8 +67,8 @@ export const TransactionFilters: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Start Date'
-                value={selectedBeginDate}
-                onChange={(date) => setSelectedBeginDate(date)}
+                value={selectedBeginDate ? new Date(selectedBeginDate) : null}
+                onChange={(date) => setSelectedBeginDate(getFormattedDate(date))}
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />
             </LocalizationProvider>
@@ -76,8 +77,8 @@ export const TransactionFilters: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='End Date'
-                value={selectedEndDate}
-                onChange={(date) => setSelectedEndDate(date)}
+                value={selectedEndDate ? new Date(selectedEndDate) : null}
+                onChange={(date) => setSelectedEndDate(getFormattedDate(date) || null)}
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />
             </LocalizationProvider>

@@ -5,6 +5,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
 import { useTxnStore } from '@stores'
+import { defaultTransactionParams } from '@types'
+import { getBeginningOfMonth, getEndOfMonth } from '@utils'
 import React, { useMemo } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
@@ -23,7 +25,12 @@ export const Transactions: React.FC = () => {
     selectedTxn,
   } = useTxnStore()
 
-  const { data, isLoading, error } = useReadTransactions()
+  const now = new Date()
+  const { data, isLoading, error } = useReadTransactions({
+    ...defaultTransactionParams,
+    beginDate: selectedBeginDate || getBeginningOfMonth(now),
+    endDate: selectedEndDate || getEndOfMonth(now),
+  })
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
 
   const hasActiveFilters =
@@ -38,11 +45,11 @@ export const Transactions: React.FC = () => {
     return transactions.filter((txn) => {
       if (selectedBeginDate && txn.txnDate) {
         const txnDate = new Date(txn.txnDate)
-        if (txnDate < selectedBeginDate) return false
+        if (txnDate < new Date(selectedBeginDate)) return false
       }
       if (selectedEndDate && txn.txnDate) {
         const txnDate = new Date(txn.txnDate)
-        if (txnDate > selectedEndDate) return false
+        if (txnDate > new Date(selectedEndDate)) return false
       }
 
       if (selectedMerchant && !txn.merchant?.toLowerCase().includes(selectedMerchant.toLowerCase())) {

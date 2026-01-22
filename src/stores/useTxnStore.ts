@@ -7,8 +7,8 @@ interface TransactionState {
   isTxnModalOpen: boolean
   txnModalAction: ModalAction | null
 
-  selectedBeginDate: Date | null
-  selectedEndDate: Date | null
+  selectedBeginDate: string | null
+  selectedEndDate: string | null
   selectedMerchant: string | null
   selectedAccountId: string | null
   selectedCategoryTypeId: string | null
@@ -16,8 +16,8 @@ interface TransactionState {
 
   selectedTxn: Transaction | null
 
-  setSelectedBeginDate: (v: Date | null) => void
-  setSelectedEndDate: (v: Date | null) => void
+  setSelectedBeginDate: (v: string | null) => void
+  setSelectedEndDate: (v: string | null) => void
   setSelectedMerchant: (v: string | null) => void
   setSelectedAccountId: (v: string | null) => void
   setSelectedCategoryTypeId: (v: string | null) => void
