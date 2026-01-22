@@ -8,6 +8,8 @@ TODO
   - Show Transactions without Tags
   - Report page shows categories and tags for a given month
   - Click on Incomes/Expenses/Savings lead to transactions/reports page
+  - On home page, show graph of category type and categories side by side
+    - would it be possible to plot them all in a single graph?
 
 ## Overview
 
