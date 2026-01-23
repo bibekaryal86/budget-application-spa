@@ -105,7 +105,7 @@ export const Home: React.FC = () => {
   }
 
   return (
-    <Container maxWidth='xl' sx={{ py: 4 }}>
+    <Container maxWidth='md' sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
@@ -132,6 +132,7 @@ export const Home: React.FC = () => {
             justifyContent='center'
             sx={{
               margin: '0 auto',
+              width: '100%',
             }}
           >
             <Grid sx={{ xs: 12, md: 4 }}>
@@ -233,6 +234,7 @@ export const Home: React.FC = () => {
             justifyContent='center'
             sx={{
               margin: '0 auto',
+              width: '100%',
             }}
           >
             <Grid sx={{ xs: 12, md: 6 }}>
@@ -251,6 +253,7 @@ export const Home: React.FC = () => {
                   <List disablePadding>
                     {categories.map((category, index) => (
                       <React.Fragment key={category.category.id || index}>
+                        {<Divider />}
                         <ListItem disablePadding sx={{ py: 1.5 }}>
                           <ListItemIcon sx={{ minWidth: 25 }}>
                             <Typography variant='body2' color='text.secondary'>
@@ -266,7 +269,6 @@ export const Home: React.FC = () => {
                             {getFormattedCurrency(category.amount)}
                           </Typography>
                         </ListItem>
-                        {<Divider />}
                       </React.Fragment>
                     ))}
                   </List>
@@ -290,6 +292,7 @@ export const Home: React.FC = () => {
                   <List disablePadding>
                     {categoryTypes.map((categoryType, index) => (
                       <React.Fragment key={categoryType.categoryType.id || index}>
+                        {<Divider />}
                         <ListItem disablePadding sx={{ py: 1.5 }}>
                           <ListItemIcon sx={{ minWidth: 25 }}>
                             <Typography variant='body2' color='text.secondary'>
@@ -307,7 +310,6 @@ export const Home: React.FC = () => {
                             {getFormattedCurrency(categoryType.amount)}
                           </Typography>
                         </ListItem>
-                        {<Divider />}
                       </React.Fragment>
                     ))}
                   </List>
@@ -320,13 +322,14 @@ export const Home: React.FC = () => {
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Grid
             container
-            spacing={2}
+            spacing={1}
             justifyContent='center'
             sx={{
               margin: '0 auto',
+              width: '100%',
             }}
           >
-            <Grid sx={{ xs: 12, md: 12 }}>
+            <Grid sx={{ xs: 12, md: 12, width: '100%' }}>
               <Paper elevation={2} sx={{ p: 3 }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
                   <Typography variant='h6' fontWeight='medium'>
