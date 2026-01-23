@@ -16,6 +16,7 @@ import {
 import {
   useReadAccounts,
   useReadCategories,
+  useReadCategorySummaries,
   useReadCategoryTypes,
   useReadMerchants,
   useReadTags,
@@ -23,7 +24,7 @@ import {
 } from '@queries'
 import { useReadTransactionSummaries } from '@queries'
 import { defaultTransactionParams } from '@types'
-import { getAmountColor, getBeginningOfMonth, getEndOfMonth, getFormattedCurrency } from '@utils'
+import { getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getTxnAmountColor } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -46,6 +47,7 @@ export const Home: React.FC = () => {
   const transactions = useMemo(() => tData?.transactions ?? [], [tData?.transactions])
 
   const { data: tsData } = useReadTransactionSummaries()
+  const { data: csData } = useReadCategorySummaries()
 
   // Calculate financial metrics
   const financialMetrics = useMemo(() => {
@@ -266,7 +268,7 @@ export const Home: React.FC = () => {
                               {transaction.txnDate ? format(new Date(transaction.txnDate), 'MMM dd, yyyy') : 'No date'}
                             </Typography>
                           </Box>
-                          <Typography variant='body1' fontWeight='bold' color={getAmountColor(transaction.totalAmount)}>
+                          <Typography variant='body1' fontWeight='bold' color={getTxnAmountColor(transaction)}>
                             {getFormattedCurrency(transaction.totalAmount)}
                           </Typography>
                         </Box>

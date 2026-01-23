@@ -212,10 +212,24 @@ export interface TransactionSummary {
 export interface TransactionSummaries {
   currentMonth: TransactionSummary
   previousMonth: TransactionSummary
+  metadata: ResponseMetadata
 }
 
-export interface TransactionSummaryResponse {
-  txnSummaries: TransactionSummaries
+export interface CategoryTypeSummary {
+  categoryType: CategoryType
+  amount: number
+}
+
+export interface CategorySummary {
+  category: Category
+  amount: number
+}
+
+export interface CategorySummaries {
+  beginDate: Date
+  endDate: Date
+  cData: CategorySummary[]
+  ctData: CategoryTypeSummary[]
   metadata: ResponseMetadata
 }
 
