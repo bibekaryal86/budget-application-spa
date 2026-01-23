@@ -9,9 +9,11 @@ import {
   Button,
   Stack,
   Paper,
-  LinearProgress,
-  Chip,
   Divider,
+  ListItem,
+  List,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material'
 import {
   useReadAccounts,
@@ -44,10 +46,12 @@ export const Home: React.FC = () => {
     beginDate: getBeginningOfMonth(now),
     endDate: getEndOfMonth(now),
   })
-  const transactions = useMemo(() => tData?.transactions ?? [], [tData?.transactions])
-
   const { data: tsData } = useReadTransactionSummaries()
-  const { data: csData } = useReadCategorySummaries()
+  const { data: csData } = useReadCategorySummaries(true)
+
+  const transactions = useMemo(() => tData?.transactions ?? [], [tData?.transactions])
+  const categories = useMemo(() => csData?.catSummaries.cData ?? [], [csData?.catSummaries.cData])
+  const categoryTypes = useMemo(() => csData?.catSummaries.ctData ?? [], [csData?.catSummaries.ctData])
 
   // Calculate financial metrics
   const financialMetrics = useMemo(() => {
@@ -229,9 +233,109 @@ export const Home: React.FC = () => {
             justifyContent='center'
             sx={{
               margin: '0 auto',
+              width: '100%',
             }}
           >
-            <Grid sx={{ xs: 12, md: 8 }}>
+            <Grid sx={{ xs: 12, md: 6 }}>
+              <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
+                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+                  <Typography variant='h6' fontWeight='medium'>
+                    Top Categories
+                  </Typography>
+                  <Typography variant='body2' color='text.secondary'>
+                    This Month
+                  </Typography>
+                </Box>
+
+                {categories.length === 0 ? (
+                  <Typography variant='body2' color='text.secondary' sx={{ py: 3, textAlign: 'center' }}>
+                    No category data available
+                  </Typography>
+                ) : (
+                  <List disablePadding>
+                    {categories.map((category, index) => (
+                      <React.Fragment key={category.category.id || index}>
+                        <ListItem disablePadding sx={{ py: 1.5 }}>
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            <Typography variant='body2' color='text.secondary' fontWeight='bold'>
+                              {index + 1}.
+                            </Typography>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant='body1' fontWeight='medium'>
+                                {category.category.name || 'Uncategorized'}
+                              </Typography>
+                            }
+                          />
+                          <Typography variant='body1' fontWeight='bold' color='text.primary'>
+                            {getFormattedCurrency(category.amount)}
+                          </Typography>
+                        </ListItem>
+                        {index < categories.length - 1 && <Divider />}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            </Grid>
+
+            <Grid sx={{ xs: 12, md: 6 }}>
+              <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
+                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+                  <Typography variant='h6' fontWeight='medium'>
+                    Top Category Types
+                  </Typography>
+                  <Typography variant='body2' color='text.secondary'>
+                    This Month
+                  </Typography>
+                </Box>
+
+                {categoryTypes.length === 0 ? (
+                  <Typography variant='body2' color='text.secondary' sx={{ py: 3, textAlign: 'center' }}>
+                    No category type data available
+                  </Typography>
+                ) : (
+                  <List disablePadding>
+                    {categoryTypes.map((categoryType, index) => (
+                      <React.Fragment key={categoryType.categoryType.id || index}>
+                        <ListItem disablePadding sx={{ py: 1.5 }}>
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            <Typography variant='body2' color='text.secondary' fontWeight='bold'>
+                              {index + 1}.
+                            </Typography>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant='body1' fontWeight='medium'>
+                                {categoryType.categoryType.name || 'Uncategorized'}
+                              </Typography>
+                            }
+                          />
+                          <Typography variant='body1' fontWeight='bold' color='text.primary'>
+                            {getFormattedCurrency(categoryType.amount)}
+                          </Typography>
+                        </ListItem>
+                        {index < categoryTypes.length - 1 && <Divider />}
+                      </React.Fragment>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Grid
+            container
+            spacing={2}
+            justifyContent='center'
+            sx={{
+              margin: '0 auto',
+            }}
+          >
+            <Grid sx={{ xs: 12, md: 12 }}>
               <Paper elevation={2} sx={{ p: 3 }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
                   <Typography variant='h6' fontWeight='medium'>
@@ -276,103 +380,6 @@ export const Home: React.FC = () => {
                     ))}
                   </Stack>
                 )}
-              </Paper>
-            </Grid>
-
-            <Grid sx={{ xs: 12, md: 4 }}>
-              <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-                <Typography variant='h6' gutterBottom fontWeight='medium'>
-                  Monthly Summary
-                </Typography>
-                <Stack spacing={2}>
-                  <Box>
-                    <Typography variant='body2' color='text.secondary'>
-                      Transactions this month
-                    </Typography>
-                    <Typography variant='h5' fontWeight='bold'>
-                      {0}
-                    </Typography>
-                  </Box>
-                  <Divider />
-                  <Box>
-                    <Typography variant='body2' color='text.secondary'>
-                      Average daily spend
-                    </Typography>
-                    <Typography variant='h5' fontWeight='bold'>
-                      {getFormattedCurrency(financialMetrics.currentExpenses / 30)}
-                    </Typography>
-                  </Box>
-                  <Divider />
-                  <Box>
-                    <Typography variant='body2' color='text.secondary'>
-                      Days until next month
-                    </Typography>
-                    <Typography variant='h5' fontWeight='bold'>
-                      {new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate() -
-                        new Date().getDate()}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Paper>
-
-              <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='h6' fontWeight='medium'>
-                    Budget Progress
-                  </Typography>
-                  <Chip label='Monthly' size='small' />
-                </Box>
-
-                <Stack spacing={3}>
-                  <Box>
-                    <Box display='flex' justifyContent='space-between' sx={{ mb: 0.5 }}>
-                      <Typography variant='body2'>Food & Dining</Typography>
-                      <Typography variant='body2' fontWeight='medium'>
-                        $320 / $500
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant='determinate'
-                      value={(320 / 500) * 100}
-                      color='warning'
-                      sx={{ height: 6, borderRadius: 3 }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <Box display='flex' justifyContent='space-between' sx={{ mb: 0.5 }}>
-                      <Typography variant='body2'>Shopping</Typography>
-                      <Typography variant='body2' fontWeight='medium'>
-                        $150 / $300
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant='determinate'
-                      value={(150 / 300) * 100}
-                      color='success'
-                      sx={{ height: 6, borderRadius: 3 }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <Box display='flex' justifyContent='space-between' sx={{ mb: 0.5 }}>
-                      <Typography variant='body2'>Entertainment</Typography>
-                      <Typography variant='body2' fontWeight='medium'>
-                        $75 / $200
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant='determinate'
-                      value={(75 / 200) * 100}
-                      color='primary'
-                      sx={{ height: 6, borderRadius: 3 }}
-                    />
-                  </Box>
-                </Stack>
-
-                <Button fullWidth variant='outlined' sx={{ mt: 2 }} onClick={() => void navigate('/budgets')}>
-                  Manage Budgets
-                </Button>
               </Paper>
             </Grid>
           </Grid>

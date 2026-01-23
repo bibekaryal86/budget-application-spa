@@ -258,7 +258,18 @@ export const defaultTransactionParams: TransactionParams = {
   tags: [],
 }
 
-export interface TransactionSummaryParams {
+export interface SummaryParams {
   beginDate: Date | null
   endDate: Date | null
+  catIds: string[] | []
+  catTypeIds: string[] | []
+  topExpenses: boolean | null
+}
+
+export const defaultSummaryParams: SummaryParams = {
+  beginDate: null,
+  endDate: null,
+  catIds: [],
+  catTypeIds: [],
+  topExpenses: null,
 }
