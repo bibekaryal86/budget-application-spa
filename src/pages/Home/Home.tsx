@@ -238,16 +238,13 @@ export const Home: React.FC = () => {
             <Grid sx={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='h6' fontWeight='medium'>
-                    Top Categories
-                  </Typography>
-                  <Typography variant='body2' color='text.secondary'>
-                    This Month
+                  <Typography variant='body1' fontWeight='bold'>
+                    Top Expense Categories (This Month)
                   </Typography>
                 </Box>
 
                 {categories.length === 0 ? (
-                  <Typography variant='body2' color='text.secondary' sx={{ py: 3, textAlign: 'center' }}>
+                  <Typography variant='body2' sx={{ py: 3, textAlign: 'center' }}>
                     No category data available
                   </Typography>
                 ) : (
@@ -255,23 +252,21 @@ export const Home: React.FC = () => {
                     {categories.map((category, index) => (
                       <React.Fragment key={category.category.id || index}>
                         <ListItem disablePadding sx={{ py: 1.5 }}>
-                          <ListItemIcon sx={{ minWidth: 40 }}>
-                            <Typography variant='body2' color='text.secondary' fontWeight='bold'>
+                          <ListItemIcon sx={{ minWidth: 25 }}>
+                            <Typography variant='body2' color='text.secondary'>
                               {index + 1}.
                             </Typography>
                           </ListItemIcon>
                           <ListItemText
                             primary={
-                              <Typography variant='body1' fontWeight='medium'>
-                                {category.category.name || 'Uncategorized'}
-                              </Typography>
+                              <Typography variant='body2'>{category.category.name || 'Uncategorized'}</Typography>
                             }
                           />
-                          <Typography variant='body1' fontWeight='bold' color='text.primary'>
+                          <Typography variant='body2' color='text.secondary'>
                             {getFormattedCurrency(category.amount)}
                           </Typography>
                         </ListItem>
-                        {index < categories.length - 1 && <Divider />}
+                        {<Divider />}
                       </React.Fragment>
                     ))}
                   </List>
@@ -282,11 +277,8 @@ export const Home: React.FC = () => {
             <Grid sx={{ xs: 12, md: 6 }}>
               <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='h6' fontWeight='medium'>
-                    Top Category Types
-                  </Typography>
-                  <Typography variant='body2' color='text.secondary'>
-                    This Month
+                  <Typography variant='body1' fontWeight='bold'>
+                    Top Expense Category Types (This Month)
                   </Typography>
                 </Box>
 
@@ -299,23 +291,23 @@ export const Home: React.FC = () => {
                     {categoryTypes.map((categoryType, index) => (
                       <React.Fragment key={categoryType.categoryType.id || index}>
                         <ListItem disablePadding sx={{ py: 1.5 }}>
-                          <ListItemIcon sx={{ minWidth: 40 }}>
-                            <Typography variant='body2' color='text.secondary' fontWeight='bold'>
+                          <ListItemIcon sx={{ minWidth: 25 }}>
+                            <Typography variant='body2' color='text.secondary'>
                               {index + 1}.
                             </Typography>
                           </ListItemIcon>
                           <ListItemText
                             primary={
-                              <Typography variant='body1' fontWeight='medium'>
+                              <Typography variant='body2'>
                                 {categoryType.categoryType.name || 'Uncategorized'}
                               </Typography>
                             }
                           />
-                          <Typography variant='body1' fontWeight='bold' color='text.primary'>
+                          <Typography variant='body2' color='text.secondary'>
                             {getFormattedCurrency(categoryType.amount)}
                           </Typography>
                         </ListItem>
-                        {index < categoryTypes.length - 1 && <Divider />}
+                        {<Divider />}
                       </React.Fragment>
                     ))}
                   </List>
