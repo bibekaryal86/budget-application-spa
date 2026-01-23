@@ -233,7 +233,6 @@ export const Home: React.FC = () => {
             justifyContent='center'
             sx={{
               margin: '0 auto',
-              width: '100%',
             }}
           >
             <Grid sx={{ xs: 12, md: 6 }}>
