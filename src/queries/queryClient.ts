@@ -21,7 +21,7 @@ export const useInvalidateTransactionQueryKeys = () => {
     void queryClient.invalidateQueries({ queryKey: ['transactions'] })
     void queryClient.invalidateQueries({ queryKey: ['merchants'] })
     void queryClient.invalidateQueries({ queryKey: ['tags'] })
-    void queryClient.invalidateQueries({ queryKey: ['txnSummary'] })
+    void queryClient.invalidateQueries({ queryKey: ['cfSummary'] })
     void queryClient.invalidateQueries({ queryKey: ['catSummary'] })
   }
 }

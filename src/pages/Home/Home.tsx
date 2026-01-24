@@ -1,20 +1,6 @@
 import { TrendingUp, TrendingDown, Receipt, AttachMoney, ArrowForward, TrendingFlat } from '@mui/icons-material'
-import {
-  Container,
-  Typography,
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  Button,
-  Stack,
-  Paper,
-  Divider,
-  ListItem,
-  List,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material'
+import { Container, Typography, Box, Grid, Card, CardContent, Button, Stack, Paper, Divider } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 import {
   useReadAccounts,
   useReadCategories,
@@ -24,7 +10,7 @@ import {
   useReadTags,
   useReadTransactions,
 } from '@queries'
-import { useReadTransactionSummaries } from '@queries'
+import { useReadCashFlowSummaries } from '@queries'
 import { defaultTransactionParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getTxnAmountColor } from '@utils'
 import { format } from 'date-fns'
@@ -41,22 +27,17 @@ export const Home: React.FC = () => {
   useReadAccounts()
 
   const now = new Date()
-  const { data: tData } = useReadTransactions({
+  const { data: tData, isLoading: isTxnLoading } = useReadTransactions({
     ...defaultTransactionParams,
     beginDate: getBeginningOfMonth(now),
     endDate: getEndOfMonth(now),
   })
-  const { data: tsData } = useReadTransactionSummaries()
-  const { data: csData } = useReadCategorySummaries(true)
+  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries()
+  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(true)
 
-  const transactions = useMemo(() => tData?.transactions ?? [], [tData?.transactions])
-  const categories = useMemo(() => csData?.catSummaries.cData ?? [], [csData?.catSummaries.cData])
-  const categoryTypes = useMemo(() => csData?.catSummaries.ctData ?? [], [csData?.catSummaries.ctData])
-
-  // Calculate financial metrics
-  const financialMetrics = useMemo(() => {
-    const txnSummaries = tsData?.txnSummaries || null
-    if (!txnSummaries)
+  const cashFlowMetrics = useMemo(() => {
+    const cfSummaries = cfsData?.cfSummaries || null
+    if (!cfSummaries)
       return {
         currentIncome: 0,
         currentExpenses: 0,
@@ -66,13 +47,13 @@ export const Home: React.FC = () => {
         savingsChange: 0,
       }
 
-    const currentIncome = txnSummaries.currentMonth.incomes || 0
-    const currentExpenses = txnSummaries.currentMonth.expenses || 0
-    const currentSavings = txnSummaries.currentMonth.savings || 0
+    const currentIncome = cfSummaries.currentMonth.incomes || 0
+    const currentExpenses = cfSummaries.currentMonth.expenses || 0
+    const currentSavings = cfSummaries.currentMonth.savings || 0
 
-    const lastIncome = txnSummaries.previousMonth.incomes || 0
-    const lastExpenses = txnSummaries.previousMonth.expenses || 0
-    const lastSavings = txnSummaries.previousMonth.savings || 0
+    const lastIncome = cfSummaries.previousMonth.incomes || 0
+    const lastExpenses = cfSummaries.previousMonth.expenses || 0
+    const lastSavings = cfSummaries.previousMonth.savings || 0
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
@@ -86,12 +67,42 @@ export const Home: React.FC = () => {
       expenseChange,
       savingsChange,
     }
-  }, [tsData])
+  }, [cfsData])
 
-  // Get recent transactions
+  const categoryMetrics = useMemo(() => {
+    const cSummaries = csData?.catSummaries || null
+    if (!cSummaries) return []
+
+    const previousMonthMap = new Map(cSummaries.previousMonth.map((cs) => [cs.category.id, cs.amount]))
+
+    return cSummaries.currentMonth.map((cs) => ({
+      category: cs.category,
+      currentMonth: cs.amount,
+      previousMonth: previousMonthMap.get(cs.category.id) || 0,
+    }))
+  }, [csData])
+
   const recentTransactions = useMemo(() => {
-    return transactions.slice(0, 7)
-  }, [transactions])
+    const transactions = tData?.transactions || []
+    if (!transactions.length) return []
+
+    const result = []
+    const usedDates = new Set()
+
+    for (const tx of transactions) {
+      if (!tx.txnDate) continue
+      const dateKey = new Date(tx.txnDate).toDateString()
+      usedDates.add(dateKey)
+
+      result.push(tx)
+
+      if (result.length >= 7 && usedDates.size >= 3) {
+        break
+      }
+    }
+
+    return result
+  }, [tData])
 
   const getTrendingIcon = (isExpense: boolean, change: number) => {
     if (change === 0) {
@@ -106,218 +117,186 @@ export const Home: React.FC = () => {
 
   return (
     <Container maxWidth='md' sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent='space-between'
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
-          spacing={{ xs: 2, sm: 0 }}
-        >
-          <Box>
-            <Typography variant='h4' component='h1' fontWeight='medium'>
-              Financial Dashboard
-            </Typography>
-            <Typography variant='body1' color='text.secondary'>
-              Track income, expenses, and savings at a glance
-            </Typography>
-          </Box>
-        </Stack>
-      </Box>
-
       <Box sx={{ width: '100%' }}>
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Grid
-            container
-            spacing={3}
-            justifyContent='center'
-            sx={{
-              margin: '0 auto',
-              width: '100%',
-            }}
-          >
-            <Grid sx={{ xs: 12, md: 4 }}>
-              <Card elevation={2}>
-                <CardContent>
-                  <Box display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box>
-                      <Typography variant='body2' color='text.secondary' gutterBottom>
-                        Income (This Month)
-                      </Typography>
-                      <Typography variant='h4' component='div' fontWeight='bold' color='success.main'>
-                        {getFormattedCurrency(financialMetrics.currentIncome)}
-                      </Typography>
-                      <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        {getTrendingIcon(false, financialMetrics.incomeChange)}
-                        <Typography
-                          variant='body2'
-                          color={financialMetrics.incomeChange > 0 ? 'success.main' : 'error.main'}
-                        >
-                          {getFormattedCurrency(financialMetrics.incomeChange)}
-                        </Typography>
-                        <Typography variant='body2' color='text.secondary'>
-                          vs last month
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <AttachMoney sx={{ fontSize: 48, color: 'success.main', opacity: 0.8 }} />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+        <Typography variant='h5' component='h2' fontWeight='medium' sx={{ mb: 1 }}>
+          Cash Flow Summary
+        </Typography>
 
-            <Grid sx={{ xs: 12, md: 4 }}>
-              <Card elevation={2}>
-                <CardContent>
-                  <Box display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box>
-                      <Typography variant='body2' color='text.secondary' gutterBottom>
-                        Expenses (This Month)
-                      </Typography>
-                      <Typography variant='h4' component='div' fontWeight='bold' color='error.main'>
-                        {getFormattedCurrency(financialMetrics.currentExpenses)}
-                      </Typography>
-                      <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        {getTrendingIcon(true, financialMetrics.expenseChange)}
-                        <Typography
-                          variant='body2'
-                          color={financialMetrics.expenseChange < 0 ? 'success.main' : 'error.main'}
-                        >
-                          {getFormattedCurrency(financialMetrics.expenseChange)}
+        {isCfsLoading ? (
+          <Box display='flex' justifyContent='center' my={4}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Grid
+              container
+              spacing={3}
+              justifyContent='center'
+              sx={{
+                margin: '0 auto',
+                width: '100%',
+              }}
+            >
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Income (This Month)
                         </Typography>
-                        <Typography variant='body2' color='text.secondary'>
-                          vs last month
+                        <Typography variant='h4' component='div' fontWeight='bold' color='success.main'>
+                          {getFormattedCurrency(cashFlowMetrics.currentIncome)}
                         </Typography>
-                      </Box>
-                    </Box>
-                    <Receipt sx={{ fontSize: 48, color: 'error.main', opacity: 0.8 }} />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid sx={{ xs: 12, md: 4 }}>
-              <Card elevation={2}>
-                <CardContent>
-                  <Box display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box>
-                      <Typography variant='body2' color='text.secondary' gutterBottom>
-                        Savings (This Month)
-                      </Typography>
-                      <Typography variant='h4' component='div' fontWeight='bold' color='warning.main'>
-                        {getFormattedCurrency(financialMetrics.currentSavings)}
-                      </Typography>
-                      <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                        {getTrendingIcon(false, financialMetrics.savingsChange)}
-                        <Typography
-                          variant='body2'
-                          color={financialMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
-                        >
-                          {getFormattedCurrency(financialMetrics.savingsChange)}
-                        </Typography>
-                        <Typography variant='body2' color='text.secondary'>
-                          vs last month
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <AttachMoney sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Grid
-            container
-            spacing={2}
-            justifyContent='center'
-            sx={{
-              margin: '0 auto',
-              width: '100%',
-            }}
-          >
-            <Grid sx={{ xs: 12, md: 6 }}>
-              <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
-                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='body1' fontWeight='bold'>
-                    Top Expense Categories (This Month)
-                  </Typography>
-                </Box>
-
-                {categories.length === 0 ? (
-                  <Typography variant='body2' sx={{ py: 3, textAlign: 'center' }}>
-                    No category data available
-                  </Typography>
-                ) : (
-                  <List disablePadding>
-                    {categories.map((category, index) => (
-                      <React.Fragment key={category.category.id || index}>
-                        {<Divider />}
-                        <ListItem disablePadding sx={{ py: 1.5 }}>
-                          <ListItemIcon sx={{ minWidth: 25 }}>
-                            <Typography variant='body2' color='text.secondary'>
-                              {index + 1}.
-                            </Typography>
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant='body2'>{category.category.name || 'Uncategorized'}</Typography>
-                            }
-                          />
-                          <Typography variant='body2' color='text.secondary'>
-                            {getFormattedCurrency(category.amount)}
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(false, cashFlowMetrics.incomeChange)}
+                          <Typography
+                            variant='body2'
+                            color={cashFlowMetrics.incomeChange > 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(cashFlowMetrics.incomeChange)}
                           </Typography>
-                        </ListItem>
-                      </React.Fragment>
-                    ))}
-                  </List>
-                )}
-              </Paper>
-            </Grid>
+                          <Typography variant='body2' color='text.secondary'>
+                            vs last month
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <AttachMoney sx={{ fontSize: 48, color: 'success.main', opacity: 0.8 }} />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
 
-            <Grid sx={{ xs: 12, md: 6 }}>
-              <Paper elevation={2} sx={{ p: 3, height: '100%' }}>
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Expenses (This Month)
+                        </Typography>
+                        <Typography variant='h4' component='div' fontWeight='bold' color='error.main'>
+                          {getFormattedCurrency(cashFlowMetrics.currentExpenses)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(true, cashFlowMetrics.expenseChange)}
+                          <Typography
+                            variant='body2'
+                            color={cashFlowMetrics.expenseChange < 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(cashFlowMetrics.expenseChange)}
+                          </Typography>
+                          <Typography variant='body2' color='text.secondary'>
+                            vs last month
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Receipt sx={{ fontSize: 48, color: 'error.main', opacity: 0.8 }} />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Savings (This Month)
+                        </Typography>
+                        <Typography variant='h4' component='div' fontWeight='bold' color='warning.main'>
+                          {getFormattedCurrency(cashFlowMetrics.currentSavings)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
+                          <Typography
+                            variant='body2'
+                            color={cashFlowMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(cashFlowMetrics.savingsChange)}
+                          </Typography>
+                          <Typography variant='body2' color='text.secondary'>
+                            vs last month
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <AttachMoney sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        <Divider sx={{ my: 4 }} />
+
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Grid
+            container
+            spacing={1}
+            justifyContent='center'
+            sx={{
+              margin: '0 auto',
+              width: '100%',
+            }}
+          >
+            <Grid sx={{ xs: 12, md: 12, width: '100%' }}>
+              <Paper elevation={2} sx={{ p: 3 }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='body1' fontWeight='bold'>
-                    Top Expense Category Types (This Month)
+                  <Typography variant='h6' fontWeight='medium'>
+                    Top Spending Categories
                   </Typography>
+                  <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
+                    View All
+                  </Button>
                 </Box>
 
-                {categoryTypes.length === 0 ? (
+                {categoryMetrics.length === 0 ? (
                   <Typography variant='body2' color='text.secondary' sx={{ py: 3, textAlign: 'center' }}>
-                    No category type data available
+                    No categories data available...
                   </Typography>
+                ) : isCsLoading ? (
+                  <Box display='flex' justifyContent='center' my={4}>
+                    <CircularProgress />
+                  </Box>
                 ) : (
-                  <List disablePadding>
-                    {categoryTypes.map((categoryType, index) => (
-                      <React.Fragment key={categoryType.categoryType.id || index}>
-                        {<Divider />}
-                        <ListItem disablePadding sx={{ py: 1.5 }}>
-                          <ListItemIcon sx={{ minWidth: 25 }}>
-                            <Typography variant='body2' color='text.secondary'>
-                              {index + 1}.
+                  <Stack spacing={2}>
+                    {categoryMetrics.map((category) => (
+                      <Paper
+                        key={category.category.id}
+                        variant='outlined'
+                        sx={{
+                          p: 2,
+                          '&:hover': {
+                            backgroundColor: 'action.hover',
+                          },
+                        }}
+                      >
+                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                          <Box>
+                            <Typography variant='body1' fontWeight='medium'>
+                              {category.category.name}
                             </Typography>
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant='body2'>
-                                {categoryType.categoryType.name || 'Uncategorized'}
-                              </Typography>
-                            }
-                          />
-                          <Typography variant='body2' color='text.secondary'>
-                            {getFormattedCurrency(categoryType.amount)}
+                            <Typography variant='body2' color='text.secondary'>
+                              {category.category.categoryType.name}
+                            </Typography>
+                          </Box>
+                          <Typography variant='body1' fontWeight='bold' color='error.main'>
+                            {getFormattedCurrency(category.currentMonth)}
                           </Typography>
-                        </ListItem>
-                      </React.Fragment>
+                        </Box>
+                      </Paper>
                     ))}
-                  </List>
+                  </Stack>
                 )}
               </Paper>
             </Grid>
           </Grid>
         </Box>
+
+        <Divider sx={{ my: 4 }} />
 
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Grid
@@ -342,8 +321,12 @@ export const Home: React.FC = () => {
 
                 {recentTransactions.length === 0 ? (
                   <Typography variant='body2' color='text.secondary' sx={{ py: 3, textAlign: 'center' }}>
-                    No transactions yet. Add your first transaction!
+                    No transactions data available...
                   </Typography>
+                ) : isTxnLoading ? (
+                  <Box display='flex' justifyContent='center' my={4}>
+                    <CircularProgress />
+                  </Box>
                 ) : (
                   <Stack spacing={2}>
                     {recentTransactions.map((transaction) => (

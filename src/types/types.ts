@@ -201,7 +201,7 @@ export interface TransactionMerchants {
 }
 
 // Reports
-export interface TransactionSummary {
+export interface CashFlowSummary {
   beginDate: Date
   endDate: Date
   incomes: number
@@ -209,27 +209,22 @@ export interface TransactionSummary {
   savings: number
 }
 
-export interface TransactionSummaries {
-  currentMonth: TransactionSummary
-  previousMonth: TransactionSummary
+export interface CashFlowSummaries {
+  currentMonth: CashFlowSummary
+  previousMonth: CashFlowSummary
   metadata: ResponseMetadata
 }
 
-export interface CategoryTypeSummary {
-  categoryType: CategoryType
-  amount: number
-}
-
 export interface CategorySummary {
+  beginDate: Date
+  endDate: Date
   category: Category
   amount: number
 }
 
 export interface CategorySummaries {
-  beginDate: Date
-  endDate: Date
-  cData: CategorySummary[]
-  ctData: CategoryTypeSummary[]
+  currentMonth: CategorySummary[]
+  previousMonth: CategorySummary[]
   metadata: ResponseMetadata
 }
 
