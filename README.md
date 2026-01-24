@@ -5,11 +5,10 @@ TODO
   - Show unbudgeted but with txn
   - Show overbudget items
   - Show under budget items
-  - Show Transactions without Tags
-  - Report page shows categories and tags for a given month
-  - Click on Incomes/Expenses/Savings lead to transactions/reports page
-  - On home page, show graph of category type and categories side by side
-    - would it be possible to plot them all in a single graph?
+- Insight Page
+  - Show current month and previous month
+  - show option to choose month/year or just year
+  - For cash flow, add graph
 
 ## Overview
 
