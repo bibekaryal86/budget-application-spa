@@ -262,32 +262,73 @@ export const Home: React.FC = () => {
                   </Box>
                 ) : (
                   <Stack spacing={2}>
-                    {categoryMetrics.map((category) => (
-                      <Paper
-                        key={category.category.id}
-                        variant='outlined'
-                        sx={{
-                          p: 2,
-                          '&:hover': {
-                            backgroundColor: 'action.hover',
-                          },
-                        }}
-                      >
-                        <Box display='flex' justifyContent='space-between' alignItems='center'>
-                          <Box>
-                            <Typography variant='body1' fontWeight='medium'>
-                              {category.category.name}
-                            </Typography>
-                            <Typography variant='body2' color='text.secondary'>
-                              {category.category.categoryType.name}
-                            </Typography>
+                    {categoryMetrics.map((category) => {
+                      const change = category.currentMonth - category.previousMonth
+                      const isIncrease = change > 0
+                      const hasChange = change !== 0
+
+                      return (
+                        <Paper
+                          key={category.category.id}
+                          variant='outlined'
+                          sx={{
+                            p: 2,
+                            '&:hover': {
+                              backgroundColor: 'action.hover',
+                            },
+                          }}
+                        >
+                          <Box display='flex' justifyContent='space-between' alignItems='center'>
+                            <Box>
+                              <Typography variant='body1' fontWeight='medium'>
+                                {category.category.name}
+                              </Typography>
+                              <Typography variant='body2' color='text.secondary'>
+                                {category.category.categoryType.name}
+                              </Typography>
+                            </Box>
+                            <Box display='flex' flexDirection='column' alignItems='flex-end' gap={0.5}>
+                              <Typography variant='body1' fontWeight='bold' color='error.main'>
+                                {getFormattedCurrency(category.currentMonth)}
+                              </Typography>
+                              <Box display='flex' alignItems='center' gap={0.5}>
+                                {hasChange && (
+                                  <Box
+                                    component='span'
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      color: isIncrease ? 'error.main' : 'success.main',
+                                    }}
+                                  >
+                                    {isIncrease ? '↑' : '↓'}
+                                  </Box>
+                                )}
+                                <Typography
+                                  variant='caption'
+                                  color='text.secondary'
+                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                                >
+                                  {getFormattedCurrency(category.previousMonth)}
+                                  {hasChange && (
+                                    <Box
+                                      component='span'
+                                      sx={{
+                                        color: isIncrease ? 'error.main' : 'success.main',
+                                        fontWeight: 'medium',
+                                      }}
+                                    >
+                                      ({isIncrease ? '+' : ''}
+                                      {getFormattedCurrency(Math.abs(change))})
+                                    </Box>
+                                  )}
+                                </Typography>
+                              </Box>
+                            </Box>
                           </Box>
-                          <Typography variant='body1' fontWeight='bold' color='error.main'>
-                            {getFormattedCurrency(category.currentMonth)}
-                          </Typography>
-                        </Box>
-                      </Paper>
-                    ))}
+                        </Paper>
+                      )
+                    })}
                   </Stack>
                 )}
               </Paper>
