@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Receipt, AttachMoney, ArrowForward, TrendingFlat } from '@mui/icons-material'
+import { TrendingUp, TrendingDown, ArrowForward, TrendingFlat } from '@mui/icons-material'
 import { Container, Typography, Box, Grid, Card, CardContent, Button, Stack, Paper, Divider } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import {
@@ -27,6 +27,8 @@ export const Home: React.FC = () => {
   useReadAccounts()
 
   const now = new Date()
+  const currentMonth = format(now, 'MMMM')
+
   const { data: tData, isLoading: isTxnLoading } = useReadTransactions({
     ...defaultTransactionParams,
     beginDate: getBeginningOfMonth(now),
@@ -116,10 +118,10 @@ export const Home: React.FC = () => {
   }
 
   return (
-    <Container maxWidth='md' sx={{ py: 4 }}>
+    <Container maxWidth='sm' sx={{ py: 4 }}>
       <Box sx={{ width: '100%' }}>
         <Typography variant='h5' component='h2' fontWeight='medium' sx={{ mb: 1 }}>
-          Cash Flow Summary
+          {currentMonth} Cash Flows
         </Typography>
 
         {isCfsLoading ? (
@@ -143,9 +145,9 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Income (This Month)
+                          Income
                         </Typography>
-                        <Typography variant='h4' component='div' fontWeight='bold' color='success.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentIncome)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -156,12 +158,11 @@ export const Home: React.FC = () => {
                           >
                             {getFormattedCurrency(cashFlowMetrics.incomeChange)}
                           </Typography>
-                          <Typography variant='body2' color='text.secondary'>
-                            vs last month
-                          </Typography>
                         </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
                       </Box>
-                      <AttachMoney sx={{ fontSize: 48, color: 'success.main', opacity: 0.8 }} />
                     </Box>
                   </CardContent>
                 </Card>
@@ -173,9 +174,9 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Expenses (This Month)
+                          Expenses
                         </Typography>
-                        <Typography variant='h4' component='div' fontWeight='bold' color='error.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentExpenses)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -186,12 +187,11 @@ export const Home: React.FC = () => {
                           >
                             {getFormattedCurrency(cashFlowMetrics.expenseChange)}
                           </Typography>
-                          <Typography variant='body2' color='text.secondary'>
-                            vs last month
-                          </Typography>
                         </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
                       </Box>
-                      <Receipt sx={{ fontSize: 48, color: 'error.main', opacity: 0.8 }} />
                     </Box>
                   </CardContent>
                 </Card>
@@ -203,9 +203,9 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Savings (This Month)
+                          Savings
                         </Typography>
-                        <Typography variant='h4' component='div' fontWeight='bold' color='warning.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -216,12 +216,11 @@ export const Home: React.FC = () => {
                           >
                             {getFormattedCurrency(cashFlowMetrics.savingsChange)}
                           </Typography>
-                          <Typography variant='body2' color='text.secondary'>
-                            vs last month
-                          </Typography>
                         </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
                       </Box>
-                      <AttachMoney sx={{ fontSize: 48, color: 'warning.main', opacity: 0.8 }} />
                     </Box>
                   </CardContent>
                 </Card>
@@ -246,7 +245,7 @@ export const Home: React.FC = () => {
               <Paper elevation={2} sx={{ p: 3 }}>
                 <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
                   <Typography variant='h6' fontWeight='medium'>
-                    Top Spending Categories
+                    {currentMonth} Top Spending Categories
                   </Typography>
                   <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
                     View All
