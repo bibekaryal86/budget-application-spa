@@ -1,4 +1,4 @@
-import { AutoComplete, CategoryAndTypesList } from '@components'
+import { CategoryAndTypesList } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
 import { Typography, TextField, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -84,13 +84,27 @@ export const TransactionFilters: React.FC = () => {
             </LocalizationProvider>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <AutoComplete
-              value={selectedMerchant || ''}
-              onChange={setSelectedMerchant}
-              dataList={merchantsList}
-              label='Merchant'
-              TextFieldProps={{
-                size: 'small',
+            <Autocomplete
+              fullWidth
+              size='small'
+              options={merchantsList}
+              getOptionLabel={(o) => o}
+              value={merchantsList.find((m) => m === selectedMerchant) || null}
+              onChange={(_, v) => setSelectedMerchant(v || '')}
+              renderInput={(params) => {
+                const { InputLabelProps, ...rest } = params
+                return (
+                  <TextField
+                    {...rest}
+                    label='Merchant'
+                    size='small'
+                    slotProps={{
+                      inputLabel: {
+                        className: InputLabelProps?.className ?? '',
+                      },
+                    }}
+                  />
+                )
               }}
             />
           </Grid>

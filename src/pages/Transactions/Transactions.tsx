@@ -5,7 +5,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
 import { useTxnStore } from '@stores'
-import { defaultTransactionParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth } from '@utils'
 import React, { useMemo } from 'react'
 
@@ -29,9 +28,13 @@ export const Transactions: React.FC = () => {
 
   const now = new Date()
   const { data, isLoading, error } = useReadTransactions({
-    ...defaultTransactionParams,
     beginDate: selectedBeginDate || getBeginningOfMonth(now),
     endDate: selectedEndDate || getEndOfMonth(now),
+    merchants: [selectedMerchant || ''],
+    catIds: [selectedCategoryId || ''],
+    catTypeIds: [selectedCategoryTypeId || ''],
+    accIds: [selectedAccountId || ''],
+    tags: [],
   })
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
 
@@ -49,61 +52,6 @@ export const Transactions: React.FC = () => {
     selectedAccountId != null ||
     selectedCategoryTypeId != null ||
     selectedCategoryId != null
-
-  const filteredTxns = useMemo(() => {
-    return transactions.filter((txn) => {
-      if (selectedBeginDate && txn.txnDate) {
-        const txnDate = new Date(txn.txnDate)
-        if (txnDate < new Date(selectedBeginDate)) return false
-      }
-      if (selectedEndDate && txn.txnDate) {
-        const txnDate = new Date(txn.txnDate)
-        if (txnDate > new Date(selectedEndDate)) return false
-      }
-
-      if (selectedMerchant && !txn.merchant?.toLowerCase().includes(selectedMerchant.toLowerCase())) {
-        return false
-      }
-
-      if (selectedAccountId && txn.account.id !== selectedAccountId) {
-        return false
-      }
-
-      if (!selectedCategoryTypeId && !selectedCategoryId) {
-        return true
-      }
-
-      const hasMatchingItem = txn.items?.some((item) => {
-        const category = item.category
-        const categoryTypeId = category?.categoryType?.id
-        const categoryId = category?.id
-
-        if (selectedCategoryTypeId && selectedCategoryId) {
-          return categoryTypeId === selectedCategoryTypeId && categoryId === selectedCategoryId
-        }
-
-        if (selectedCategoryTypeId && !selectedCategoryId) {
-          return categoryTypeId === selectedCategoryTypeId
-        }
-
-        if (!selectedCategoryTypeId && selectedCategoryId) {
-          return categoryId === selectedCategoryId
-        }
-
-        return false
-      })
-
-      return hasMatchingItem || false
-    })
-  }, [
-    transactions,
-    selectedBeginDate,
-    selectedEndDate,
-    selectedMerchant,
-    selectedAccountId,
-    selectedCategoryTypeId,
-    selectedCategoryId,
-  ])
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
@@ -141,7 +89,7 @@ export const Transactions: React.FC = () => {
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <FilterAltOffIcon color='action' />
           <Typography variant='body2' color='text.secondary'>
-            Showing {filteredTxns.length} of {transactions.length} transactions
+            Showing {transactions.length} of {transactions.length} transactions
           </Typography>
           <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
         </Box>
@@ -153,7 +101,7 @@ export const Transactions: React.FC = () => {
         </Box>
       )}
 
-      {!isLoading && !error && filteredTxns.length === 0 && (
+      {!isLoading && !error && transactions.length === 0 && (
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant='h6' gutterBottom>
             No transactions found
@@ -166,12 +114,12 @@ export const Transactions: React.FC = () => {
         </Paper>
       )}
 
-      {!isLoading && !error && filteredTxns.length > 0 && <TransactionsTable transactions={filteredTxns} />}
+      {!isLoading && !error && transactions.length > 0 && <TransactionsTable transactions={transactions} />}
 
-      {!isLoading && !error && filteredTxns.length > 0 && (
+      {!isLoading && !error && transactions.length > 0 && (
         <Box display='flex' justifyContent='center' mt={3}>
           <Typography variant='body2' color='text.secondary'>
-            Showing {filteredTxns.length} transactions
+            Showing {transactions.length} transactions
           </Typography>
         </Box>
       )}
