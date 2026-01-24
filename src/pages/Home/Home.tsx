@@ -147,7 +147,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Income
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
+                        <Typography variant='h5' component='div' fontWeight='bold' color='success.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentIncome)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -176,7 +176,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Expenses
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
+                        <Typography variant='h5' component='div' fontWeight='bold' color='error.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentExpenses)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -205,7 +205,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Savings
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
+                        <Typography variant='h5' component='div' fontWeight='bold' color='warning.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
