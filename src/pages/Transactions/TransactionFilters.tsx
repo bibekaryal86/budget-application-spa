@@ -1,10 +1,10 @@
-import { CategoryAndTypesList } from '@components'
+import { AutoCompleteMultiple, CategoryAndTypesList } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
 import { Typography, TextField, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts } from '@queries'
+import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts, useReadTags } from '@queries'
 import { useTxnStore } from '@stores'
 import { getFormattedDate } from '@utils'
 import React, { useMemo } from 'react'
@@ -23,16 +23,20 @@ export const TransactionFilters: React.FC = () => {
     setSelectedCategoryId,
     selectedCategoryTypeId,
     setSelectedCategoryTypeId,
+    selectedTags,
+    setSelectedTags,
     resetTxnState,
   } = useTxnStore()
 
   const { data: ctData } = useReadCategoryTypes()
   const { data: cData } = useReadCategories()
   const { data: mData } = useReadMerchants()
+  const { data: tData } = useReadTags()
   const { data: aData } = useReadAccounts()
 
   const accountsList = useMemo(() => aData?.accounts ?? [], [aData])
   const merchantsList = useMemo(() => mData?.merchants ?? [], [mData])
+  const tagsList = useMemo(() => tData?.tags ?? [], [tData])
   const categoriesList = useMemo(() => cData?.categories ?? [], [cData])
   const categoryTypesList = useMemo(() => ctData?.categoryTypes ?? [], [ctData])
 
@@ -63,7 +67,7 @@ export const TransactionFilters: React.FC = () => {
             margin: '0 auto',
           }}
         >
-          <Grid size={{ xs: 12, sm: 6, md: 1.5 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Start Date'
@@ -73,7 +77,7 @@ export const TransactionFilters: React.FC = () => {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 1.5 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='End Date'
@@ -82,31 +86,6 @@ export const TransactionFilters: React.FC = () => {
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />
             </LocalizationProvider>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Autocomplete
-              fullWidth
-              size='small'
-              options={merchantsList}
-              getOptionLabel={(o) => o}
-              value={merchantsList.find((m) => m === selectedMerchant) || null}
-              onChange={(_, v) => setSelectedMerchant(v || '')}
-              renderInput={(params) => {
-                const { InputLabelProps, ...rest } = params
-                return (
-                  <TextField
-                    {...rest}
-                    label='Merchant'
-                    size='small'
-                    slotProps={{
-                      inputLabel: {
-                        className: InputLabelProps?.className ?? '',
-                      },
-                    }}
-                  />
-                )
-              }}
-            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Autocomplete
@@ -133,7 +112,7 @@ export const TransactionFilters: React.FC = () => {
               }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <CategoryAndTypesList
               selectedCategoryTypeId={selectedCategoryTypeId || ''}
               selectedCategoryId={selectedCategoryId || ''}
@@ -144,8 +123,42 @@ export const TransactionFilters: React.FC = () => {
               size='small'
             />
           </Grid>
-
-          <Grid size={{ xs: 12, md: 12 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Autocomplete
+              fullWidth
+              size='small'
+              options={merchantsList}
+              getOptionLabel={(o) => o}
+              value={merchantsList.find((m) => m === selectedMerchant) || null}
+              onChange={(_, v) => setSelectedMerchant(v || '')}
+              renderInput={(params) => {
+                const { InputLabelProps, ...rest } = params
+                return (
+                  <TextField
+                    {...rest}
+                    label='Merchant'
+                    size='small'
+                    slotProps={{
+                      inputLabel: {
+                        className: InputLabelProps?.className ?? '',
+                      },
+                    }}
+                  />
+                )
+              }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <AutoCompleteMultiple
+              value={selectedTags || []}
+              onChange={(tags: string[]) => setSelectedTags(tags)}
+              options={tagsList || []}
+              label='Tags'
+              placeholder='Hit Enter to Add Tags...'
+              size='small'
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Stack direction='row' spacing={2} justifyContent='center'>
               <Button
                 variant='outlined'

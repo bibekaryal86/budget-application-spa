@@ -13,6 +13,7 @@ interface TransactionState {
   selectedAccountId: string | null
   selectedCategoryTypeId: string | null
   selectedCategoryId: string | null
+  selectedTags: string[] | null
 
   selectedTxn: Transaction | null
 
@@ -22,6 +23,7 @@ interface TransactionState {
   setSelectedAccountId: (v: string | null) => void
   setSelectedCategoryTypeId: (v: string | null) => void
   setSelectedCategoryId: (v: string | null) => void
+  setSelectedTags: (v: string[]) => void
 
   setSelectedTxn: (v: Transaction | null) => void
 
@@ -43,6 +45,7 @@ export const useTxnStore = create<TransactionState>()(
       selectedCategoryTypeId: null,
       selectedCategoryId: null,
       selectedTxn: null,
+      selectedTags: null,
 
       setSelectedBeginDate: (v) => set({ selectedBeginDate: v }, false, 'txn/setSelectedBeginDate'),
 
@@ -55,6 +58,8 @@ export const useTxnStore = create<TransactionState>()(
       setSelectedCategoryTypeId: (v) => set({ selectedCategoryTypeId: v }, false, 'txn/setSelectedCategoryTypeId'),
 
       setSelectedCategoryId: (v) => set({ selectedCategoryId: v }, false, 'txn/setSelectedCategoryId'),
+
+      setSelectedTags: (v) => set({ selectedTags: v }, false, 'txn/setSelectedTags'),
 
       setSelectedTxn: (t) => set({ selectedTxn: t }, false, 'txn/setSelectedTxn'),
 
@@ -91,6 +96,7 @@ export const useTxnStore = create<TransactionState>()(
             selectedAccountId: null,
             selectedCategoryTypeId: null,
             selectedCategoryId: null,
+            selectedTags: null,
             selectedTxn: null,
           },
           false,

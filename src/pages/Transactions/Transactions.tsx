@@ -23,6 +23,7 @@ export const Transactions: React.FC = () => {
     selectedAccountId,
     selectedCategoryId,
     selectedCategoryTypeId,
+    selectedTags,
     openTxnModal,
     selectedTxn,
   } = useTxnStore()
@@ -42,7 +43,7 @@ export const Transactions: React.FC = () => {
     catIds: selectedCategoryId ? [selectedCategoryId] : [],
     catTypeIds: selectedCategoryTypeId ? [selectedCategoryTypeId] : [],
     accIds: selectedAccountId ? [selectedAccountId] : [],
-    tags: [],
+    tags: selectedTags ? selectedTags : [],
   })
 
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
@@ -85,7 +86,8 @@ export const Transactions: React.FC = () => {
     selectedMerchant != null ||
     selectedAccountId != null ||
     selectedCategoryTypeId != null ||
-    selectedCategoryId != null
+    selectedCategoryId != null ||
+    (selectedTags != null && selectedTags.length > 0)
 
   const getDisplayRange = () => {
     if (pageInfo.totalItems === 0) return '0'
@@ -95,7 +97,7 @@ export const Transactions: React.FC = () => {
   }
 
   return (
-    <Container maxWidth='xl' sx={{ py: 4 }}>
+    <Container maxWidth='lg' sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
