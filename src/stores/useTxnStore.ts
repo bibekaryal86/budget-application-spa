@@ -7,23 +7,23 @@ interface TransactionState {
   isTxnModalOpen: boolean
   txnModalAction: ModalAction | null
 
-  selectedBeginDate: string | null
-  selectedEndDate: string | null
-  selectedMerchant: string | null
-  selectedAccountId: string | null
-  selectedCategoryTypeId: string | null
-  selectedCategoryId: string | null
-  selectedTags: string[] | null
+  txnFilterBeginDate: string | null
+  txnFilterEndDate: string | null
+  txnFilterMerchant: string | null
+  txnFilterAccountId: string | null
+  txnFilterCategoryTypeId: string | null
+  txnFilterCategoryId: string | null
+  txnFilterTags: string[] | null
 
   selectedTxn: Transaction | null
 
-  setSelectedBeginDate: (v: string | null) => void
-  setSelectedEndDate: (v: string | null) => void
-  setSelectedMerchant: (v: string | null) => void
-  setSelectedAccountId: (v: string | null) => void
-  setSelectedCategoryTypeId: (v: string | null) => void
-  setSelectedCategoryId: (v: string | null) => void
-  setSelectedTags: (v: string[]) => void
+  setTxnFilterBeginDate: (v: string | null) => void
+  setTxnFilterEndDate: (v: string | null) => void
+  setTxnFilterMerchant: (v: string | null) => void
+  setTxnFilterAccountId: (v: string | null) => void
+  setTxnFilterCategoryTypeId: (v: string | null) => void
+  setTxnFilterCategoryId: (v: string | null) => void
+  setTxnFilterTags: (v: string[]) => void
 
   setSelectedTxn: (v: Transaction | null) => void
 
@@ -38,28 +38,28 @@ export const useTxnStore = create<TransactionState>()(
     (set) => ({
       isTxnModalOpen: false,
       txnModalAction: null,
-      selectedBeginDate: null,
-      selectedEndDate: null,
-      selectedMerchant: null,
-      selectedAccountId: null,
-      selectedCategoryTypeId: null,
-      selectedCategoryId: null,
+      txnFilterBeginDate: null,
+      txnFilterEndDate: null,
+      txnFilterMerchant: null,
+      txnFilterAccountId: null,
+      txnFilterCategoryTypeId: null,
+      txnFilterCategoryId: null,
+      txnFilterTags: null,
       selectedTxn: null,
-      selectedTags: null,
 
-      setSelectedBeginDate: (v) => set({ selectedBeginDate: v }, false, 'txn/setSelectedBeginDate'),
+      setTxnFilterBeginDate: (v) => set({ txnFilterBeginDate: v }, false, 'txn/setTxnFilterBeginDate'),
 
-      setSelectedEndDate: (v) => set({ selectedEndDate: v }, false, 'txn/setSelectedEndDate'),
+      setTxnFilterEndDate: (v) => set({ txnFilterEndDate: v }, false, 'txn/setTxnFilterEndDate'),
 
-      setSelectedMerchant: (v) => set({ selectedMerchant: v }, false, 'txn/setSelectedMerchant'),
+      setTxnFilterMerchant: (v) => set({ txnFilterMerchant: v }, false, 'txn/setTxnFilterMerchant'),
 
-      setSelectedAccountId: (v) => set({ selectedAccountId: v }, false, 'txn/setSelectedAccountId'),
+      setTxnFilterAccountId: (v) => set({ txnFilterAccountId: v }, false, 'txn/setTxnFilterAccountId'),
 
-      setSelectedCategoryTypeId: (v) => set({ selectedCategoryTypeId: v }, false, 'txn/setSelectedCategoryTypeId'),
+      setTxnFilterCategoryTypeId: (v) => set({ txnFilterCategoryTypeId: v }, false, 'txn/setTxnFilterCategoryTypeId'),
 
-      setSelectedCategoryId: (v) => set({ selectedCategoryId: v }, false, 'txn/setSelectedCategoryId'),
+      setTxnFilterCategoryId: (v) => set({ txnFilterCategoryId: v }, false, 'txn/setTxnFilterCategoryId'),
 
-      setSelectedTags: (v) => set({ selectedTags: v }, false, 'txn/setSelectedTags'),
+      setTxnFilterTags: (v) => set({ txnFilterTags: v }, false, 'txn/setTxnFilterTags'),
 
       setSelectedTxn: (t) => set({ selectedTxn: t }, false, 'txn/setSelectedTxn'),
 
@@ -90,13 +90,13 @@ export const useTxnStore = create<TransactionState>()(
           {
             isTxnModalOpen: false,
             txnModalAction: null,
-            selectedBeginDate: null,
-            selectedEndDate: null,
-            selectedMerchant: null,
-            selectedAccountId: null,
-            selectedCategoryTypeId: null,
-            selectedCategoryId: null,
-            selectedTags: null,
+            txnFilterBeginDate: null,
+            txnFilterEndDate: null,
+            txnFilterMerchant: null,
+            txnFilterAccountId: null,
+            txnFilterCategoryTypeId: null,
+            txnFilterCategoryId: null,
+            txnFilterTags: null,
             selectedTxn: null,
           },
           false,

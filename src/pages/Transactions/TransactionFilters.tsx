@@ -11,20 +11,20 @@ import React, { useMemo } from 'react'
 
 export const TransactionFilters: React.FC = () => {
   const {
-    selectedBeginDate,
-    setSelectedBeginDate,
-    selectedEndDate,
-    setSelectedEndDate,
-    selectedMerchant,
-    setSelectedMerchant,
-    selectedAccountId,
-    setSelectedAccountId,
-    selectedCategoryId,
-    setSelectedCategoryId,
-    selectedCategoryTypeId,
-    setSelectedCategoryTypeId,
-    selectedTags,
-    setSelectedTags,
+    txnFilterBeginDate,
+    setTxnFilterBeginDate,
+    txnFilterEndDate,
+    setTxnFilterEndDate,
+    txnFilterMerchant,
+    setTxnFilterMerchant,
+    txnFilterAccountId,
+    setTxnFilterAccountId,
+    txnFilterCategoryId,
+    setTxnFilterCategoryId,
+    txnFilterCategoryTypeId,
+    setTxnFilterCategoryTypeId,
+    txnFilterTags,
+    setTxnFilterTags,
     resetTxnState,
   } = useTxnStore()
 
@@ -71,8 +71,8 @@ export const TransactionFilters: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Start Date'
-                value={selectedBeginDate ? new Date(selectedBeginDate + 'T00:00:00') : null}
-                onChange={(date) => setSelectedBeginDate(getFormattedDate(date))}
+                value={txnFilterBeginDate ? new Date(txnFilterBeginDate + 'T00:00:00') : null}
+                onChange={(date) => setTxnFilterBeginDate(getFormattedDate(date))}
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />
             </LocalizationProvider>
@@ -81,8 +81,8 @@ export const TransactionFilters: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='End Date'
-                value={selectedEndDate ? new Date(selectedEndDate) : null}
-                onChange={(date) => setSelectedEndDate(getFormattedDate(date) || null)}
+                value={txnFilterEndDate ? new Date(txnFilterEndDate) : null}
+                onChange={(date) => setTxnFilterEndDate(getFormattedDate(date) || null)}
                 slotProps={{ textField: { fullWidth: true, size: 'small' } }}
               />
             </LocalizationProvider>
@@ -93,8 +93,8 @@ export const TransactionFilters: React.FC = () => {
               size='small'
               options={accountsList}
               getOptionLabel={(o) => o.name}
-              value={accountsList.find((a) => a.id === selectedAccountId) || null}
-              onChange={(_, v) => setSelectedAccountId(v?.id || '')}
+              value={accountsList.find((a) => a.id === txnFilterAccountId) || null}
+              onChange={(_, v) => setTxnFilterAccountId(v?.id || '')}
               renderInput={(params) => {
                 const { InputLabelProps, ...rest } = params
                 return (
@@ -114,10 +114,10 @@ export const TransactionFilters: React.FC = () => {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <CategoryAndTypesList
-              selectedCategoryTypeId={selectedCategoryTypeId || ''}
-              selectedCategoryId={selectedCategoryId || ''}
-              setSelectedCategoryTypeId={setSelectedCategoryTypeId}
-              setSelectedCategoryId={setSelectedCategoryId}
+              selectedCategoryTypeId={txnFilterCategoryTypeId || ''}
+              selectedCategoryId={txnFilterCategoryId || ''}
+              setSelectedCategoryTypeId={setTxnFilterCategoryTypeId}
+              setSelectedCategoryId={setTxnFilterCategoryId}
               categoryTypesList={categoryTypesList}
               categoriesList={categoriesList}
               size='small'
@@ -129,8 +129,8 @@ export const TransactionFilters: React.FC = () => {
               size='small'
               options={merchantsList}
               getOptionLabel={(o) => o}
-              value={merchantsList.find((m) => m === selectedMerchant) || null}
-              onChange={(_, v) => setSelectedMerchant(v || '')}
+              value={merchantsList.find((m) => m === txnFilterMerchant) || null}
+              onChange={(_, v) => setTxnFilterMerchant(v || '')}
               renderInput={(params) => {
                 const { InputLabelProps, ...rest } = params
                 return (
@@ -148,10 +148,10 @@ export const TransactionFilters: React.FC = () => {
               }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <AutoCompleteMultiple
-              value={selectedTags || []}
-              onChange={(tags: string[]) => setSelectedTags(tags)}
+              value={txnFilterTags || []}
+              onChange={(tags: string[]) => setTxnFilterTags(tags)}
               options={tagsList || []}
               label='Tags'
               placeholder='Hit Enter to Add Tags...'
@@ -166,13 +166,13 @@ export const TransactionFilters: React.FC = () => {
                 onClick={handleClearFilters}
                 disabled={
                   !(
-                    selectedBeginDate ||
-                    selectedEndDate ||
-                    selectedMerchant ||
-                    selectedAccountId ||
-                    selectedMerchant ||
-                    selectedCategoryTypeId ||
-                    selectedCategoryId
+                    txnFilterBeginDate ||
+                    txnFilterEndDate ||
+                    txnFilterMerchant ||
+                    txnFilterAccountId ||
+                    txnFilterMerchant ||
+                    txnFilterCategoryTypeId ||
+                    txnFilterCategoryId
                   )
                 }
               >

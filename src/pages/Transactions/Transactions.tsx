@@ -15,15 +15,15 @@ import { TransactionsTable } from './TransactionTable.tsx'
 
 export const Transactions: React.FC = () => {
   const {
-    selectedBeginDate,
-    setSelectedBeginDate,
-    selectedEndDate,
-    setSelectedEndDate,
-    selectedMerchant,
-    selectedAccountId,
-    selectedCategoryId,
-    selectedCategoryTypeId,
-    selectedTags,
+    txnFilterBeginDate,
+    setTxnFilterBeginDate,
+    txnFilterEndDate,
+    setTxnFilterEndDate,
+    txnFilterMerchant,
+    txnFilterAccountId,
+    txnFilterCategoryId,
+    txnFilterCategoryTypeId,
+    txnFilterTags,
     openTxnModal,
     selectedTxn,
   } = useTxnStore()
@@ -37,13 +37,13 @@ export const Transactions: React.FC = () => {
   const { data, isLoading, error } = useReadTransactions({
     pageNumber: pagination.pageNumber,
     perPage: pagination.perPage,
-    beginDate: selectedBeginDate || getBeginningOfMonth(now),
-    endDate: selectedEndDate || getEndOfMonth(now),
-    merchants: selectedMerchant ? [selectedMerchant] : [],
-    catIds: selectedCategoryId ? [selectedCategoryId] : [],
-    catTypeIds: selectedCategoryTypeId ? [selectedCategoryTypeId] : [],
-    accIds: selectedAccountId ? [selectedAccountId] : [],
-    tags: selectedTags ? selectedTags : [],
+    beginDate: txnFilterBeginDate || getBeginningOfMonth(now),
+    endDate: txnFilterEndDate || getEndOfMonth(now),
+    merchants: txnFilterMerchant ? [txnFilterMerchant] : [],
+    catIds: txnFilterCategoryId ? [txnFilterCategoryId] : [],
+    catTypeIds: txnFilterCategoryTypeId ? [txnFilterCategoryTypeId] : [],
+    accIds: txnFilterAccountId ? [txnFilterAccountId] : [],
+    tags: txnFilterTags ? txnFilterTags : [],
   })
 
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
@@ -65,11 +65,11 @@ export const Transactions: React.FC = () => {
     }
   }, [data, pagination])
 
-  if (!selectedBeginDate) {
-    setSelectedBeginDate(getBeginningOfMonth(now))
+  if (!txnFilterBeginDate) {
+    setTxnFilterBeginDate(getBeginningOfMonth(now))
   }
-  if (!selectedEndDate) {
-    setSelectedEndDate(getEndOfMonth(now))
+  if (!txnFilterEndDate) {
+    setTxnFilterEndDate(getEndOfMonth(now))
   }
 
   const handlePageChange = (page: number) => {
@@ -81,13 +81,13 @@ export const Transactions: React.FC = () => {
   }
 
   const hasActiveFilters =
-    selectedBeginDate != null ||
-    selectedEndDate != null ||
-    selectedMerchant != null ||
-    selectedAccountId != null ||
-    selectedCategoryTypeId != null ||
-    selectedCategoryId != null ||
-    (selectedTags != null && selectedTags.length > 0)
+    txnFilterBeginDate != null ||
+    txnFilterEndDate != null ||
+    txnFilterMerchant != null ||
+    txnFilterAccountId != null ||
+    txnFilterCategoryTypeId != null ||
+    txnFilterCategoryId != null ||
+    (txnFilterTags != null && txnFilterTags.length > 0)
 
   const getDisplayRange = () => {
     if (pageInfo.totalItems === 0) return '0'
