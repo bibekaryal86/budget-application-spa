@@ -7,6 +7,8 @@ import { useInvalidateTransactionQueryKeys } from './queryClient.ts'
 const getTransactionsKey = (params: TransactionParams) => [
   'transactions',
   {
+    pageNumber: params.pageNumber,
+    perPage: params.perPage,
     beginDate: params.beginDate,
     endDate: params.endDate,
     merchants: params.merchants,
