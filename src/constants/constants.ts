@@ -1,6 +1,9 @@
 export const INVALID_SESSION = 'Your session has expired. Please log in again.'
 export const ACCESS_TOKEN_KEY = 'access_token'
 
+export const DEFAULT_PAGE_NUMBER = 1
+export const DEFAULT_PER_PAGE = 100
+
 export const NO_EXPENSE_CATEGORY_TYPES = {
   INCOME: 'INCOME',
   SAVINGS: 'SAVINGS',

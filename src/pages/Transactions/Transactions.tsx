@@ -1,12 +1,13 @@
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, DEFAULT_PAGE_NUMBER, DEFAULT_PER_PAGE } from '@constants'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
 import { Box, Button, Chip, Container, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
 import { useTxnStore } from '@stores'
+import { type ResponsePageInfo } from '@types'
 import { getBeginningOfMonth, getEndOfMonth } from '@utils'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
 import { TransactionModal } from './TransactionModal.tsx'
@@ -26,23 +27,56 @@ export const Transactions: React.FC = () => {
     selectedTxn,
   } = useTxnStore()
 
+  const [pagination, setPagination] = useState({
+    pageNumber: DEFAULT_PAGE_NUMBER,
+    perPage: DEFAULT_PER_PAGE,
+  })
+
   const now = new Date()
   const { data, isLoading, error } = useReadTransactions({
+    pageNumber: pagination.pageNumber,
+    perPage: pagination.perPage,
     beginDate: selectedBeginDate || getBeginningOfMonth(now),
     endDate: selectedEndDate || getEndOfMonth(now),
-    merchants: [selectedMerchant || ''],
-    catIds: [selectedCategoryId || ''],
-    catTypeIds: [selectedCategoryTypeId || ''],
-    accIds: [selectedAccountId || ''],
+    merchants: selectedMerchant ? [selectedMerchant] : [],
+    catIds: selectedCategoryId ? [selectedCategoryId] : [],
+    catTypeIds: selectedCategoryTypeId ? [selectedCategoryTypeId] : [],
+    accIds: selectedAccountId ? [selectedAccountId] : [],
     tags: [],
   })
+
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
+  const pageInfo = useMemo((): ResponsePageInfo => {
+    if (!data) {
+      return {
+        totalItems: 0,
+        totalPages: 0,
+        pageNumber: pagination.pageNumber,
+        perPage: pagination.perPage,
+      }
+    }
+
+    return {
+      totalItems: data.pageInfo.totalItems || 0,
+      totalPages: data.pageInfo.totalPages || 0,
+      pageNumber: pagination.pageNumber || DEFAULT_PAGE_NUMBER,
+      perPage: pagination.perPage || DEFAULT_PER_PAGE,
+    }
+  }, [data, pagination])
 
   if (!selectedBeginDate) {
     setSelectedBeginDate(getBeginningOfMonth(now))
   }
   if (!selectedEndDate) {
     setSelectedEndDate(getEndOfMonth(now))
+  }
+
+  const handlePageChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageNumber: page }))
+  }
+
+  const handleRowsPerPageChange = (perPage: number) => {
+    setPagination((prev) => ({ ...prev, perPage, pageNumber: 1 }))
   }
 
   const hasActiveFilters =
@@ -52,6 +86,13 @@ export const Transactions: React.FC = () => {
     selectedAccountId != null ||
     selectedCategoryTypeId != null ||
     selectedCategoryId != null
+
+  const getDisplayRange = () => {
+    if (pageInfo.totalItems === 0) return '0'
+    const start = (pageInfo.pageNumber - 1) * pageInfo.perPage + 1
+    const end = Math.min(pageInfo.pageNumber * pageInfo.perPage, pageInfo.totalItems)
+    return `${start}-${end}`
+  }
 
   return (
     <Container maxWidth='xl' sx={{ py: 4 }}>
@@ -89,7 +130,9 @@ export const Transactions: React.FC = () => {
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <FilterAltOffIcon color='action' />
           <Typography variant='body2' color='text.secondary'>
-            Showing {transactions.length} of {transactions.length} transactions
+            {pageInfo.totalItems > 0
+              ? `Showing ${getDisplayRange()} of ${pageInfo.totalItems} transactions`
+              : 'No transactions found with current filters'}
           </Typography>
           <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
         </Box>
@@ -114,15 +157,15 @@ export const Transactions: React.FC = () => {
         </Paper>
       )}
 
-      {!isLoading && !error && transactions.length > 0 && <TransactionsTable transactions={transactions} />}
-
       {!isLoading && !error && transactions.length > 0 && (
-        <Box display='flex' justifyContent='center' mt={3}>
-          <Typography variant='body2' color='text.secondary'>
-            Showing {transactions.length} transactions
-          </Typography>
-        </Box>
+        <TransactionsTable
+          transactions={transactions}
+          pageInfo={pageInfo}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+        />
       )}
+
       <TransactionModal key={selectedTxn?.id || 'new'} />
     </Container>
   )

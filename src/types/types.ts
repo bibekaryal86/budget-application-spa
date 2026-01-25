@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PER_PAGE } from '@constants'
 import { type AxiosRequestConfig } from 'axios'
 
 // Utils
@@ -234,6 +235,8 @@ export interface CategoryParams {
 }
 
 export interface TransactionParams {
+  pageNumber: number | null
+  perPage: number | null
   beginDate: string | null
   endDate: string | null
   merchants: string[] | []
@@ -244,6 +247,8 @@ export interface TransactionParams {
 }
 
 export const defaultTransactionParams: TransactionParams = {
+  pageNumber: DEFAULT_PAGE_NUMBER,
+  perPage: DEFAULT_PER_PAGE,
   beginDate: null,
   endDate: null,
   merchants: [],
