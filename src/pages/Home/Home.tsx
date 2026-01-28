@@ -203,7 +203,7 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Savings
+                          Savings/Investments
                         </Typography>
                         <Typography variant='h5' component='div' fontWeight='bold' color='warning.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentSavings)}

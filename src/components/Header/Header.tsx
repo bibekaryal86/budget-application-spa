@@ -75,7 +75,138 @@ export const Header: React.FC = () => {
 
         {isAuthenticated && (
           <Stack direction='row' spacing={1} alignItems='center'>
-            {!isMobile ? (
+            {isMobile ? (
+              // Mobile navigation
+              <>
+                <IconButton
+                  color='inherit'
+                  onClick={handleMenuOpen}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  <MenuIcon />
+                </IconButton>
+
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <MenuItem
+                    component={Link}
+                    to='/transactions'
+                    onClick={handleMenuClose}
+                    selected={location.pathname === '/transactions'}
+                  >
+                    <Receipt sx={{ mr: 2 }} />
+                    Transactions
+                  </MenuItem>
+
+                  <MenuItem
+                    component={Link}
+                    to='/budgets'
+                    onClick={handleMenuClose}
+                    selected={location.pathname === '/budgets'}
+                  >
+                    <AccountBalanceWallet sx={{ mr: 2 }} />
+                    Budgets
+                  </MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      toggleTheme()
+                      handleMenuClose()
+                    }}
+                  >
+                    <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                      {mode === THEME_MODES.LIGHT ? <Brightness4 /> : <Brightness7 />}
+                    </Box>
+                    {mode === THEME_MODES.LIGHT ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                  </MenuItem>
+
+                  <MenuItem
+                    onClick={() => {
+                      handleLogout()
+                      handleMenuClose()
+                    }}
+                  >
+                    <Logout sx={{ mr: 2 }} />
+                    Logout
+                  </MenuItem>
+                </Menu>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Tooltip title='Transactions'>
+                    <IconButton
+                      color='inherit'
+                      component={Link}
+                      to='/transactions'
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <Receipt />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title='Budgets'>
+                    <IconButton
+                      color='inherit'
+                      component={Link}
+                      to='/budgets'
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <AccountBalanceWallet />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title={`${mode === THEME_MODES.LIGHT ? 'Dark' : 'Light'} Mode`}>
+                    <IconButton
+                      onClick={toggleTheme}
+                      color='inherit'
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      {mode === THEME_MODES.LIGHT ? <Brightness4 /> : <Brightness7 />}
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title='Logout'>
+                    <IconButton
+                      onClick={handleLogout}
+                      color='inherit'
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <Logout />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </>
+            ) : (
               // Desktop navigation
               <>
                 {navigationItems.map((item) => (
@@ -150,147 +281,6 @@ export const Header: React.FC = () => {
                         transition: `all ${ANIMATION.DURATION.MEDIUM} ease`,
                         '&:hover': {
                           transform: 'scale(1.1)',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        },
-                      }}
-                    >
-                      <Logout />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </>
-            ) : (
-              // Mobile navigation
-              <>
-                {/* Mobile menu button */}
-                <IconButton
-                  color='inherit'
-                  onClick={handleMenuOpen}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                  }}
-                >
-                  <MenuIcon />
-                </IconButton>
-
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                >
-                  {/* Transactions menu item */}
-                  <MenuItem
-                    component={Link}
-                    to='/transactions'
-                    onClick={handleMenuClose}
-                    selected={location.pathname === '/transactions'}
-                  >
-                    <Receipt sx={{ mr: 2 }} />
-                    Transactions
-                  </MenuItem>
-
-                  {/* Budgets menu item */}
-                  <MenuItem
-                    component={Link}
-                    to='/budgets'
-                    onClick={handleMenuClose}
-                    selected={location.pathname === '/budgets'}
-                  >
-                    <AccountBalanceWallet sx={{ mr: 2 }} />
-                    Budgets
-                  </MenuItem>
-
-                  {/* Theme toggle menu item */}
-                  <MenuItem
-                    onClick={() => {
-                      toggleTheme()
-                      handleMenuClose()
-                    }}
-                  >
-                    <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-                      {mode === THEME_MODES.LIGHT ? <Brightness4 /> : <Brightness7 />}
-                    </Box>
-                    {mode === THEME_MODES.LIGHT ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-                  </MenuItem>
-
-                  {/* Logout menu item */}
-                  <MenuItem
-                    onClick={() => {
-                      handleLogout()
-                      handleMenuClose()
-                    }}
-                  >
-                    <Logout sx={{ mr: 2 }} />
-                    Logout
-                  </MenuItem>
-                </Menu>
-
-                {/* Mobile-only: Icon-only navigation for quick access */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {/* Quick access icon for Transactions */}
-                  <Tooltip title='Transactions'>
-                    <IconButton
-                      color='inherit'
-                      component={Link}
-                      to='/transactions'
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        },
-                      }}
-                    >
-                      <Receipt />
-                    </IconButton>
-                  </Tooltip>
-
-                  {/* Quick access icon for Budgets */}
-                  <Tooltip title='Budgets'>
-                    <IconButton
-                      color='inherit'
-                      component={Link}
-                      to='/budgets'
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        },
-                      }}
-                    >
-                      <AccountBalanceWallet />
-                    </IconButton>
-                  </Tooltip>
-
-                  {/* Quick access icon for Theme toggle */}
-                  <Tooltip title={`${mode === THEME_MODES.LIGHT ? 'Dark' : 'Light'} Mode`}>
-                    <IconButton
-                      onClick={toggleTheme}
-                      color='inherit'
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        },
-                      }}
-                    >
-                      {mode === THEME_MODES.LIGHT ? <Brightness4 /> : <Brightness7 />}
-                    </IconButton>
-                  </Tooltip>
-
-                  {/* Quick access icon for Logout */}
-                  <Tooltip title='Logout'>
-                    <IconButton
-                      onClick={handleLogout}
-                      color='inherit'
-                      sx={{
-                        '&:hover': {
                           backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         },
                       }}
