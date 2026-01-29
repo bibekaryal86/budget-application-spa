@@ -501,7 +501,7 @@ export const TransactionModal: React.FC = () => {
                         fullWidth
                         label='Total Amount'
                         type='number'
-                        value={selectedTxn?.totalAmount}
+                        value={txnFormData?.totalAmount}
                         onChange={(e) => handleInputChange('totalAmount', e.target.value)}
                         error={!!itemErrors.totalAmount}
                         helperText={itemErrors.totalAmount}
