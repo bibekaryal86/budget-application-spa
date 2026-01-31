@@ -43,30 +43,37 @@ export const Home: React.FC = () => {
       return {
         currentIncome: 0,
         currentExpenses: 0,
+        currentInvestments: 0,
         currentSavings: 0,
         incomeChange: 0,
         expenseChange: 0,
+        investmentChange: 0,
         savingsChange: 0,
       }
 
     const currentIncome = cfSummaries.currentMonth.incomes || 0
     const currentExpenses = cfSummaries.currentMonth.expenses || 0
-    const currentSavings = cfSummaries.currentMonth.savings || 0
+    const currentInvestments = cfSummaries.currentMonth.savings || 0
+    const currentSavings = currentIncome - currentExpenses - currentInvestments
 
     const lastIncome = cfSummaries.previousMonth.incomes || 0
     const lastExpenses = cfSummaries.previousMonth.expenses || 0
-    const lastSavings = cfSummaries.previousMonth.savings || 0
+    const lastInvestments = cfSummaries.previousMonth.savings || 0
+    const lastSavings = lastIncome - lastExpenses - lastInvestments
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
+    const investmentChange = currentInvestments - lastInvestments
     const savingsChange = currentSavings - lastSavings
 
     return {
       currentIncome,
       currentExpenses,
+      currentInvestments,
       currentSavings,
       incomeChange,
       expenseChange,
+      investmentChange,
       savingsChange,
     }
   }, [cfsData])
@@ -132,14 +139,14 @@ export const Home: React.FC = () => {
           <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Grid
               container
-              spacing={3}
+              spacing={1}
               justifyContent='center'
               sx={{
                 margin: '0 auto',
                 width: '100%',
               }}
             >
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -147,7 +154,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Income
                         </Typography>
-                        <Typography variant='h5' component='div' fontWeight='bold' color='success.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentIncome)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -168,7 +175,7 @@ export const Home: React.FC = () => {
                 </Card>
               </Grid>
 
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -176,7 +183,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Expenses
                         </Typography>
-                        <Typography variant='h5' component='div' fontWeight='bold' color='error.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentExpenses)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
@@ -197,15 +204,49 @@ export const Home: React.FC = () => {
                 </Card>
               </Grid>
 
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Savings/Investments
+                          Investments
                         </Typography>
-                        <Typography variant='h5' component='div' fontWeight='bold' color='warning.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
+                          {getFormattedCurrency(cashFlowMetrics.currentInvestments)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(false, cashFlowMetrics.investmentChange)}
+                          <Typography
+                            variant='body2'
+                            color={cashFlowMetrics.investmentChange > 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(cashFlowMetrics.investmentChange)}
+                          </Typography>
+                        </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              <Grid sx={{ xs: 12, md: 3 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Balance
+                        </Typography>
+                        <Typography
+                          variant='h6'
+                          component='div'
+                          fontWeight='bold'
+                          color={cashFlowMetrics.currentSavings > 0 ? 'success.main' : 'error.main'}
+                        >
                           {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
