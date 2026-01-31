@@ -1,15 +1,5 @@
 # Personal Expenses Tracking System
 
-TODO
-- Home Page
-  - Show unbudgeted but with txn
-  - Show overbudget items
-  - Show under budget items
-- Insight Page
-  - Show current month and previous month
-  - show option to choose month/year or just year
-  - For cash flow, add graph
-
 ## Overview
 
 A modern, responsive admin portal built with React and TypeScript for managing platforms, profiles, roles, and
@@ -158,6 +148,13 @@ This creates a clean separation:
 
 ### Things to do:
 
-- Show/hide components based on permissions
-  - eg: do not show create button if user does not have create permissions
+  TODO
+- Home Page
+    - Show unbudgeted but with txn
+    - Show overbudget items
+    - Show under budget items
+- Insight Page
+    - Show current month and previous month
+    - show option to choose month/year or just year
+    - For cash flow, add graph
 - Tests
