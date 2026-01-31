@@ -47,9 +47,9 @@ export const BudgetFilters: React.FC = () => {
       elevation={0}
       variant='outlined'
       sx={{
-        p: 3,
+        p: 1,
         mb: 3,
-        borderRadius: 2,
+        borderRadius: 1,
         backgroundColor: 'background.default',
       }}
     >
@@ -59,7 +59,7 @@ export const BudgetFilters: React.FC = () => {
       <Box sx={{ width: '100%' }}>
         <Grid
           container
-          spacing={2}
+          spacing={0.5}
           justifyContent='center'
           sx={{
             margin: '0 auto',
