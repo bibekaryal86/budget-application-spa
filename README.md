@@ -148,13 +148,14 @@ This creates a clean separation:
 
 ### Things to do:
 
-  TODO
+TODO
+
 - Home Page
-    - Show unbudgeted but with txn
-    - Show overbudget items
-    - Show under budget items
+  - Show unbudgeted but with txn
+  - Show overbudget items
+  - Show under budget items
 - Insight Page
-    - Show current month and previous month
-    - show option to choose month/year or just year
-    - For cash flow, add graph
+  - Show current month and previous month
+  - show option to choose month/year or just year
+  - For cash flow, add graph
 - Tests
