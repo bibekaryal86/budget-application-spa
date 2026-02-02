@@ -40,9 +40,9 @@ export const Transactions: React.FC = () => {
     beginDate: txnFilterBeginDate || getBeginningOfMonth(now),
     endDate: txnFilterEndDate || getEndOfMonth(now),
     merchants: txnFilterMerchant ? [txnFilterMerchant] : [],
-    catIds: txnFilterCategoryId ? [txnFilterCategoryId] : [],
-    catTypeIds: txnFilterCategoryTypeId ? [txnFilterCategoryTypeId] : [],
-    accIds: txnFilterAccountId ? [txnFilterAccountId] : [],
+    categoryIds: txnFilterCategoryId ? [txnFilterCategoryId] : [],
+    categoryTypeIds: txnFilterCategoryTypeId ? [txnFilterCategoryTypeId] : [],
+    accountIds: txnFilterAccountId ? [txnFilterAccountId] : [],
     tags: txnFilterTags ? txnFilterTags : [],
   })
 

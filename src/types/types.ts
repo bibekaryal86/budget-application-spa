@@ -240,9 +240,9 @@ export interface TransactionParams {
   beginDate: string | null
   endDate: string | null
   merchants: string[] | []
-  catIds: string[] | []
-  catTypeIds: string[] | []
-  accIds: string[] | []
+  categoryIds: string[] | []
+  categoryTypeIds: string[] | []
+  accountIds: string[] | []
   tags: string[] | []
 }
 
@@ -252,24 +252,24 @@ export const defaultTransactionParams: TransactionParams = {
   beginDate: null,
   endDate: null,
   merchants: [],
-  catIds: [],
-  catTypeIds: [],
-  accIds: [],
+  categoryIds: [],
+  categoryTypeIds: [],
+  accountIds: [],
   tags: [],
 }
 
 export interface SummaryParams {
   beginDate: Date | null
   endDate: Date | null
-  catIds: string[] | []
-  catTypeIds: string[] | []
+  categoryIds: string[] | []
+  categoryTypeIds: string[] | []
   topExpenses: boolean | null
 }
 
 export const defaultSummaryParams: SummaryParams = {
   beginDate: null,
   endDate: null,
-  catIds: [],
-  catTypeIds: [],
+  categoryIds: [],
+  categoryTypeIds: [],
   topExpenses: null,
 }

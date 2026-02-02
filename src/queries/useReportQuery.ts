@@ -7,8 +7,8 @@ const getSummaryKey = (queryKey: string, params: SummaryParams) => [
   {
     beginDate: params.beginDate,
     endDate: params.endDate,
-    catIds: params.catIds,
-    catTypeIds: params.catTypeIds,
+    categoryIds: params.categoryIds,
+    categoryTypeIds: params.categoryTypeIds,
     topExpenses: params.topExpenses,
   },
 ]

@@ -12,9 +12,9 @@ const getTransactionsKey = (params: TransactionParams) => [
     beginDate: params.beginDate,
     endDate: params.endDate,
     merchants: params.merchants,
-    catIds: params.catIds,
-    catTypeIds: params.catTypeIds,
-    accIds: params.accIds,
+    categoryIds: params.categoryIds,
+    categoryTypeIds: params.categoryTypeIds,
+    accountIds: params.accountIds,
     tags: params.tags,
   },
 ]
