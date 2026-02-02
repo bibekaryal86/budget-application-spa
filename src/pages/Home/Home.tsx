@@ -43,38 +43,38 @@ export const Home: React.FC = () => {
       return {
         currentIncome: 0,
         currentExpenses: 0,
-        currentInvestments: 0,
         currentSavings: 0,
+        currentBalance: 0,
         incomeChange: 0,
         expenseChange: 0,
-        investmentChange: 0,
         savingsChange: 0,
+        balanceChange: 0,
       }
 
     const currentIncome = cfSummaries.currentMonth.incomes || 0
     const currentExpenses = cfSummaries.currentMonth.expenses || 0
-    const currentInvestments = cfSummaries.currentMonth.savings || 0
-    const currentSavings = currentIncome - currentExpenses - currentInvestments
+    const currentSavings = cfSummaries.currentMonth.savings || 0
+    const currentBalance = cfSummaries.currentMonth.balance || 0
 
     const lastIncome = cfSummaries.previousMonth.incomes || 0
     const lastExpenses = cfSummaries.previousMonth.expenses || 0
     const lastInvestments = cfSummaries.previousMonth.savings || 0
-    const lastSavings = lastIncome - lastExpenses - lastInvestments
+    const lastSavings = cfSummaries.previousMonth.balance || 0
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
-    const investmentChange = currentInvestments - lastInvestments
-    const savingsChange = currentSavings - lastSavings
+    const savingsChange = currentSavings - lastInvestments
+    const balanceChange = currentBalance - lastSavings
 
     return {
       currentIncome,
       currentExpenses,
-      currentInvestments,
       currentSavings,
+      currentBalance,
       incomeChange,
       expenseChange,
-      investmentChange,
       savingsChange,
+      balanceChange,
     }
   }, [cfsData])
 
@@ -210,18 +210,18 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Investments
+                          Savings
                         </Typography>
                         <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
-                          {getFormattedCurrency(cashFlowMetrics.currentInvestments)}
+                          {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                          {getTrendingIcon(false, cashFlowMetrics.investmentChange)}
+                          {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
                           <Typography
                             variant='body2'
-                            color={cashFlowMetrics.investmentChange > 0 ? 'success.main' : 'error.main'}
+                            color={cashFlowMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
                           >
-                            {getFormattedCurrency(cashFlowMetrics.investmentChange)}
+                            {getFormattedCurrency(cashFlowMetrics.savingsChange)}
                           </Typography>
                         </Box>
                         <Typography variant='body2' color='text.secondary'>
@@ -245,17 +245,17 @@ export const Home: React.FC = () => {
                           variant='h6'
                           component='div'
                           fontWeight='bold'
-                          color={cashFlowMetrics.currentSavings > 0 ? 'success.main' : 'error.main'}
+                          color={cashFlowMetrics.currentBalance > 0 ? 'success.main' : 'error.main'}
                         >
-                          {getFormattedCurrency(cashFlowMetrics.currentSavings)}
+                          {getFormattedCurrency(cashFlowMetrics.currentBalance)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                          {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
+                          {getTrendingIcon(false, cashFlowMetrics.balanceChange)}
                           <Typography
                             variant='body2'
-                            color={cashFlowMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
+                            color={cashFlowMetrics.balanceChange > 0 ? 'success.main' : 'error.main'}
                           >
-                            {getFormattedCurrency(cashFlowMetrics.savingsChange)}
+                            {getFormattedCurrency(cashFlowMetrics.balanceChange)}
                           </Typography>
                         </Box>
                         <Typography variant='body2' color='text.secondary'>

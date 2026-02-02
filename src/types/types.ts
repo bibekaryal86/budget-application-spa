@@ -201,13 +201,14 @@ export interface TransactionMerchants {
   metadata: ResponseMetadata
 }
 
-// Reports
+// Insights
 export interface CashFlowSummary {
   beginDate: Date
   endDate: Date
   incomes: number
   expenses: number
   savings: number
+  balance: number
 }
 
 export interface CashFlowSummaries {
