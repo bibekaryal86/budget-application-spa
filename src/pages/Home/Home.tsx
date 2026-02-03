@@ -11,7 +11,7 @@ import {
   useReadTransactions,
 } from '@queries'
 import { useReadCashFlowSummaries } from '@queries'
-import { defaultTransactionParams } from '@types'
+import { defaultInsightParams, defaultTransactionParams, type InsightParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getTxnAmountColor } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
@@ -34,8 +34,15 @@ export const Home: React.FC = () => {
     beginDate: getBeginningOfMonth(now),
     endDate: getEndOfMonth(now),
   })
-  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries()
-  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(true)
+  const insightParams: InsightParams = {
+    ...defaultInsightParams,
+    beginDate: getBeginningOfMonth(now),
+    endDate: getEndOfMonth(now),
+    totalMonths: 2,
+    topExpenses: 7,
+  }
+  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
+  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
 
   const cashFlowMetrics = useMemo(() => {
     const cfSummaries = cfsData?.cfSummaries || null
@@ -51,15 +58,15 @@ export const Home: React.FC = () => {
         balanceChange: 0,
       }
 
-    const currentIncome = cfSummaries.currentMonth.incomes || 0
-    const currentExpenses = cfSummaries.currentMonth.expenses || 0
-    const currentSavings = cfSummaries.currentMonth.savings || 0
-    const currentBalance = cfSummaries.currentMonth.balance || 0
+    const currentIncome = cfSummaries.data[0].cashFlowAmounts.incomes || 0
+    const currentExpenses = cfSummaries.data[0].cashFlowAmounts.expenses || 0
+    const currentSavings = cfSummaries.data[0].cashFlowAmounts.savings || 0
+    const currentBalance = cfSummaries.data[0].cashFlowAmounts.balance || 0
 
-    const lastIncome = cfSummaries.previousMonth.incomes || 0
-    const lastExpenses = cfSummaries.previousMonth.expenses || 0
-    const lastInvestments = cfSummaries.previousMonth.savings || 0
-    const lastSavings = cfSummaries.previousMonth.balance || 0
+    const lastIncome = cfSummaries.data[1].cashFlowAmounts.incomes || 0
+    const lastExpenses = cfSummaries.data[1].cashFlowAmounts.expenses || 0
+    const lastInvestments = cfSummaries.data[1].cashFlowAmounts.savings || 0
+    const lastSavings = cfSummaries.data[1].cashFlowAmounts.balance || 0
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
@@ -82,12 +89,16 @@ export const Home: React.FC = () => {
     const cSummaries = csData?.catSummaries || null
     if (!cSummaries) return []
 
-    const previousMonthMap = new Map(cSummaries.previousMonth.map((cs) => [cs.category.id, cs.amount]))
+    const currentMonth = cSummaries.data.length > 0 ? cSummaries.data[0] : null
+    const previousMonth = cSummaries.data.length > 1 ? cSummaries.data[1] : null
+    if (!currentMonth) return []
 
-    return cSummaries.currentMonth.map((cs) => ({
-      category: cs.category,
-      currentMonth: cs.amount,
-      previousMonth: previousMonthMap.get(cs.category.id) || 0,
+    const previousMonthMap = new Map(previousMonth?.categoryAmounts?.map((ca) => [ca.category.id, ca.amount]) || [])
+
+    return currentMonth.categoryAmounts.map((ca) => ({
+      category: ca.category,
+      currentMonth: ca.amount,
+      previousMonth: previousMonthMap.get(ca.category.id) || 0,
     }))
   }, [csData])
 

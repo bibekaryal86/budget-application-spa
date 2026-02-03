@@ -202,31 +202,35 @@ export interface TransactionMerchants {
 }
 
 // Insights
-export interface CashFlowSummary {
-  beginDate: Date
-  endDate: Date
+export interface CashFlowAmounts {
   incomes: number
   expenses: number
   savings: number
   balance: number
 }
 
+export interface CashFlowSummary {
+  yearMonth: string
+  cashFlowAmounts: CashFlowAmounts
+}
+
 export interface CashFlowSummaries {
-  currentMonth: CashFlowSummary
-  previousMonth: CashFlowSummary
+  data: CashFlowSummary[]
   metadata: ResponseMetadata
 }
 
-export interface CategorySummary {
-  beginDate: Date
-  endDate: Date
+export interface CategoryAmount {
   category: Category
   amount: number
 }
 
+export interface CategorySummary {
+  yearMonth: string
+  categoryAmounts: CategoryAmount[]
+}
+
 export interface CategorySummaries {
-  currentMonth: CategorySummary[]
-  previousMonth: CategorySummary[]
+  data: CategorySummary[]
   metadata: ResponseMetadata
 }
 
@@ -259,18 +263,20 @@ export const defaultTransactionParams: TransactionParams = {
   tags: [],
 }
 
-export interface SummaryParams {
-  beginDate: Date | null
-  endDate: Date | null
+export interface InsightParams {
+  beginDate: string | null
+  endDate: string | null
   categoryIds: string[] | []
   categoryTypeIds: string[] | []
-  topExpenses: boolean | null
+  topExpenses: number | null
+  totalMonths: number | null
 }
 
-export const defaultSummaryParams: SummaryParams = {
+export const defaultInsightParams: InsightParams = {
   beginDate: null,
   endDate: null,
   categoryIds: [],
   categoryTypeIds: [],
   topExpenses: null,
+  totalMonths: null,
 }
