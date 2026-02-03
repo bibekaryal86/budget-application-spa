@@ -138,9 +138,14 @@ export const Home: React.FC = () => {
   return (
     <Container maxWidth='sm' sx={{ py: 4 }}>
       <Box sx={{ width: '100%' }}>
-        <Typography variant='h5' component='h2' fontWeight='medium' sx={{ mb: 1 }}>
-          {currentMonth} Cash Flows
-        </Typography>
+        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+          <Typography variant='h5' component='h2' fontWeight='medium'>
+            {currentMonth} Cash Flows
+          </Typography>
+          <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
+            View Details
+          </Button>
+        </Box>
 
         {isCfsLoading ? (
           <Box display='flex' justifyContent='center' my={4}>
@@ -300,7 +305,7 @@ export const Home: React.FC = () => {
                     {currentMonth} Top Spending Categories
                   </Typography>
                   <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
-                    View All
+                    View Details
                   </Button>
                 </Box>
 
