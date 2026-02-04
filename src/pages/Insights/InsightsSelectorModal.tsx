@@ -1,3 +1,4 @@
+import { FULL_MONTHS } from '@constants'
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +13,7 @@ import {
   Divider,
   Stack,
 } from '@mui/material'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 
 interface InsightsSelectorModalProps {
   open: boolean
@@ -29,7 +30,9 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
   initialYear,
   initialMonth,
 }) => {
-  const currentYear = new Date().getFullYear()
+  const currentDate = new Date()
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth() + 1
 
   const years = useMemo(() => {
     const yearsList = []
@@ -39,32 +42,36 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
     return yearsList
   }, [currentYear])
 
-  const months = useMemo(
-    () => [
-      { value: 1, label: 'Jan' },
-      { value: 2, label: 'Feb' },
-      { value: 3, label: 'Mar' },
-      { value: 4, label: 'Apr' },
-      { value: 5, label: 'May' },
-      { value: 6, label: 'Jun' },
-      { value: 7, label: 'Jul' },
-      { value: 8, label: 'Aug' },
-      { value: 9, label: 'Sep' },
-      { value: 10, label: 'Oct' },
-      { value: 11, label: 'Nov' },
-      { value: 12, label: 'Dec' },
-    ],
-    [],
+  const getAvailableMonths = useCallback(
+    (year: number) => {
+      if (year === currentYear) {
+        return FULL_MONTHS.filter((month) => month.value <= currentMonth)
+      } else {
+        return FULL_MONTHS
+      }
+    },
+    [currentMonth, currentYear],
   )
 
   const [selectedYear, setSelectedYear] = useState(initialYear)
   const [selectedMonth, setSelectedMonth] = useState<number | null>(initialMonth)
   const [yearOnly, setYearOnly] = useState(initialMonth === null)
 
+  const availableMonths = useMemo(() => getAvailableMonths(selectedYear), [getAvailableMonths, selectedYear])
+
   const handleYearClick = (year: number) => {
+    const newAvailableMonths = getAvailableMonths(year)
     setSelectedYear(year)
+
     if (yearOnly) {
       setSelectedMonth(null)
+    } else {
+      // If current month selection is not available for new year, adjust it
+      if (selectedMonth && !newAvailableMonths.some((m) => m.value === selectedMonth)) {
+        // Select the last available month for the new year
+        const lastAvailableMonth = newAvailableMonths[newAvailableMonths.length - 1]?.value || null
+        setSelectedMonth(lastAvailableMonth)
+      }
     }
   }
 
@@ -78,7 +85,8 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
     if (isYearOnly) {
       setSelectedMonth(null)
     } else if (!selectedMonth) {
-      setSelectedMonth(new Date().getMonth() + 1)
+      const defaultMonth = selectedYear === currentYear ? currentMonth : 12
+      setSelectedMonth(defaultMonth)
     }
   }
 
@@ -99,24 +107,12 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
     setYearOnly(false)
   }
 
-  const getFullMonthName = (monthValue: number | null) => {
-    if (!monthValue) return null
-    const fullMonths = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ]
-    return fullMonths[monthValue - 1]
-  }
+  // const getFullMonthName = (monthValue: number | null) => {
+  //   if (!monthValue) return null
+  //   return FULL_MONTHS_ONLY[monthValue - 1]
+  // }
+
+  const isSelectedMonthValid = selectedMonth ? availableMonths.some((m) => m.value === selectedMonth) : true
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
@@ -134,7 +130,7 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={3} sx={{ py: 2 }}>
+        <Stack spacing={3}>
           <Box>
             <Typography variant='subtitle2' gutterBottom color='primary'>
               Select Year
@@ -165,7 +161,7 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
                 Select Month
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {months.map((month) => (
+                {availableMonths.map((month) => (
                   <Chip
                     key={month.value}
                     label={month.label}
@@ -183,22 +179,36 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
             </Box>
           )}
 
-          <Box
-            sx={{
-              p: 2,
-              bgcolor: 'action.hover',
-              borderRadius: 1,
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Typography variant='subtitle2' gutterBottom color='text.secondary'>
-              Selected Period
-            </Typography>
-            <Typography variant='h6'>
-              {yearOnly ? `${selectedYear} (Full Year)` : `${getFullMonthName(selectedMonth)} ${selectedYear}`}
-            </Typography>
-          </Box>
+          {/*<Box*/}
+          {/*  sx={{*/}
+          {/*    p: 2,*/}
+          {/*    bgcolor: 'action.hover',*/}
+          {/*    borderRadius: 1,*/}
+          {/*    border: '1px solid',*/}
+          {/*    borderColor: isSelectedMonthValid ? 'divider' : 'warning.main',*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Typography variant='subtitle2' gutterBottom color='text.secondary'>*/}
+          {/*    Selected Period*/}
+          {/*  </Typography>*/}
+          {/*  {!isSelectedMonthValid ? (*/}
+          {/*    <Box>*/}
+          {/*      <Typography variant='body2' color='warning.main' gutterBottom>*/}
+          {/*        ⚠️ Selected month is not available for {selectedYear}*/}
+          {/*      </Typography>*/}
+          {/*      <Typography variant='h6' color='warning.main'>*/}
+          {/*        {getFullMonthName(selectedMonth)} {selectedYear}*/}
+          {/*      </Typography>*/}
+          {/*      <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>*/}
+          {/*        Please select a different month or year*/}
+          {/*      </Typography>*/}
+          {/*    </Box>*/}
+          {/*  ) : (*/}
+          {/*    <Typography variant='h6'>*/}
+          {/*      {yearOnly ? `${selectedYear} (Full Year)` : `${getFullMonthName(selectedMonth)} ${selectedYear}`}*/}
+          {/*    </Typography>*/}
+          {/*  )}*/}
+          {/*</Box>*/}
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
@@ -208,7 +218,11 @@ export const InsightsSelectorModal: React.FC<InsightsSelectorModalProps> = ({
         <Button onClick={handleReset} color='secondary'>
           Reset
         </Button>
-        <Button onClick={handleApply} variant='contained' disabled={!yearOnly && !selectedMonth}>
+        <Button
+          onClick={handleApply}
+          variant='contained'
+          disabled={!yearOnly && (!selectedMonth || !isSelectedMonthValid)}
+        >
           Apply Selection
         </Button>
       </DialogActions>
