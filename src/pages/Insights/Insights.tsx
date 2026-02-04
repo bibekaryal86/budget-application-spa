@@ -20,6 +20,7 @@ import { defaultInsightParams, type InsightParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedDate } from '@utils'
 import React, { useMemo, useState } from 'react'
 
+import { CashFlowChart } from './CashFlowChart.tsx'
 import { InsightsSelectorModal } from './InsightsSelectorModal.tsx'
 
 export const Insights: React.FC = () => {
@@ -63,8 +64,8 @@ export const Insights: React.FC = () => {
     [beginDate, endDate, selectedMonth],
   )
 
-  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
-  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
+  const { data: cfsData } = useReadCashFlowSummaries(insightParams)
+  const { data: csData } = useReadCategorySummaries(insightParams)
 
   const handleMonthYearSelect = (year: number, month: number | null) => {
     setSelectedYear(year)
@@ -73,7 +74,7 @@ export const Insights: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth='sm' sx={{ py: 4 }}>
+      <Container maxWidth='md' sx={{ py: 4 }}>
         <Box sx={{ width: '100%' }}>
           <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
             <Box display='flex' alignItems='center' gap={1}>
@@ -85,8 +86,10 @@ export const Insights: React.FC = () => {
               </IconButton>
             </Box>
           </Box>
+          <CashFlowChart cashFlowSummaries={cfsData?.cfSummaries} />
         </Box>
       </Container>
+
       <InsightsSelectorModal
         open={openModal}
         onClose={() => setOpenModal(false)}
