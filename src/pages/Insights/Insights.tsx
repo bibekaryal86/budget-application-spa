@@ -48,6 +48,7 @@ export const Insights: React.FC = () => {
       beginDate,
       endDate,
       totalMonths: selectedMonth ? 7 : 0,
+      topExpenses: 100, // filter to get expenses only
     }),
     [beginDate, endDate, selectedMonth],
   )

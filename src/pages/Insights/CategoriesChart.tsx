@@ -41,7 +41,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
   categorySummaries,
   title = 'Monthly Categories Breakdown',
   showCard = true,
-  height = 450,
+  height = 50,
   isLoading = false,
   loadingText = 'Loading categories breakdown...',
 }) => {
@@ -52,13 +52,14 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
         label: 'Amounts ($)',
       },
     ],
-    height: height,
     margin: { left: 0 },
   }
 
   const valueFormatter = (value: number | null) => getFormattedCurrency(value)
 
   const dataset = getCategorySummaryDataSet(categorySummaries)
+
+  const chartHeight = dataset.length * height
 
   const chartContent = (
     <Box>
@@ -78,12 +79,12 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
         ) : dataset.length > 0 ? (
           <BarChart
             dataset={dataset}
-            yAxis={[{ scaleType: 'band', dataKey: 'category', width: 250 }]}
+            yAxis={[{ scaleType: 'band', dataKey: 'category', width: 200 }]}
             series={[{ dataKey: 'value', label: 'Expenses', valueFormatter, color: theme.palette.info.main }]}
             layout='horizontal'
             grid={{ vertical: true }}
             {...chartSetting}
-            height={height - 50}
+            height={chartHeight - 50}
           />
         ) : (
           <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
@@ -98,7 +99,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
 
   if (showCard) {
     return (
-      <Paper elevation={2} sx={{ p: 3 }}>
+      <Paper elevation={2} sx={{ p: 3, height: chartHeight + 50 }}>
         {chartContent}
       </Paper>
     )
