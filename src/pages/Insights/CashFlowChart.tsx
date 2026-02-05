@@ -1,4 +1,5 @@
-import { useTheme } from '@mui/material'
+import { Box, Paper, Typography, useTheme } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 import { BarChart } from '@mui/x-charts/BarChart'
 import type { CashFlowSummaries } from '@types'
 import { getFormattedCurrency } from '@utils'
@@ -6,9 +7,21 @@ import React from 'react'
 
 interface CashFlowChartProps {
   cashFlowSummaries: CashFlowSummaries | undefined
+  title?: string
+  showCard?: boolean
+  height?: number
+  isLoading?: boolean
+  loadingText?: string
 }
 
-export const CashFlowChart: React.FC<CashFlowChartProps> = ({ cashFlowSummaries }) => {
+export const CashFlowChart: React.FC<CashFlowChartProps> = ({
+  cashFlowSummaries,
+  title = 'Monthly Cash FLows',
+  showCard = true,
+  height = 450,
+  isLoading = false,
+  loadingText = 'Loading cash flow summaries...',
+}) => {
   const theme = useTheme()
   const chartSetting = {
     yAxis: [
@@ -17,7 +30,7 @@ export const CashFlowChart: React.FC<CashFlowChartProps> = ({ cashFlowSummaries 
         width: 75,
       },
     ],
-    height: 450,
+    height: height,
   }
 
   const valueFormatter = (value: number | null) => getFormattedCurrency(value)
@@ -39,5 +52,47 @@ export const CashFlowChart: React.FC<CashFlowChartProps> = ({ cashFlowSummaries 
     { dataKey: 'balance', label: 'Balance', valueFormatter, color: theme.palette.info.main },
   ]
 
-  return <BarChart dataset={dataset} xAxis={[{ dataKey: 'month' }]} series={series} {...chartSetting} />
+  const chartContent = (
+    <Box>
+      {title && (
+        <Typography variant='h6' fontWeight='medium' sx={{ mb: 2 }}>
+          {title}
+        </Typography>
+      )}
+      <Box sx={{ height: height, width: '100%' }}>
+        {isLoading ? (
+          <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%' gap={2}>
+            <CircularProgress size={40} />
+            <Typography variant='body2' color='text.secondary'>
+              {loadingText}
+            </Typography>
+          </Box>
+        ) : dataset.length > 0 ? (
+          <BarChart
+            dataset={dataset}
+            xAxis={[{ dataKey: 'month' }]}
+            series={series}
+            {...chartSetting}
+            height={height - 50}
+          />
+        ) : (
+          <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
+            <Typography variant='body2' color='text.secondary'>
+              No cash flow data available
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  )
+
+  if (showCard) {
+    return (
+      <Paper elevation={2} sx={{ p: 3 }}>
+        {chartContent}
+      </Paper>
+    )
+  }
+
+  return chartContent
 }

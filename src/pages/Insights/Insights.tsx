@@ -64,7 +64,7 @@ export const Insights: React.FC = () => {
     [beginDate, endDate, selectedMonth],
   )
 
-  const { data: cfsData } = useReadCashFlowSummaries(insightParams)
+  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
   const { data: csData } = useReadCategorySummaries(insightParams)
 
   const handleMonthYearSelect = (year: number, month: number | null) => {
@@ -86,7 +86,7 @@ export const Insights: React.FC = () => {
               </IconButton>
             </Box>
           </Box>
-          <CashFlowChart cashFlowSummaries={cfsData?.cfSummaries} />
+          <CashFlowChart isLoading={isCfsLoading} cashFlowSummaries={cfsData?.cfSummaries} />
         </Box>
       </Container>
 
