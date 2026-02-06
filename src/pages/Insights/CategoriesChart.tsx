@@ -44,25 +44,26 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
       const categoryData = categoryMap.get(name)
       const currentAmount = categoryAmount.amount
 
-      let status = 'flat'
-      if (categoryData && categoryData.trend.length > 0) {
-        const lastAmount = categoryData.trend[categoryData.trend.length - 1].amount
-        if (currentAmount > lastAmount) status = 'up'
-        else if (currentAmount < lastAmount) status = 'down'
-      }
-
       const trendPoint: TrendPoint = {
         yearMonth: summary.yearMonth,
         amount: categoryAmount.amount,
-        status: status,
+        status: 'flat',
       }
 
       if (categoryData) {
+        const mostRecentPoint = categoryData.trend[categoryData.trend.length - 1]
+        if (mostRecentPoint.amount > currentAmount) {
+          mostRecentPoint.status = 'up'
+        } else if (mostRecentPoint.amount < currentAmount) {
+          mostRecentPoint.status = 'down'
+        } else {
+          mostRecentPoint.status = 'flat'
+        }
         categoryData.trend.push(trendPoint)
-      } else if (index === 0 && categoryAmount.amount > 0) {
+      } else if (index === 0 && currentAmount > 0) {
         categoryMap.set(name, {
           category: name,
-          value: categoryAmount.amount,
+          value: currentAmount,
           trend: [trendPoint],
         })
       }
