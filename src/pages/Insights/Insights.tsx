@@ -1,8 +1,6 @@
 import { FULL_MONTHS } from '@constants'
 import { CalendarMonth } from '@mui/icons-material'
 import { Container, Typography, Box, IconButton, Divider } from '@mui/material'
-import { useReadCategorySummaries } from '@queries'
-import { defaultInsightParams, type InsightParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedDate } from '@utils'
 import React, { useMemo, useState } from 'react'
 
@@ -41,19 +39,6 @@ export const Insights: React.FC = () => {
     }
   }, [selectedYear, selectedMonth])
 
-  const insightParams: InsightParams = useMemo(
-    () => ({
-      ...defaultInsightParams,
-      beginDate,
-      endDate,
-      totalMonths: selectedMonth ? 7 : 0,
-      topExpenses: 1000,
-    }),
-    [beginDate, endDate, selectedMonth],
-  )
-
-  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
-
   const handleMonthYearSelect = (year: number, month: number | null) => {
     setSelectedYear(year)
     setSelectedMonth(month)
@@ -83,7 +68,7 @@ export const Insights: React.FC = () => {
           <Divider sx={{ my: 4 }} />
 
           <Box sx={{ mb: 4 }}>
-            <CategoriesChart isLoading={isCsLoading} categorySummaries={csData?.catSummaries} />
+            <CategoriesChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
           </Box>
 
           <Divider sx={{ mt: 4 }} />

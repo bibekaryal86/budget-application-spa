@@ -8,18 +8,19 @@ import {
   ChartsXAxis,
   ChartsYAxis,
 } from '@mui/x-charts'
-import type { CategorySummaries } from '@types'
-import React from 'react'
+import { useReadCategorySummaries } from '@queries'
+import { type CategorySummaries, defaultInsightParams, type InsightParams } from '@types'
+import React, { useMemo } from 'react'
 
 import { CategoriesTrendTooltip } from './CategoriesTrendTooltip.tsx'
 
 interface CategoriesChartProps {
-  categorySummaries: CategorySummaries | undefined
+  beginDate: string
+  endDate: string
+  selectedMonth: number | null
   title?: string
   showCard?: boolean
   height?: number
-  isLoading?: boolean
-  loadingText?: string
 }
 
 interface TrendPoint {
@@ -73,12 +74,12 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
 }
 
 export const CategoriesChart: React.FC<CategoriesChartProps> = ({
-  categorySummaries,
+  beginDate,
+  endDate,
+  selectedMonth,
   title = 'Monthly Categories Breakdown',
   showCard = true,
   height = 50,
-  isLoading = false,
-  loadingText = 'Loading categories breakdown...',
 }) => {
   const theme = useTheme()
   const chartSetting = {
@@ -90,7 +91,19 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
     margin: { left: 0 },
   }
 
-  const dataset = getCategorySummaryDataSet(categorySummaries)
+  const insightParams: InsightParams = useMemo(
+    () => ({
+      ...defaultInsightParams,
+      beginDate,
+      endDate,
+      totalMonths: selectedMonth ? 7 : 0,
+      topExpenses: 1000,
+    }),
+    [beginDate, endDate, selectedMonth],
+  )
+
+  const { data: categorySummaries, isLoading } = useReadCategorySummaries(insightParams)
+  const dataset = getCategorySummaryDataSet(categorySummaries?.catSummaries)
   const chartHeight = dataset.length * height
   const clipPathId = `${React.useId()}-clip-path`
 
@@ -111,7 +124,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%' gap={2}>
             <CircularProgress size={40} />
             <Typography variant='body2' color='text.secondary'>
-              {loadingText}
+              Loading categories breakdown...
             </Typography>
           </Box>
         ) : dataset.length > 0 ? (
