@@ -1,9 +1,17 @@
 import { Box, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import { BarChart } from '@mui/x-charts/BarChart'
+import {
+  BarPlot,
+  ChartContainer,
+  ChartsClipPath,
+  ChartsTooltipContainer,
+  ChartsXAxis,
+  ChartsYAxis,
+} from '@mui/x-charts'
 import type { CategorySummaries } from '@types'
-import { getFormattedCurrency } from '@utils'
 import React from 'react'
+
+import { CategoriesTrendTooltip } from './CategoriesTrendTooltip.tsx'
 
 interface CategoriesChartProps {
   categorySummaries: CategorySummaries | undefined
@@ -14,22 +22,38 @@ interface CategoriesChartProps {
   loadingText?: string
 }
 
-function getCategorySummaryDataSet(
-  categorySummaries: CategorySummaries | undefined,
-): { category: string; value: number; trend: number[] }[] {
-  const categoryMap = new Map<string, { category: string; value: number; trend: number[] }>()
+interface TrendPoint {
+  yearMonth: string
+  amount: number
+}
+
+interface CategoryData {
+  category: string
+  value: number
+  trend: TrendPoint[]
+  [key: string]: string | number | TrendPoint[] | undefined
+}
+
+function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefined): CategoryData[] {
+  const categoryMap = new Map<string, CategoryData>()
 
   categorySummaries?.data.forEach((summary, index) => {
     summary.categoryAmounts.forEach((categoryAmount) => {
       const category = categoryAmount.category
       const categoryData = categoryMap.get(category.name)
+
+      const trendPoint: TrendPoint = {
+        yearMonth: summary.yearMonth,
+        amount: categoryAmount.amount,
+      }
+
       if (categoryData) {
-        categoryData.trend.push(categoryAmount.amount)
+        categoryData.trend.push(trendPoint)
       } else if (index === 0 && categoryAmount.amount > 0) {
         categoryMap.set(category.name, {
           category: category.name,
           value: categoryAmount.amount,
-          trend: [categoryAmount.amount],
+          trend: [trendPoint],
         })
       }
     })
@@ -55,11 +79,9 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
     margin: { left: 0 },
   }
 
-  const valueFormatter = (value: number | null) => getFormattedCurrency(value)
-
   const dataset = getCategorySummaryDataSet(categorySummaries)
-
   const chartHeight = dataset.length * height
+  const clipPathId = `${React.useId()}-clip-path`
 
   const chartContent = (
     <Box>
@@ -77,15 +99,35 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
             </Typography>
           </Box>
         ) : dataset.length > 0 ? (
-          <BarChart
-            dataset={dataset}
-            yAxis={[{ scaleType: 'band', dataKey: 'category', width: 200 }]}
-            series={[{ dataKey: 'value', valueFormatter, color: theme.palette.error.main }]}
-            layout='horizontal'
-            grid={{ vertical: true }}
-            {...chartSetting}
-            height={chartHeight - 50}
-          />
+          <>
+            <ChartContainer
+              dataset={dataset}
+              yAxis={[{ scaleType: 'band', dataKey: 'category', width: 175 }]}
+              series={[
+                {
+                  type: 'bar',
+                  layout: 'horizontal',
+                  dataKey: 'value',
+                  color: theme.palette.error.main,
+                  minBarSize: 10,
+                  //barLabel: 'value',
+                  //barLabelPlacement: 'outside',
+                },
+              ]}
+              {...chartSetting}
+              height={chartHeight - 50}
+            >
+              <ChartsClipPath id={clipPathId} />
+              <g clipPath={`url(#${clipPathId})`}>
+                <BarPlot />
+              </g>
+              <ChartsXAxis />
+              <ChartsYAxis />
+              <ChartsTooltipContainer trigger='axis'>
+                <CategoriesTrendTooltip dataset={dataset} />
+              </ChartsTooltipContainer>
+            </ChartContainer>
+          </>
         ) : (
           <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
             <Typography variant='body2' color='text.secondary'>
