@@ -2,7 +2,6 @@ import { FULL_MONTHS } from '@constants'
 import { CalendarMonth } from '@mui/icons-material'
 import { Container, Typography, Box, IconButton, Divider } from '@mui/material'
 import { useReadCategorySummaries } from '@queries'
-import { useReadCashFlowSummaries } from '@queries'
 import { defaultInsightParams, type InsightParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedDate } from '@utils'
 import React, { useMemo, useState } from 'react'
@@ -48,12 +47,11 @@ export const Insights: React.FC = () => {
       beginDate,
       endDate,
       totalMonths: selectedMonth ? 7 : 0,
-      topExpenses: 100, // filter to get expenses only
+      topExpenses: 1000,
     }),
     [beginDate, endDate, selectedMonth],
   )
 
-  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
   const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
 
   const handleMonthYearSelect = (year: number, month: number | null) => {
@@ -79,7 +77,7 @@ export const Insights: React.FC = () => {
           <Divider sx={{ mb: 4 }} />
 
           <Box sx={{ mb: 4 }}>
-            <CashFlowChart isLoading={isCfsLoading} cashFlowSummaries={cfsData?.cfSummaries} />
+            <CashFlowChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
           </Box>
 
           <Divider sx={{ my: 4 }} />

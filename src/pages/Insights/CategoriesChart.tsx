@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, useTheme } from '@mui/material'
+import { Box, Button, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import {
   BarPlot,
@@ -60,7 +60,7 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
           mostRecentPoint.status = 'flat'
         }
         categoryData.trend.push(trendPoint)
-      } else if (index === 0 && currentAmount > 0) {
+      } else if (index === 0) {
         categoryMap.set(name, {
           category: name,
           value: currentAmount,
@@ -97,9 +97,14 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
   const chartContent = (
     <Box>
       {title && (
-        <Typography variant='h6' fontWeight='medium' sx={{ mb: 2 }}>
-          {title}
-        </Typography>
+        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+          <Typography variant='h6' fontWeight='medium'>
+            {title}
+          </Typography>
+          <Button variant='text' onClick={() => console.log('do something')}>
+            View All
+          </Button>
+        </Box>
       )}
       <Box sx={{ height: height, width: '100%' }}>
         {isLoading ? (
