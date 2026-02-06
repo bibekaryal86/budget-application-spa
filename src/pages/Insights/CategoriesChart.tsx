@@ -25,6 +25,7 @@ interface CategoriesChartProps {
 interface TrendPoint {
   yearMonth: string
   amount: number
+  status: string
 }
 
 interface CategoryData {
@@ -39,19 +40,28 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
 
   categorySummaries?.data.forEach((summary, index) => {
     summary.categoryAmounts.forEach((categoryAmount) => {
-      const category = categoryAmount.category
-      const categoryData = categoryMap.get(category.name)
+      const { name } = categoryAmount.category
+      const categoryData = categoryMap.get(name)
+      const currentAmount = categoryAmount.amount
+
+      let status = 'flat'
+      if (categoryData && categoryData.trend.length > 0) {
+        const lastAmount = categoryData.trend[categoryData.trend.length - 1].amount
+        if (currentAmount > lastAmount) status = 'up'
+        else if (currentAmount < lastAmount) status = 'down'
+      }
 
       const trendPoint: TrendPoint = {
         yearMonth: summary.yearMonth,
         amount: categoryAmount.amount,
+        status: status,
       }
 
       if (categoryData) {
         categoryData.trend.push(trendPoint)
       } else if (index === 0 && categoryAmount.amount > 0) {
-        categoryMap.set(category.name, {
-          category: category.name,
+        categoryMap.set(name, {
+          category: name,
           value: categoryAmount.amount,
           trend: [trendPoint],
         })

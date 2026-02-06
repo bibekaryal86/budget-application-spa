@@ -1,3 +1,4 @@
+import { TrendingUp, TrendingDown, HorizontalRule } from '@mui/icons-material'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { useItemTooltip } from '@mui/x-charts/ChartsTooltip'
 import { getFormattedCurrency } from '@utils'
@@ -10,6 +11,7 @@ export const CategoriesTrendTooltip: React.FC<{
     trend: {
       yearMonth: string
       amount: number
+      status: string
     }[]
   }[]
 }> = ({ dataset }) => {
@@ -34,10 +36,11 @@ export const CategoriesTrendTooltip: React.FC<{
             <TableRow>
               <TableCell>Year/Month</TableCell>
               <TableCell align='right'>Amount</TableCell>
+              <TableCell align='right'>Trend</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {trend.map(({ yearMonth, amount }) => (
+            {trend.map(({ yearMonth, amount, status }) => (
               <TableRow
                 key={yearMonth}
                 sx={{
@@ -47,6 +50,11 @@ export const CategoriesTrendTooltip: React.FC<{
               >
                 <TableCell sx={{ fontWeight: 'bold', color: 'text.secondary' }}>{yearMonth}</TableCell>
                 <TableCell align='right'>{getFormattedCurrency(amount)}</TableCell>
+                <TableCell align='right'>
+                  {status === 'up' && <TrendingUp sx={{ color: 'error.main' }} fontSize='small' />}
+                  {status === 'down' && <TrendingDown sx={{ color: 'success.main' }} fontSize='small' />}
+                  {status === 'flat' && <HorizontalRule sx={{ color: 'info.main' }} fontSize='small' />}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
