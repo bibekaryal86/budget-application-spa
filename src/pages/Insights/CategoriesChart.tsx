@@ -1,9 +1,11 @@
+import { DEFAULT_TOP_EXPENSES, MAX_CONTENT_LENGTH } from '@constants'
 import { Box, Button, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import {
   BarPlot,
   ChartContainer,
   ChartsClipPath,
+  ChartsGrid,
   ChartsTooltipContainer,
   ChartsXAxis,
   ChartsYAxis,
@@ -38,6 +40,7 @@ interface CategoryData {
 
 function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefined): CategoryData[] {
   const categoryMap = new Map<string, CategoryData>()
+  const currentMonthName = categorySummaries?.data[0]?.yearMonth || ''
 
   categorySummaries?.data.forEach((summary, index) => {
     summary.categoryAmounts.forEach((categoryAmount) => {
@@ -53,24 +56,32 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
 
       if (categoryData) {
         const mostRecentPoint = categoryData.trend[categoryData.trend.length - 1]
-
-        if (mostRecentPoint.amount > currentAmount) {
-          mostRecentPoint.status = 'up'
-        } else if (mostRecentPoint.amount < currentAmount) {
-          mostRecentPoint.status = 'down'
-        }
+        if (mostRecentPoint.amount > currentAmount) mostRecentPoint.status = 'up'
+        else if (mostRecentPoint.amount < currentAmount) mostRecentPoint.status = 'down'
 
         categoryData.trend.push(trendPoint)
       } else {
-        categoryMap.set(name, {
+        const newEntry: CategoryData = {
           category: name,
           value: index === 0 ? currentAmount : 0,
-          trend: [trendPoint],
-        })
+          trend: [],
+        }
+
+        if (index > 0) {
+          newEntry.trend.push({
+            yearMonth: currentMonthName,
+            amount: 0,
+            status: currentAmount < 0 ? 'up' : currentAmount > 0 ? 'down' : 'flat',
+          })
+        }
+
+        newEntry.trend.push(trendPoint)
+        categoryMap.set(name, newEntry)
       }
     })
   })
-  return Array.from(categoryMap.values())
+
+  return Array.from(categoryMap.values()).filter((item) => item.value > 0 || item.trend.some((t) => t.amount > 0))
 }
 
 export const CategoriesChart: React.FC<CategoriesChartProps> = ({
@@ -91,7 +102,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
     margin: { left: 0 },
   }
 
-  const [topExpenses, setTopExpenses] = useState(1000)
+  const [topExpenses, setTopExpenses] = useState(DEFAULT_TOP_EXPENSES)
 
   const insightParams: InsightParams = useMemo(
     () => ({
@@ -116,12 +127,12 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           <Typography variant='h6' fontWeight='medium'>
             {title}
           </Typography>
-          {topExpenses === 1000 ? (
-            <Button variant='text' onClick={() => setTopExpenses(1048576)}>
+          {topExpenses === DEFAULT_TOP_EXPENSES ? (
+            <Button variant='text' onClick={() => setTopExpenses(MAX_CONTENT_LENGTH)}>
               View All
             </Button>
-          ) : topExpenses === 1048576 ? (
-            <Button variant='text' onClick={() => setTopExpenses(1000)}>
+          ) : topExpenses === MAX_CONTENT_LENGTH ? (
+            <Button variant='text' onClick={() => setTopExpenses(DEFAULT_TOP_EXPENSES)}>
               View Top
             </Button>
           ) : null}
@@ -144,11 +155,6 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
                   scaleType: 'band',
                   dataKey: 'category',
                   width: 175,
-                  // Dims the category name if the bar value is 0
-                  tickLabelStyle: {
-                    fill: theme.palette.text.primary,
-                    fontSize: 13,
-                  },
                 },
               ]}
               series={[
@@ -166,6 +172,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
               height={chartHeight - 50}
             >
               <ChartsClipPath id={clipPathId} />
+              <ChartsGrid horizontal />
               <g clipPath={`url(#${clipPathId})`}>
                 <BarPlot />
               </g>

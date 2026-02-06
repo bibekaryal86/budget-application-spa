@@ -28,12 +28,18 @@ export const CategoriesTrendTooltip: React.FC<{
 
   const activeIndex = tooltipData[0].dataIndex
   const trend = dataset[activeIndex].trend
+  const category = dataset[activeIndex].category
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <TableContainer component={Paper} variant='outlined' sx={{ mb: 2, overflow: 'hidden' }}>
         <Table>
           <TableHead>
+            <TableRow>
+              <TableCell colSpan={3} align='center' sx={{ fontWeight: 'bold', backgroundColor: 'grey.100' }}>
+                {category}
+              </TableCell>
+            </TableRow>
             <TableRow>
               <TableCell>Year/Month</TableCell>
               <TableCell align='right'>Amount</TableCell>

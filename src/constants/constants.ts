@@ -3,6 +3,8 @@ export const ACCESS_TOKEN_KEY = 'access_token'
 
 export const DEFAULT_PAGE_NUMBER = 1
 export const DEFAULT_PER_PAGE = 100
+export const DEFAULT_TOP_EXPENSES = 1000
+export const MAX_CONTENT_LENGTH = 1048576
 
 export const NO_EXPENSE_CATEGORY_TYPES = {
   INCOME: 'INCOME',
