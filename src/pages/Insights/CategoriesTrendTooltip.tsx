@@ -1,6 +1,6 @@
 import { TrendingUp, TrendingDown, HorizontalRule } from '@mui/icons-material'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import { useItemTooltip } from '@mui/x-charts/ChartsTooltip'
+import { useAxesTooltip } from '@mui/x-charts'
 import { getFormattedCurrency } from '@utils'
 import React from 'react'
 
@@ -15,18 +15,19 @@ export const CategoriesTrendTooltip: React.FC<{
     }[]
   }[]
 }> = ({ dataset }) => {
-  const tooltipData = useItemTooltip()
+  const tooltipData = useAxesTooltip()
 
-  if (!tooltipData) {
+  if (
+    !tooltipData ||
+    tooltipData.length === 0 ||
+    tooltipData[0].dataIndex === null ||
+    tooltipData[0].dataIndex === undefined
+  ) {
     return null
   }
 
-  const activeIndex = tooltipData.identifier
-  if (!activeIndex || activeIndex.dataIndex === undefined || activeIndex.dataIndex === null) {
-    return null
-  }
-
-  const trend = dataset[activeIndex.dataIndex].trend
+  const activeIndex = tooltipData[0].dataIndex
+  const trend = dataset[activeIndex].trend
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

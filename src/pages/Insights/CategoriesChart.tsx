@@ -10,7 +10,7 @@ import {
 } from '@mui/x-charts'
 import { useReadCategorySummaries } from '@queries'
 import { type CategorySummaries, defaultInsightParams, type InsightParams } from '@types'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { CategoriesTrendTooltip } from './CategoriesTrendTooltip.tsx'
 
@@ -42,29 +42,29 @@ function getCategorySummaryDataSet(categorySummaries: CategorySummaries | undefi
   categorySummaries?.data.forEach((summary, index) => {
     summary.categoryAmounts.forEach((categoryAmount) => {
       const { name } = categoryAmount.category
-      const categoryData = categoryMap.get(name)
       const currentAmount = categoryAmount.amount
+      const categoryData = categoryMap.get(name)
 
       const trendPoint: TrendPoint = {
         yearMonth: summary.yearMonth,
-        amount: categoryAmount.amount,
+        amount: currentAmount,
         status: 'flat',
       }
 
       if (categoryData) {
         const mostRecentPoint = categoryData.trend[categoryData.trend.length - 1]
+
         if (mostRecentPoint.amount > currentAmount) {
           mostRecentPoint.status = 'up'
         } else if (mostRecentPoint.amount < currentAmount) {
           mostRecentPoint.status = 'down'
-        } else {
-          mostRecentPoint.status = 'flat'
         }
+
         categoryData.trend.push(trendPoint)
-      } else if (index === 0) {
+      } else {
         categoryMap.set(name, {
           category: name,
-          value: currentAmount,
+          value: index === 0 ? currentAmount : 0,
           trend: [trendPoint],
         })
       }
@@ -91,15 +91,17 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
     margin: { left: 0 },
   }
 
+  const [topExpenses, setTopExpenses] = useState(1000)
+
   const insightParams: InsightParams = useMemo(
     () => ({
       ...defaultInsightParams,
       beginDate,
       endDate,
       totalMonths: selectedMonth ? 7 : 0,
-      topExpenses: 1000,
+      topExpenses: topExpenses,
     }),
-    [beginDate, endDate, selectedMonth],
+    [beginDate, endDate, selectedMonth, topExpenses],
   )
 
   const { data: categorySummaries, isLoading } = useReadCategorySummaries(insightParams)
@@ -114,9 +116,15 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           <Typography variant='h6' fontWeight='medium'>
             {title}
           </Typography>
-          <Button variant='text' onClick={() => console.log('do something')}>
-            View All
-          </Button>
+          {topExpenses === 1000 ? (
+            <Button variant='text' onClick={() => setTopExpenses(1048576)}>
+              View All
+            </Button>
+          ) : topExpenses === 1048576 ? (
+            <Button variant='text' onClick={() => setTopExpenses(1000)}>
+              View Top
+            </Button>
+          ) : null}
         </Box>
       )}
       <Box sx={{ height: height, width: '100%' }}>
@@ -131,7 +139,18 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           <>
             <ChartContainer
               dataset={dataset}
-              yAxis={[{ scaleType: 'band', dataKey: 'category', width: 175 }]}
+              yAxis={[
+                {
+                  scaleType: 'band',
+                  dataKey: 'category',
+                  width: 175,
+                  // Dims the category name if the bar value is 0
+                  tickLabelStyle: {
+                    fill: theme.palette.text.primary,
+                    fontSize: 13,
+                  },
+                },
+              ]}
               series={[
                 {
                   type: 'bar',
