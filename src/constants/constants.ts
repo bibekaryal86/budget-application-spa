@@ -3,6 +3,8 @@ export const ACCESS_TOKEN_KEY = 'access_token'
 
 export const DEFAULT_PAGE_NUMBER = 1
 export const DEFAULT_PER_PAGE = 100
+export const DEFAULT_TOP_EXPENSES = 1000
+export const MAX_CONTENT_LENGTH = 1048576
 
 export const NO_EXPENSE_CATEGORY_TYPES = {
   INCOME: 'INCOME',
@@ -26,6 +28,23 @@ export const ACTION_TYPE = {
 } as const
 
 export type ModalAction = typeof ACTION_TYPE.CREATE | typeof ACTION_TYPE.UPDATE | typeof ACTION_TYPE.DELETE
+
+export const FULL_MONTHS = [
+  { value: 1, label: 'January' },
+  { value: 2, label: 'February' },
+  { value: 3, label: 'March' },
+  { value: 4, label: 'April' },
+  { value: 5, label: 'May' },
+  { value: 6, label: 'June' },
+  { value: 7, label: 'July' },
+  { value: 8, label: 'August' },
+  { value: 9, label: 'September' },
+  { value: 10, label: 'October' },
+  { value: 11, label: 'November' },
+  { value: 12, label: 'December' },
+]
+
+export const FULL_MONTHS_ONLY = FULL_MONTHS.map((month) => month.label)
 
 // Theme Constants
 export const THEME_MODES = {

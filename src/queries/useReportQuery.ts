@@ -1,32 +1,32 @@
 import { insightsService } from '@services'
 import { useQuery } from '@tanstack/react-query'
-import { defaultSummaryParams, type SummaryParams } from '@types'
+import { type InsightParams } from '@types'
 
-const getSummaryKey = (queryKey: string, params: SummaryParams) => [
+const getSummaryKey = (queryKey: string, params: InsightParams) => [
   queryKey,
   {
     beginDate: params.beginDate,
     endDate: params.endDate,
-    catIds: params.catIds,
-    catTypeIds: params.catTypeIds,
+    categoryIds: params.categoryIds,
+    categoryTypeIds: params.categoryTypeIds,
     topExpenses: params.topExpenses,
   },
 ]
 
-export const useReadCashFlowSummaries = () =>
+export const useReadCashFlowSummaries = (params: InsightParams) =>
   useQuery({
-    queryKey: getSummaryKey('cfSummary', { ...defaultSummaryParams }),
-    queryFn: () => insightsService.readCashFlowSummaries(),
+    queryKey: getSummaryKey('cfSummary', params),
+    queryFn: () => insightsService.readCashFlowSummaries(params),
     select: (data) => ({
       cfSummaries: data,
     }),
     staleTime: 60_000,
   })
 
-export const useReadCategorySummaries = (topExpenses: boolean) =>
+export const useReadCategorySummaries = (params: InsightParams) =>
   useQuery({
-    queryKey: getSummaryKey('catSummary', { ...defaultSummaryParams, topExpenses }),
-    queryFn: () => insightsService.readCategorySummary({ ...defaultSummaryParams, topExpenses }),
+    queryKey: getSummaryKey('catSummary', params),
+    queryFn: () => insightsService.readCategorySummary(params),
     select: (data) => ({
       catSummaries: data,
     }),

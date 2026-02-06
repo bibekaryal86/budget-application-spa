@@ -201,31 +201,36 @@ export interface TransactionMerchants {
   metadata: ResponseMetadata
 }
 
-// Reports
-export interface CashFlowSummary {
-  beginDate: Date
-  endDate: Date
+// Insights
+export interface CashFlowAmounts {
   incomes: number
   expenses: number
   savings: number
+  balance: number
+}
+
+export interface CashFlowSummary {
+  yearMonth: string
+  cashFlowAmounts: CashFlowAmounts
 }
 
 export interface CashFlowSummaries {
-  currentMonth: CashFlowSummary
-  previousMonth: CashFlowSummary
+  data: CashFlowSummary[]
   metadata: ResponseMetadata
 }
 
-export interface CategorySummary {
-  beginDate: Date
-  endDate: Date
+export interface CategoryAmount {
   category: Category
   amount: number
 }
 
+export interface CategorySummary {
+  yearMonth: string
+  categoryAmounts: CategoryAmount[]
+}
+
 export interface CategorySummaries {
-  currentMonth: CategorySummary[]
-  previousMonth: CategorySummary[]
+  data: CategorySummary[]
   metadata: ResponseMetadata
 }
 
@@ -240,9 +245,9 @@ export interface TransactionParams {
   beginDate: string | null
   endDate: string | null
   merchants: string[] | []
-  catIds: string[] | []
-  catTypeIds: string[] | []
-  accIds: string[] | []
+  categoryIds: string[] | []
+  categoryTypeIds: string[] | []
+  accountIds: string[] | []
   tags: string[] | []
 }
 
@@ -252,24 +257,26 @@ export const defaultTransactionParams: TransactionParams = {
   beginDate: null,
   endDate: null,
   merchants: [],
-  catIds: [],
-  catTypeIds: [],
-  accIds: [],
+  categoryIds: [],
+  categoryTypeIds: [],
+  accountIds: [],
   tags: [],
 }
 
-export interface SummaryParams {
-  beginDate: Date | null
-  endDate: Date | null
-  catIds: string[] | []
-  catTypeIds: string[] | []
-  topExpenses: boolean | null
+export interface InsightParams {
+  beginDate: string | null
+  endDate: string | null
+  categoryIds: string[] | []
+  categoryTypeIds: string[] | []
+  topExpenses: number | null
+  totalMonths: number | null
 }
 
-export const defaultSummaryParams: SummaryParams = {
+export const defaultInsightParams: InsightParams = {
   beginDate: null,
   endDate: null,
-  catIds: [],
-  catTypeIds: [],
+  categoryIds: [],
+  categoryTypeIds: [],
   topExpenses: null,
+  totalMonths: null,
 }

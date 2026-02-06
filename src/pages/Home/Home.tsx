@@ -11,7 +11,7 @@ import {
   useReadTransactions,
 } from '@queries'
 import { useReadCashFlowSummaries } from '@queries'
-import { defaultTransactionParams } from '@types'
+import { defaultInsightParams, defaultTransactionParams, type InsightParams } from '@types'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getTxnAmountColor } from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
@@ -34,8 +34,15 @@ export const Home: React.FC = () => {
     beginDate: getBeginningOfMonth(now),
     endDate: getEndOfMonth(now),
   })
-  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries()
-  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(true)
+  const insightParams: InsightParams = {
+    ...defaultInsightParams,
+    beginDate: getBeginningOfMonth(now),
+    endDate: getEndOfMonth(now),
+    totalMonths: 2,
+    topExpenses: 7,
+  }
+  const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
+  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
 
   const cashFlowMetrics = useMemo(() => {
     const cfSummaries = cfsData?.cfSummaries || null
@@ -43,38 +50,38 @@ export const Home: React.FC = () => {
       return {
         currentIncome: 0,
         currentExpenses: 0,
-        currentInvestments: 0,
         currentSavings: 0,
+        currentBalance: 0,
         incomeChange: 0,
         expenseChange: 0,
-        investmentChange: 0,
         savingsChange: 0,
+        balanceChange: 0,
       }
 
-    const currentIncome = cfSummaries.currentMonth.incomes || 0
-    const currentExpenses = cfSummaries.currentMonth.expenses || 0
-    const currentInvestments = cfSummaries.currentMonth.savings || 0
-    const currentSavings = currentIncome - currentExpenses - currentInvestments
+    const currentIncome = cfSummaries.data[0].cashFlowAmounts.incomes || 0
+    const currentExpenses = cfSummaries.data[0].cashFlowAmounts.expenses || 0
+    const currentSavings = cfSummaries.data[0].cashFlowAmounts.savings || 0
+    const currentBalance = cfSummaries.data[0].cashFlowAmounts.balance || 0
 
-    const lastIncome = cfSummaries.previousMonth.incomes || 0
-    const lastExpenses = cfSummaries.previousMonth.expenses || 0
-    const lastInvestments = cfSummaries.previousMonth.savings || 0
-    const lastSavings = lastIncome - lastExpenses - lastInvestments
+    const lastIncome = cfSummaries.data[1].cashFlowAmounts.incomes || 0
+    const lastExpenses = cfSummaries.data[1].cashFlowAmounts.expenses || 0
+    const lastInvestments = cfSummaries.data[1].cashFlowAmounts.savings || 0
+    const lastSavings = cfSummaries.data[1].cashFlowAmounts.balance || 0
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
-    const investmentChange = currentInvestments - lastInvestments
-    const savingsChange = currentSavings - lastSavings
+    const savingsChange = currentSavings - lastInvestments
+    const balanceChange = currentBalance - lastSavings
 
     return {
       currentIncome,
       currentExpenses,
-      currentInvestments,
       currentSavings,
+      currentBalance,
       incomeChange,
       expenseChange,
-      investmentChange,
       savingsChange,
+      balanceChange,
     }
   }, [cfsData])
 
@@ -82,12 +89,16 @@ export const Home: React.FC = () => {
     const cSummaries = csData?.catSummaries || null
     if (!cSummaries) return []
 
-    const previousMonthMap = new Map(cSummaries.previousMonth.map((cs) => [cs.category.id, cs.amount]))
+    const currentMonth = cSummaries.data.length > 0 ? cSummaries.data[0] : null
+    const previousMonth = cSummaries.data.length > 1 ? cSummaries.data[1] : null
+    if (!currentMonth) return []
 
-    return cSummaries.currentMonth.map((cs) => ({
-      category: cs.category,
-      currentMonth: cs.amount,
-      previousMonth: previousMonthMap.get(cs.category.id) || 0,
+    const previousMonthMap = new Map(previousMonth?.categoryAmounts?.map((ca) => [ca.category.id, ca.amount]) || [])
+
+    return currentMonth.categoryAmounts.map((ca) => ({
+      category: ca.category,
+      currentMonth: ca.amount,
+      previousMonth: previousMonthMap.get(ca.category.id) || 0,
     }))
   }, [csData])
 
@@ -127,9 +138,14 @@ export const Home: React.FC = () => {
   return (
     <Container maxWidth='sm' sx={{ py: 4 }}>
       <Box sx={{ width: '100%' }}>
-        <Typography variant='h5' component='h2' fontWeight='medium' sx={{ mb: 1 }}>
-          {currentMonth} Cash Flows
-        </Typography>
+        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+          <Typography variant='h5' component='h2' fontWeight='medium'>
+            {currentMonth} Cash Flows
+          </Typography>
+          <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights')}>
+            View Details
+          </Button>
+        </Box>
 
         {isCfsLoading ? (
           <Box display='flex' justifyContent='center' my={4}>
@@ -210,18 +226,18 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Investments
+                          Savings
                         </Typography>
                         <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
-                          {getFormattedCurrency(cashFlowMetrics.currentInvestments)}
+                          {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                          {getTrendingIcon(false, cashFlowMetrics.investmentChange)}
+                          {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
                           <Typography
                             variant='body2'
-                            color={cashFlowMetrics.investmentChange > 0 ? 'success.main' : 'error.main'}
+                            color={cashFlowMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
                           >
-                            {getFormattedCurrency(cashFlowMetrics.investmentChange)}
+                            {getFormattedCurrency(cashFlowMetrics.savingsChange)}
                           </Typography>
                         </Box>
                         <Typography variant='body2' color='text.secondary'>
@@ -245,17 +261,17 @@ export const Home: React.FC = () => {
                           variant='h6'
                           component='div'
                           fontWeight='bold'
-                          color={cashFlowMetrics.currentSavings > 0 ? 'success.main' : 'error.main'}
+                          color={cashFlowMetrics.currentBalance > 0 ? 'success.main' : 'error.main'}
                         >
-                          {getFormattedCurrency(cashFlowMetrics.currentSavings)}
+                          {getFormattedCurrency(cashFlowMetrics.currentBalance)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
-                          {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
+                          {getTrendingIcon(false, cashFlowMetrics.balanceChange)}
                           <Typography
                             variant='body2'
-                            color={cashFlowMetrics.savingsChange > 0 ? 'success.main' : 'error.main'}
+                            color={cashFlowMetrics.balanceChange > 0 ? 'success.main' : 'error.main'}
                           >
-                            {getFormattedCurrency(cashFlowMetrics.savingsChange)}
+                            {getFormattedCurrency(cashFlowMetrics.balanceChange)}
                           </Typography>
                         </Box>
                         <Typography variant='body2' color='text.secondary'>
@@ -288,8 +304,8 @@ export const Home: React.FC = () => {
                   <Typography variant='h6' fontWeight='medium'>
                     {currentMonth} Top Spending Categories
                   </Typography>
-                  <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
-                    View All
+                  <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights')}>
+                    View Details
                   </Button>
                 </Box>
 

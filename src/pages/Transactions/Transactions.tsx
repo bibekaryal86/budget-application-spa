@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
 import { useTxnStore } from '@stores'
 import { type ResponsePageInfo } from '@types'
-import { getBeginningOfMonth, getEndOfMonth } from '@utils'
 import React, { useMemo, useState } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
@@ -16,9 +15,7 @@ import { TransactionsTable } from './TransactionTable.tsx'
 export const Transactions: React.FC = () => {
   const {
     txnFilterBeginDate,
-    setTxnFilterBeginDate,
     txnFilterEndDate,
-    setTxnFilterEndDate,
     txnFilterMerchant,
     txnFilterAccountId,
     txnFilterCategoryId,
@@ -33,16 +30,15 @@ export const Transactions: React.FC = () => {
     perPage: DEFAULT_PER_PAGE,
   })
 
-  const now = new Date()
   const { data, isLoading, error } = useReadTransactions({
     pageNumber: pagination.pageNumber,
     perPage: pagination.perPage,
-    beginDate: txnFilterBeginDate || getBeginningOfMonth(now),
-    endDate: txnFilterEndDate || getEndOfMonth(now),
+    beginDate: txnFilterBeginDate,
+    endDate: txnFilterEndDate,
     merchants: txnFilterMerchant ? [txnFilterMerchant] : [],
-    catIds: txnFilterCategoryId ? [txnFilterCategoryId] : [],
-    catTypeIds: txnFilterCategoryTypeId ? [txnFilterCategoryTypeId] : [],
-    accIds: txnFilterAccountId ? [txnFilterAccountId] : [],
+    categoryIds: txnFilterCategoryId ? [txnFilterCategoryId] : [],
+    categoryTypeIds: txnFilterCategoryTypeId ? [txnFilterCategoryTypeId] : [],
+    accountIds: txnFilterAccountId ? [txnFilterAccountId] : [],
     tags: txnFilterTags ? txnFilterTags : [],
   })
 
@@ -64,13 +60,6 @@ export const Transactions: React.FC = () => {
       perPage: pagination.perPage || DEFAULT_PER_PAGE,
     }
   }, [data, pagination])
-
-  if (!txnFilterBeginDate) {
-    setTxnFilterBeginDate(getBeginningOfMonth(now))
-  }
-  if (!txnFilterEndDate) {
-    setTxnFilterEndDate(getEndOfMonth(now))
-  }
 
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({ ...prev, pageNumber: page }))

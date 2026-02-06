@@ -1,5 +1,13 @@
 import { ANIMATION, COLORS, THEME_MODES } from '@constants'
-import { Brightness4, Brightness7, Receipt, Logout, Menu as MenuIcon, AccountBalanceWallet } from '@mui/icons-material'
+import {
+  Brightness4,
+  Brightness7,
+  Receipt,
+  Logout,
+  Menu as MenuIcon,
+  AccountBalanceWallet,
+  Assessment,
+} from '@mui/icons-material'
 import {
   AppBar,
   Toolbar,
@@ -50,6 +58,7 @@ export const Header: React.FC = () => {
 
   const navigationItems = [
     { path: '/transactions', label: 'Transactions', icon: <Receipt /> },
+    { path: '/insights', label: 'Insights', icon: <Assessment /> },
     { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet /> },
   ]
 
