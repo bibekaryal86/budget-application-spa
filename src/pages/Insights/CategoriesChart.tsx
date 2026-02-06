@@ -80,7 +80,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           <BarChart
             dataset={dataset}
             yAxis={[{ scaleType: 'band', dataKey: 'category', width: 200 }]}
-            series={[{ dataKey: 'value', label: 'Expenses', valueFormatter, color: theme.palette.info.main }]}
+            series={[{ dataKey: 'value', valueFormatter, color: theme.palette.error.main }]}
             layout='horizontal'
             grid={{ vertical: true }}
             {...chartSetting}
