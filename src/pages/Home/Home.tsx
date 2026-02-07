@@ -142,7 +142,11 @@ export const Home: React.FC = () => {
           <Typography variant='h5' component='h2' fontWeight='medium'>
             {currentMonth} Cash Flows
           </Typography>
-          <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights')}>
+          <Button
+            variant='text'
+            endIcon={<ArrowForward />}
+            onClick={() => void navigate('/insights#cash-flow-summary')}
+          >
             View Details
           </Button>
         </Box>
@@ -304,7 +308,11 @@ export const Home: React.FC = () => {
                   <Typography variant='h6' fontWeight='medium'>
                     {currentMonth} Top Spending Categories
                   </Typography>
-                  <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights')}>
+                  <Button
+                    variant='text'
+                    endIcon={<ArrowForward />}
+                    onClick={() => void navigate('/insights#category-summary')}
+                  >
                     View Details
                   </Button>
                 </Box>
