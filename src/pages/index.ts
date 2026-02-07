@@ -1,4 +1,5 @@
 export { Budgets } from './Budgets/Budgets.tsx'
+export { Categories } from './Categories/Categories.tsx'
 export { Home } from './Home/Home.tsx'
 export { Insights } from './Insights/Insights.tsx'
 export { Login } from './Login/Login.tsx'
