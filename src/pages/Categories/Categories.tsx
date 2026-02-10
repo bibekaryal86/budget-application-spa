@@ -67,7 +67,7 @@ export const Categories: React.FC = () => {
               Categories
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              Manage category and category types to organize spending
+              View available category and category types to organize your spending...
             </Typography>
           </Box>
         </Stack>
