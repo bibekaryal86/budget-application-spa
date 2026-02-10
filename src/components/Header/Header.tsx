@@ -7,6 +7,7 @@ import {
   Menu as MenuIcon,
   AccountBalanceWallet,
   Assessment,
+  Category,
 } from '@mui/icons-material'
 import {
   AppBar,
@@ -57,9 +58,10 @@ export const Header: React.FC = () => {
   }
 
   const navigationItems = [
-    { path: '/transactions', label: 'Transactions', icon: <Receipt /> },
-    { path: '/insights', label: 'Insights', icon: <Assessment /> },
-    { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet /> },
+    { path: '/transactions', label: 'Transactions', icon: <Receipt sx={{ mr: 2 }} /> },
+    { path: '/insights', label: 'Insights', icon: <Assessment sx={{ mr: 2 }} /> },
+    { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet sx={{ mr: 2 }} /> },
+    { path: '/categories', label: 'Categories', icon: <Category sx={{ mr: 2 }} /> },
   ]
 
   return (
@@ -112,25 +114,18 @@ export const Header: React.FC = () => {
                     horizontal: 'right',
                   }}
                 >
-                  <MenuItem
-                    component={Link}
-                    to='/transactions'
-                    onClick={handleMenuClose}
-                    selected={location.pathname === '/transactions'}
-                  >
-                    <Receipt sx={{ mr: 2 }} />
-                    Transactions
-                  </MenuItem>
-
-                  <MenuItem
-                    component={Link}
-                    to='/budgets'
-                    onClick={handleMenuClose}
-                    selected={location.pathname === '/budgets'}
-                  >
-                    <AccountBalanceWallet sx={{ mr: 2 }} />
-                    Budgets
-                  </MenuItem>
+                  {navigationItems.map((item) => (
+                    <MenuItem
+                      key={item.path}
+                      component={Link}
+                      to={item.path}
+                      onClick={handleMenuClose}
+                      selected={location.pathname === item.path}
+                    >
+                      {item.icon}
+                      {item.label}
+                    </MenuItem>
+                  ))}
 
                   <MenuItem
                     onClick={() => {
@@ -168,21 +163,6 @@ export const Header: React.FC = () => {
                       }}
                     >
                       <Receipt />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title='Budgets'>
-                    <IconButton
-                      color='inherit'
-                      component={Link}
-                      to='/budgets'
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        },
-                      }}
-                    >
-                      <AccountBalanceWallet />
                     </IconButton>
                   </Tooltip>
 

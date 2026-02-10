@@ -2,13 +2,24 @@ import { FULL_MONTHS } from '@constants'
 import { CalendarMonth } from '@mui/icons-material'
 import { Container, Typography, Box, IconButton, Divider } from '@mui/material'
 import { getBeginningOfMonth, getEndOfMonth, getFormattedDate } from '@utils'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { CashFlowChart } from './CashFlowChart.tsx'
 import { CategoriesChart } from './CategoriesChart.tsx'
 import { InsightsSelectorModal } from './InsightsSelectorModal.tsx'
 
 export const Insights: React.FC = () => {
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (hash) {
+      const el = document.querySelector(hash)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [hash])
+
   const now = new Date()
   const currentYear = now.getFullYear()
   const currentMonth = now.getMonth() + 1
@@ -61,13 +72,13 @@ export const Insights: React.FC = () => {
 
           <Divider sx={{ mb: 4 }} />
 
-          <Box sx={{ mb: 4 }}>
+          <Box id='cash-flow-summary' sx={{ mb: 4 }}>
             <CashFlowChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
           </Box>
 
           <Divider sx={{ my: 4 }} />
 
-          <Box sx={{ mb: 4 }}>
+          <Box id='category-summary' sx={{ mb: 4 }}>
             <CategoriesChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
           </Box>
 
