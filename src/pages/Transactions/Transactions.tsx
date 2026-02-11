@@ -99,7 +99,7 @@ export const Transactions: React.FC = () => {
               Transactions
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              Manage and view all your transactions
+              Manage and view your transactions
             </Typography>
           </Box>
           <Button
