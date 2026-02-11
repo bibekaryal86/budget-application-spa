@@ -54,7 +54,6 @@ interface ValidationResult {
 const DefaultTransactionRequest: TransactionRequest = {
   txnDate: null,
   merchant: '',
-  accountId: '',
   totalAmount: null,
   items: [],
 }
@@ -64,12 +63,12 @@ function getDefaultTransactionFormData(txn: Transaction | null): TransactionRequ
     return {
       txnDate: txn.txnDate ? new Date(txn.txnDate) : null,
       merchant: txn.merchant,
-      accountId: txn.account.id,
       totalAmount: txn.totalAmount,
       items: txn.items.map((i) => ({
         id: i.id,
         transactionId: i.transaction?.id || null,
         categoryId: i.category.id,
+        accountId: i.account.id,
         amount: i.amount,
         tags: i.tags,
         notes: i.notes,
@@ -84,7 +83,6 @@ function checkForChanges(formData: TransactionRequest, txn?: Transaction | null)
     const txnChanges =
       getFormattedDate(formData.txnDate) !== getFormattedDate(txn.txnDate) ||
       formData.merchant !== txn.merchant ||
-      formData.accountId !== txn.account.id ||
       formData.totalAmount !== txn.totalAmount
     return txnChanges || hasItemsChanged(formData.items, txn.items)
   }
@@ -92,7 +90,6 @@ function checkForChanges(formData: TransactionRequest, txn?: Transaction | null)
   return (
     formData.txnDate !== null ||
     formData.merchant.trim() !== '' ||
-    formData.accountId !== '' ||
     (formData.totalAmount != null && formData.totalAmount !== 0) ||
     hasItemsChanged(formData.items, [])
   )
@@ -121,6 +118,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
 
       if (
         existing.category.id !== req.categoryId ||
+        existing.account.id !== req.accountId ||
         existing.notes !== req.notes ||
         existing.amount !== req.amount ||
         existing.tags !== req.tags
@@ -229,10 +227,6 @@ export const TransactionModal: React.FC = () => {
       errors.merchant = 'Merchant cannot exceed 200 characters'
     }
 
-    if (!formData.accountId) {
-      errors.account = 'AccountId is required'
-    }
-
     const totalAmount = formData.totalAmount
     if (!totalAmount || isNaN(totalAmount)) {
       errors.totalAmount = 'Total Amount is required'
@@ -253,6 +247,10 @@ export const TransactionModal: React.FC = () => {
 
       if (!item.categoryId) {
         errors[`item-${index}-category`] = 'Category is required'
+      }
+
+      if (!item.accountId) {
+        errors[`item-${index}-account`] = 'Account is required'
       }
     })
 
@@ -305,6 +303,7 @@ export const TransactionModal: React.FC = () => {
           id: null,
           transactionId: selectedTxn?.id || null,
           categoryId: '',
+          accountId: '',
           amount: null,
           expType: '',
           tags: [],
@@ -435,7 +434,7 @@ export const TransactionModal: React.FC = () => {
                     Transaction Details
                   </Typography>
                   <Grid container spacing={1}>
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                       <DatePicker
                         label='Date'
                         value={txnFormData.txnDate}
@@ -451,7 +450,7 @@ export const TransactionModal: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                       <AutoComplete
                         value={txnFormData.merchant || ''}
                         onChange={(event) => handleInputChange('merchant', event)}
@@ -465,38 +464,7 @@ export const TransactionModal: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                      <Autocomplete
-                        fullWidth
-                        options={accountsList || []}
-                        getOptionLabel={(option) => option.name || ''}
-                        value={accountsList?.find((acc) => acc.id === txnFormData.accountId) || null}
-                        onChange={(_, newValue) => {
-                          handleInputChange('accountId', newValue?.id || '')
-                        }}
-                        renderInput={(params) => {
-                          const { InputLabelProps, ...rest } = params
-
-                          return (
-                            <TextField
-                              {...rest}
-                              label='Account'
-                              required
-                              error={!!itemErrors.account}
-                              helperText={itemErrors.account}
-                              size='small'
-                              slotProps={{
-                                inputLabel: {
-                                  className: InputLabelProps?.className ?? '',
-                                },
-                              }}
-                            />
-                          )
-                        }}
-                        size='small'
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                       <TextField
                         fullWidth
                         label='Total Amount'
@@ -575,7 +543,7 @@ export const TransactionModal: React.FC = () => {
 
                           <Grid container spacing={0.5}>
                             {' '}
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                               <Autocomplete
                                 fullWidth
                                 size='small'
@@ -595,6 +563,37 @@ export const TransactionModal: React.FC = () => {
                                       required
                                       error={!!itemErrors[`item-${index}-category`]}
                                       helperText={itemErrors[`item-${index}-category`]}
+                                      size='small'
+                                      slotProps={{
+                                        inputLabel: {
+                                          className: InputLabelProps?.className ?? '',
+                                        },
+                                      }}
+                                    />
+                                  )
+                                }}
+                              />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                              <Autocomplete
+                                fullWidth
+                                size='small'
+                                options={accountsList || []}
+                                getOptionLabel={(option) => option.name || ''}
+                                value={accountsList?.find((acc) => acc.id === item.accountId) || null}
+                                onChange={(_, newValue) => {
+                                  handleItemChange(index, 'accountId', newValue?.id || '')
+                                }}
+                                renderInput={(params) => {
+                                  const { InputLabelProps, ...rest } = params
+
+                                  return (
+                                    <TextField
+                                      {...rest}
+                                      label='Account'
+                                      required
+                                      error={!!itemErrors[`item-${index}-account`]}
+                                      helperText={itemErrors[`item-${index}-account`]}
                                       size='small'
                                       slotProps={{
                                         inputLabel: {
@@ -640,7 +639,7 @@ export const TransactionModal: React.FC = () => {
                                 helperText={itemErrors[`item-${index}-tags`]}
                               />
                             </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 12 }}>
+                            <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                               <TextField
                                 fullWidth
                                 size='small'
