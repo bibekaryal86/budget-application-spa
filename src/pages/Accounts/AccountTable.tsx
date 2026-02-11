@@ -34,9 +34,9 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Type</TableCell>
             <TableCell>Bank</TableCell>
+            <TableCell>Account</TableCell>
+            <TableCell>Type</TableCell>
             <TableCell>Status</TableCell>
             <TableCell align='right'>Opening Balance</TableCell>
             <TableCell align='right'>Current Balance</TableCell>
@@ -47,9 +47,9 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
           {accounts.map((account) => {
             return (
               <TableRow key={account.id} hover>
+                <TableCell>{account.bankName}</TableCell>
                 <TableCell>{account.name}</TableCell>
                 <TableCell>{account.accountType}</TableCell>
-                <TableCell>{account.bankName}</TableCell>
                 <TableCell>{account.status}</TableCell>
                 <TableCell align='right'>
                   <Typography fontWeight='medium'>{getFormattedCurrency(account.openingBalance)}</Typography>

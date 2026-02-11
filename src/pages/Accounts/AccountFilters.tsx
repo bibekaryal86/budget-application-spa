@@ -1,3 +1,4 @@
+import { AutoComplete } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Grid, Typography, Paper, Stack } from '@mui/material'
 import { useReadAccountStatuses, useReadAccountTypes, useReadBanks } from '@queries'
@@ -70,6 +71,18 @@ export const AccountFilters: React.FC = () => {
           }}
         >
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <AutoComplete
+              value={filterAccountBank || ''}
+              onChange={(event) => handleBankChange(event)}
+              dataList={accountBanks}
+              label='Bank'
+              TextFieldProps={{
+                size: 'small',
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth size='small'>
               <InputLabel>Type</InputLabel>
               <Select
@@ -97,19 +110,6 @@ export const AccountFilters: React.FC = () => {
                 {accountStatuses.map((accountStatus) => (
                   <MenuItem key={accountStatus} value={accountStatus}>
                     {accountStatus}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <FormControl fullWidth size='small'>
-              <InputLabel>Bank</InputLabel>
-              <Select value={filterAccountBank || ''} label='Bank' onChange={(e) => handleBankChange(e.target.value)}>
-                {accountBanks.map((bank) => (
-                  <MenuItem key={bank} value={bank}>
-                    {bank}
                   </MenuItem>
                 ))}
               </Select>
