@@ -1,8 +1,12 @@
+import type { ModalAction } from '@constants'
 import type { Account } from '@types'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-interface CategoryState {
+interface AccountState {
+  isAccountModalOpen: boolean
+  accountModalAction: ModalAction | null
+
   filterAccountType: string | null
   filterAccountStatus: string | null
   filterAccountBank: string | null
@@ -18,12 +22,17 @@ interface CategoryState {
 
   setSelectedAccount: (v: Account | null) => void
 
+  openAccountModal: (action: ModalAction, account?: Account | null) => void
+  closeAccountModal: () => void
+
   resetAccountState: () => void
 }
 
-export const useAccountStore = create<CategoryState>()(
+export const useAccountStore = create<AccountState>()(
   devtools(
     (set) => ({
+      isAccountModalOpen: false,
+      accountModalAction: null,
       filterAccountType: null,
       filterAccountStatus: null,
       filterAccountBank: null,
@@ -45,7 +54,6 @@ export const useAccountStore = create<CategoryState>()(
             filterAccountType: null,
             filterAccountStatus: null,
             filterAccountBank: null,
-            selectedAccount: null,
           },
           false,
           'account/clearAccountFilters',
@@ -53,9 +61,38 @@ export const useAccountStore = create<CategoryState>()(
 
       setSelectedAccount: (t) => set({ selectedAccount: t }, false, 'account/setSelectedAccount'),
 
+      openAccountModal: (action, account = null) =>
+        set(
+          {
+            isAccountModalOpen: true,
+            accountModalAction: action,
+            selectedAccount: account,
+          },
+          false,
+          'account/openAccountModal',
+        ),
+
+      closeAccountModal: () =>
+        set(
+          {
+            isAccountModalOpen: false,
+            accountModalAction: null,
+            selectedAccount: null,
+          },
+          false,
+          'account/closeAccountModal',
+        ),
+
       resetAccountState: () =>
         set(
-          { filterAccountType: null, filterAccountStatus: null, filterAccountBank: null, selectedAccount: null },
+          {
+            isAccountModalOpen: false,
+            accountModalAction: null,
+            filterAccountType: null,
+            filterAccountStatus: null,
+            filterAccountBank: null,
+            selectedAccount: null,
+          },
           false,
           'account/resetAccountState',
         ),

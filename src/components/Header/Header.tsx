@@ -8,6 +8,7 @@ import {
   AccountBalanceWallet,
   Assessment,
   Category,
+  AccountBalance,
 } from '@mui/icons-material'
 import {
   AppBar,
@@ -58,10 +59,11 @@ export const Header: React.FC = () => {
   }
 
   const navigationItems = [
-    { path: '/transactions', label: 'Transactions', icon: <Receipt sx={{ mr: 2 }} /> },
-    { path: '/insights', label: 'Insights', icon: <Assessment sx={{ mr: 2 }} /> },
-    { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet sx={{ mr: 2 }} /> },
-    { path: '/categories', label: 'Categories', icon: <Category sx={{ mr: 2 }} /> },
+    { path: '/transactions', label: 'Transactions', icon: <Receipt sx={{ mr: 1 }} /> },
+    { path: '/insights', label: 'Insights', icon: <Assessment sx={{ mr: 1 }} /> },
+    { path: '/budgets', label: 'Budgets', icon: <AccountBalanceWallet sx={{ mr: 1 }} /> },
+    { path: '/categories', label: 'Categories', icon: <Category sx={{ mr: 1 }} /> },
+    { path: '/accounts', label: 'Accounts', icon: <AccountBalance sx={{ mr: 1 }} /> },
   ]
 
   return (
