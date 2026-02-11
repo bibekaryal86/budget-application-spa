@@ -18,7 +18,7 @@ import {
   Chip,
   Stack,
 } from '@mui/material'
-import { useTxnStore } from '@stores'
+import { useTransactionStore } from '@stores'
 import type { Transaction } from '@types'
 import { getTxnAmountColor, getTxnItemAmountColor, getFormattedCurrency, getFormattedDate } from '@utils'
 import React, { useState } from 'react'
@@ -36,7 +36,7 @@ function getTxnAccounts(transaction: Transaction): string {
 
 export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transaction, isSuperUser }) => {
   const [expanded, setExpanded] = useState(false)
-  const { openTxnModal } = useTxnStore()
+  const { openTxnModal } = useTransactionStore()
 
   const handleEditClick = () => {
     openTxnModal(ACTION_TYPE.UPDATE, transaction)

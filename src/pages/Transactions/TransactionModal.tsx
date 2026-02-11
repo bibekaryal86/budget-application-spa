@@ -32,7 +32,7 @@ import {
   useReadTags,
   useUpdateTransaction,
 } from '@queries'
-import { useAlertStore, useTxnStore } from '@stores'
+import { useAlertStore, useTransactionStore } from '@stores'
 import type { Transaction, TransactionItem, TransactionItemRequest, TransactionRequest } from '@types'
 import { extractAxiosErrorMessage, getTxnAmountColor, getFormattedCurrency, getFormattedDate, getNumber } from '@utils'
 import React, { useMemo, useState } from 'react'
@@ -147,7 +147,7 @@ function hasItemsChanged(request: TransactionItemRequest[], txn: TransactionItem
 }
 
 export const TransactionModal: React.FC = () => {
-  const { isTxnModalOpen, txnModalAction, selectedTxn, closeTxnModal } = useTxnStore()
+  const { isTxnModalOpen, txnModalAction, selectedTxn, closeTxnModal } = useTransactionStore()
   const { showAlert } = useAlertStore()
   const createTxn = useCreateTransaction()
   const updateTxn = useUpdateTransaction()

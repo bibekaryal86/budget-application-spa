@@ -1,4 +1,4 @@
-import { insightsService } from '@services'
+import { insightService } from '@services'
 import { useQuery } from '@tanstack/react-query'
 import { type InsightParams } from '@types'
 
@@ -16,7 +16,7 @@ const getSummaryKey = (queryKey: string, params: InsightParams) => [
 export const useReadCashFlowSummaries = (params: InsightParams) =>
   useQuery({
     queryKey: getSummaryKey('cfSummary', params),
-    queryFn: () => insightsService.readCashFlowSummaries(params),
+    queryFn: () => insightService.readCashFlowSummaries(params),
     select: (data) => ({
       cfSummaries: data,
     }),
@@ -26,7 +26,7 @@ export const useReadCashFlowSummaries = (params: InsightParams) =>
 export const useReadCategorySummaries = (params: InsightParams) =>
   useQuery({
     queryKey: getSummaryKey('catSummary', params),
-    queryFn: () => insightsService.readCategorySummary(params),
+    queryFn: () => insightService.readCategorySummary(params),
     select: (data) => ({
       catSummaries: data,
     }),

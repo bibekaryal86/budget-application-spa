@@ -21,10 +21,30 @@ export const useReadCategories = () =>
     staleTime: 60_000,
   })
 
-export const useReadAccounts = () =>
+export const useReadAccountTypes = () =>
   useQuery({
-    queryKey: ['accounts'],
-    queryFn: () => refService.readAccounts(),
+    queryKey: ['accountTypes'],
+    queryFn: () => refService.readAccountTypes(),
+    select: (data) => ({
+      accounts: data.data,
+    }),
+    staleTime: 60_000,
+  })
+
+export const useReadAccountStatuses = () =>
+  useQuery({
+    queryKey: ['accountStatuses'],
+    queryFn: () => refService.readAccountStatuses(),
+    select: (data) => ({
+      accounts: data.data,
+    }),
+    staleTime: 60_000,
+  })
+
+export const useReadBanks = () =>
+  useQuery({
+    queryKey: ['banks'],
+    queryFn: () => refService.readBanks(),
     select: (data) => ({
       accounts: data.data,
     }),

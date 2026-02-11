@@ -196,7 +196,8 @@ export interface TransactionResponse {
   metadata: ResponseMetadata
 }
 
-export interface TransactionMerchants {
+// Ref Lists
+export interface RefListResponse {
   data: string[]
   metadata: ResponseMetadata
 }

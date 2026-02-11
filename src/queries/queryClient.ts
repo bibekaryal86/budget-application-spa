@@ -25,3 +25,11 @@ export const useInvalidateTransactionQueryKeys = () => {
     void queryClient.invalidateQueries({ queryKey: ['catSummary'] })
   }
 }
+
+export const useInvalidateAccountQueryKeys = () => {
+  const queryClient = useQueryClient()
+  return () => {
+    void queryClient.invalidateQueries({ queryKey: ['accounts'] })
+    void queryClient.invalidateQueries({ queryKey: ['banks'] })
+  }
+}

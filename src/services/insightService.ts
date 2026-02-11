@@ -1,7 +1,7 @@
 import type { CategorySummaries, InsightParams, CashFlowSummaries } from '@types'
 import { apiHelperCore } from '@utils'
 
-export const insightsService = {
+export const insightService = {
   readCashFlowSummaries: async (params: InsightParams): Promise<CashFlowSummaries> => {
     return await apiHelperCore.get<CashFlowSummaries, InsightParams>('/v1/insights/cf-summaries', params)
   },
