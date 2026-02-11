@@ -1,3 +1,4 @@
+import { AutoComplete } from '@components'
 import { ACTION_TYPE } from '@constants'
 import { Warning as WarningIcon } from '@mui/icons-material'
 import {
@@ -71,7 +72,7 @@ function checkForChanges(formData: AccountRequest, account?: Account | null): bo
     formData.name.trim() !== '' ||
     formData.accountType.trim() != '' ||
     formData.bankName.trim() != '' ||
-    formData.openingBalance != null ||
+    (formData.openingBalance != null && formData.openingBalance != 0) ||
     formData.status.trim() != ''
   )
 }
@@ -155,9 +156,9 @@ export const AccountModal: React.FC = () => {
       errors.accountType = 'Type is required'
     }
     if (!formData.bankName) {
-      errors.bank = 'Bank is required'
+      errors.bankName = 'Bank is required'
     }
-    if (!formData.openingBalance) {
+    if (formData.openingBalance == null) {
       errors.openingBalance = 'Opening Balance is required'
     }
     if (!formData.status) {
@@ -260,7 +261,18 @@ export const AccountModal: React.FC = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, sm: 8 }}>
-                  <FormControl fullWidth error={!!errors.categoryId} required>
+                  <TextField
+                    label='Name'
+                    value={accountFormData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    fullWidth
+                    error={!!errors.name}
+                    helperText={errors.name}
+                    required
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <FormControl fullWidth error={!!errors.accountType} required>
                     <InputLabel>Type</InputLabel>
                     <Select
                       value={accountFormData.accountType}
@@ -280,30 +292,9 @@ export const AccountModal: React.FC = () => {
                     )}
                   </FormControl>
                 </Grid>
-
-                <Grid size={{ xs: 12, sm: 4 }}>
-                  <TextField
-                    label='Opening Balance'
-                    type='number'
-                    value={accountFormData.openingBalance}
-                    onChange={(e) => handleInputChange('openingBalance', e.target.value)}
-                    error={!!errors.openingBalance}
-                    helperText={errors.openingBalance}
-                    fullWidth
-                    required
-                    InputProps={{
-                      startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
-                      inputProps: {
-                        min: 0.01,
-                        max: 1000000000,
-                        step: 0.01,
-                      },
-                    }}
-                  />
-                </Grid>
               </Grid>
               <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 3 }}>
                   <FormControl fullWidth error={!!errors.status} required>
                     <InputLabel>Status</InputLabel>
                     <Select
@@ -326,33 +317,40 @@ export const AccountModal: React.FC = () => {
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <FormControl fullWidth error={!!errors.bankName} required>
-                    <InputLabel>Bank</InputLabel>
-                    <Select
-                      value={accountFormData.bankName}
-                      label='Bank'
-                      onChange={(e) => handleInputChange('bankName', e.target.value)}
-                    >
-                      {accountBanks.map((ab) => (
-                        <MenuItem key={ab} value={ab}>
-                          {ab}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.bankName && (
-                      <Typography variant='caption' color='error'>
-                        {errors.bankName}
-                      </Typography>
-                    )}
-                  </FormControl>
+                  <AutoComplete
+                    value={accountFormData.bankName}
+                    onChange={(event) => handleInputChange('bankName', event)}
+                    dataList={accountBanks}
+                    label='Bank'
+                    TextFieldProps={{
+                      error: !!errors.bankName,
+                      helperText: errors.bankName,
+                      required: true,
+                    }}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 3 }}>
+                  <TextField
+                    label='Opening Balance'
+                    type='number'
+                    value={accountFormData.openingBalance}
+                    onChange={(e) => handleInputChange('openingBalance', e.target.value)}
+                    error={!!errors.openingBalance}
+                    helperText={errors.openingBalance}
+                    fullWidth
+                    required
+                    InputProps={{
+                      startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
+                      inputProps: {
+                        min: 0.01,
+                        max: 1000000000,
+                        step: 0.01,
+                      },
+                    }}
+                  />
                 </Grid>
               </Grid>
-              <TextField
-                label='Name'
-                value={accountFormData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                fullWidth
-              />
             </Box>
           )}
         </DialogContent>
