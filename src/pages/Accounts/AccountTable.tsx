@@ -1,4 +1,4 @@
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, ASSET_ACCOUNT_TYPES, DEBT_ACCOUNT_TYPES } from '@constants'
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Table,
@@ -46,16 +46,29 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
         <TableBody>
           {accounts.map((account) => {
             return (
-              <TableRow key={account.id} hover>
+              <TableRow
+                key={account.id}
+                hover
+                sx={{
+                  '& td': {
+                    fontWeight: 'medium',
+                    color: ASSET_ACCOUNT_TYPES.includes(account.accountType)
+                      ? 'success.main'
+                      : DEBT_ACCOUNT_TYPES.includes(account.accountType)
+                        ? 'error.main'
+                        : 'warning.main',
+                  },
+                }}
+              >
                 <TableCell>{account.bankName}</TableCell>
                 <TableCell>{account.name}</TableCell>
                 <TableCell>{account.accountType}</TableCell>
                 <TableCell>{account.status}</TableCell>
                 <TableCell align='right'>
-                  <Typography fontWeight='medium'>{getFormattedCurrency(account.openingBalance)}</Typography>
+                  <Typography>{getFormattedCurrency(account.openingBalance)}</Typography>
                 </TableCell>
                 <TableCell align='right'>
-                  <Typography fontWeight='medium'>{getFormattedCurrency(account.currentBalance)}</Typography>
+                  <Typography>{getFormattedCurrency(account.currentBalance)}</Typography>
                 </TableCell>
                 <TableCell align='center'>
                   <Tooltip title='Edit'>

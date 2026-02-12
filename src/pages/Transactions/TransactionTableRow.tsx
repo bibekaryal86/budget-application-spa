@@ -1,4 +1,4 @@
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, NO_EXPENSE_CATEGORY_TYPES } from '@constants'
 import {
   KeyboardArrowDown as ExpandMoreIcon,
   KeyboardArrowUp as ExpandLessIcon,
@@ -135,7 +135,9 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
               fontWeight: 'bold',
             }}
           >
-            {getFormattedCurrency(transaction.totalAmount)}
+            {transaction.merchant === NO_EXPENSE_CATEGORY_TYPES.TRANSFER
+              ? getFormattedCurrency((transaction.totalAmount ?? 0) / 2)
+              : getFormattedCurrency(transaction.totalAmount)}
           </Typography>
         </TableCell>
 
