@@ -232,8 +232,8 @@ export const TransactionModal: React.FC = () => {
       errors.totalAmount = 'Total Amount is required'
     } else if (totalAmount <= 0) {
       errors.totalAmount = 'Total Amount cannot be zero or negative'
-    } else if (Math.abs(totalAmount) > 10000) {
-      errors.totalAmount = 'Total Amount cannot exceed $10,000'
+    } else if (Math.abs(totalAmount) > 25000) {
+      errors.totalAmount = 'Total Amount cannot exceed $25,000'
     }
 
     formData.items.forEach((item, index) => {
