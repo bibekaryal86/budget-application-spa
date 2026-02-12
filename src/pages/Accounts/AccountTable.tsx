@@ -55,7 +55,7 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
                   <Typography fontWeight='medium'>{getFormattedCurrency(account.openingBalance)}</Typography>
                 </TableCell>
                 <TableCell align='right'>
-                  <Typography fontWeight='medium'>TBD</Typography>
+                  <Typography fontWeight='medium'>{getFormattedCurrency(account.currentBalance)}</Typography>
                 </TableCell>
                 <TableCell align='center'>
                   <Tooltip title='Edit'>

@@ -94,6 +94,7 @@ export interface AccountRequest {
 
 export interface Account extends AccountRequest {
   id: string
+  currentBalance: number
 }
 
 export interface AccountResponse {
