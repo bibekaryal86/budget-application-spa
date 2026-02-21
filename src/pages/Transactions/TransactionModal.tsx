@@ -305,7 +305,6 @@ export const TransactionModal: React.FC = () => {
           categoryId: '',
           accountId: '',
           amount: null,
-          expType: '',
           tags: [],
           notes: '',
         },
