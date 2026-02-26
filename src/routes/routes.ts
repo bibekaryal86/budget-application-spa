@@ -1,4 +1,4 @@
-import { Login, Home, NotFound, Transactions, Budgets, Insights, Categories } from '@pages'
+import { Login, Home, NotFound, Transactions, Budgets, Insights, Categories, Accounts } from '@pages'
 import React from 'react'
 
 interface RouteConfig {
@@ -14,5 +14,6 @@ export const routes: RouteConfig[] = [
   { path: '/insights', component: Insights, isProtected: true },
   { path: '/budgets', component: Budgets, isProtected: true },
   { path: '/categories', component: Categories, isProtected: true },
+  { path: '/accounts', component: Accounts, isProtected: true },
   { path: '*', component: NotFound },
 ]

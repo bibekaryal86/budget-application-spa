@@ -4,7 +4,7 @@ import { Box, Button, Chip, Container, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
-import { useTxnStore } from '@stores'
+import { useTransactionStore } from '@stores'
 import { type ResponsePageInfo } from '@types'
 import React, { useMemo, useState } from 'react'
 
@@ -23,7 +23,7 @@ export const Transactions: React.FC = () => {
     txnFilterTags,
     openTxnModal,
     selectedTxn,
-  } = useTxnStore()
+  } = useTransactionStore()
 
   const [pagination, setPagination] = useState({
     pageNumber: DEFAULT_PAGE_NUMBER,
@@ -99,7 +99,7 @@ export const Transactions: React.FC = () => {
               Transactions
             </Typography>
             <Typography variant='body1' color='text.secondary'>
-              Manage and view all your transactions
+              Manage and view your transactions
             </Typography>
           </Box>
           <Button

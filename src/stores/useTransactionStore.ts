@@ -33,7 +33,7 @@ interface TransactionState {
   resetTxnState: () => void
 }
 
-export const useTxnStore = create<TransactionState>()(
+export const useTransactionStore = create<TransactionState>()(
   devtools(
     (set) => ({
       isTxnModalOpen: false,

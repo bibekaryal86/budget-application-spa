@@ -5,7 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { useReadCategories, useReadCategoryTypes, useReadMerchants, useReadAccounts, useReadTags } from '@queries'
-import { useTxnStore } from '@stores'
+import { useTransactionStore } from '@stores'
 import { getFormattedDate } from '@utils'
 import React, { useMemo } from 'react'
 
@@ -26,7 +26,7 @@ export const TransactionFilters: React.FC = () => {
     txnFilterTags,
     setTxnFilterTags,
     resetTxnState,
-  } = useTxnStore()
+  } = useTransactionStore()
 
   const { data: ctData } = useReadCategoryTypes()
   const { data: cData } = useReadCategories()

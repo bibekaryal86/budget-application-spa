@@ -1,4 +1,4 @@
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, NO_EXPENSE_CATEGORY_TYPES } from '@constants'
 import {
   KeyboardArrowDown as ExpandMoreIcon,
   KeyboardArrowUp as ExpandLessIcon,
@@ -18,7 +18,7 @@ import {
   Chip,
   Stack,
 } from '@mui/material'
-import { useTxnStore } from '@stores'
+import { useTransactionStore } from '@stores'
 import type { Transaction } from '@types'
 import { getTxnAmountColor, getTxnItemAmountColor, getFormattedCurrency, getFormattedDate } from '@utils'
 import React, { useState } from 'react'
@@ -28,9 +28,15 @@ interface TransactionTableRowProps {
   isSuperUser: boolean
 }
 
+function getTxnAccounts(transaction: Transaction): string {
+  const accountNames = transaction.items.map((item) => item.account.name)
+  const uniqueAccountNames = [...new Set(accountNames)]
+  return uniqueAccountNames.join(', ')
+}
+
 export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transaction, isSuperUser }) => {
   const [expanded, setExpanded] = useState(false)
-  const { openTxnModal } = useTxnStore()
+  const { openTxnModal } = useTransactionStore()
 
   const handleEditClick = () => {
     openTxnModal(ACTION_TYPE.UPDATE, transaction)
@@ -117,7 +123,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
 
         <TableCell>
           <Typography variant='body2' fontWeight='medium'>
-            {transaction.account.name}
+            {getTxnAccounts(transaction)}
           </Typography>
         </TableCell>
 
@@ -129,7 +135,9 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
               fontWeight: 'bold',
             }}
           >
-            {getFormattedCurrency(transaction.totalAmount)}
+            {transaction.merchant === NO_EXPENSE_CATEGORY_TYPES.TRANSFER
+              ? getFormattedCurrency((transaction.totalAmount ?? 0) / 2)
+              : getFormattedCurrency(transaction.totalAmount)}
           </Typography>
         </TableCell>
 
@@ -216,6 +224,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                   <TableHead>
                     <TableRow>
                       <TableCell>Category</TableCell>
+                      <TableCell>Account</TableCell>
                       <TableCell>Tags</TableCell>
                       <TableCell align='right'>Amount</TableCell>
                       <TableCell>Notes</TableCell>
@@ -227,6 +236,14 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                         <TableCell>
                           <Chip
                             label={item.category.name || 'Uncategorized'}
+                            size='small'
+                            variant='outlined'
+                            sx={{ fontSize: '0.75rem' }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={item.account.name || 'Unaccounted'}
                             size='small'
                             variant='outlined'
                             sx={{ fontSize: '0.75rem' }}

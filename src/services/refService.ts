@@ -1,30 +1,32 @@
-import type {
-  AccountResponse,
-  CategoryResponse,
-  CategoryTypeResponse,
-  TransactionItemTags,
-  TransactionMerchants,
-} from '@types'
+import type { CategoryResponse, CategoryTypeResponse, TransactionItemTags, RefListResponse } from '@types'
 import { apiHelperCore } from '@utils'
 
 export const refService = {
   readCategoryTypes: async (): Promise<CategoryTypeResponse> => {
-    return await apiHelperCore.get<CategoryTypeResponse>('/v1/category-types')
+    return apiHelperCore.get<CategoryTypeResponse>('/v1/category-types')
   },
 
   readCategories: async (): Promise<CategoryResponse> => {
-    return await apiHelperCore.get<CategoryResponse>('/v1/categories')
+    return apiHelperCore.get<CategoryResponse>('/v1/categories')
   },
 
-  readAccounts: async (): Promise<AccountResponse> => {
-    return await apiHelperCore.get<AccountResponse>('/v1/accounts')
+  readAccountTypes: async (): Promise<RefListResponse> => {
+    return apiHelperCore.get<RefListResponse>('/v1/accounts/types')
   },
 
-  readMerchants: async (): Promise<TransactionMerchants> => {
-    return await apiHelperCore.get<TransactionMerchants>('/v1/transactions/merchants')
+  readAccountStatuses: async (): Promise<RefListResponse> => {
+    return apiHelperCore.get<RefListResponse>('/v1/accounts/statuses')
+  },
+
+  readBanks: async (): Promise<RefListResponse> => {
+    return apiHelperCore.get<RefListResponse>('/v1/accounts/banks')
+  },
+
+  readMerchants: async (): Promise<RefListResponse> => {
+    return apiHelperCore.get<RefListResponse>('/v1/transactions/merchants')
   },
 
   readTags: async (): Promise<TransactionItemTags> => {
-    return await apiHelperCore.get<TransactionItemTags>('/v1/transaction-items/tags')
+    return apiHelperCore.get<TransactionItemTags>('/v1/transaction-items/tags')
   },
 }

@@ -1,3 +1,4 @@
+export { Accounts } from './Accounts/Accounts.tsx'
 export { Budgets } from './Budgets/Budgets.tsx'
 export { Categories } from './Categories/Categories.tsx'
 export { Home } from './Home/Home.tsx'

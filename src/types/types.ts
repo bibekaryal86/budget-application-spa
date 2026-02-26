@@ -94,6 +94,7 @@ export interface AccountRequest {
 
 export interface Account extends AccountRequest {
   id: string
+  currentBalance: number
 }
 
 export interface AccountResponse {
@@ -155,15 +156,17 @@ export interface TransactionItemRequest {
   id: string | null
   transactionId: string | null
   categoryId: string
+  accountId: string
   amount: number | null
   tags: string[] | []
   notes: string | null
 }
 
-export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId'> {
+export interface TransactionItem extends Omit<TransactionItemRequest, 'transactionId' | 'categoryId' | 'accountId'> {
   id: string
   transaction: Transaction | null
   category: Category
+  account: Account
 }
 
 export interface TransactionItemResponse {
@@ -180,14 +183,12 @@ export interface TransactionItemTags {
 export interface TransactionRequest {
   txnDate: Date | null
   merchant: string
-  accountId: string
   totalAmount: number | null
   items: TransactionItemRequest[]
 }
 
-export interface Transaction extends Omit<TransactionRequest, 'accountId' | 'items'> {
+export interface Transaction extends Omit<TransactionRequest, 'items'> {
   id: string
-  account: Account
   items: TransactionItem[]
 }
 
@@ -196,7 +197,8 @@ export interface TransactionResponse {
   metadata: ResponseMetadata
 }
 
-export interface TransactionMerchants {
+// Ref Lists
+export interface RefListResponse {
   data: string[]
   metadata: ResponseMetadata
 }

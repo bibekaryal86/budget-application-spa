@@ -3,6 +3,9 @@ import { Container, Typography, Box, Grid, Card, CardContent, Button, Stack, Pap
 import CircularProgress from '@mui/material/CircularProgress'
 import {
   useReadAccounts,
+  useReadAccountStatuses,
+  useReadAccountTypes,
+  useReadBanks,
   useReadCategories,
   useReadCategorySummaries,
   useReadCategoryTypes,
@@ -25,6 +28,9 @@ export const Home: React.FC = () => {
   useReadMerchants()
   useReadTags()
   useReadAccounts()
+  useReadAccountTypes()
+  useReadAccountStatuses()
+  useReadBanks()
 
   const now = new Date()
   const currentMonth = format(now, 'MMMM')

@@ -51,7 +51,16 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
   const { start, end } = getDisplayRange()
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        // width: '100%',
+        // mx: 'auto',
+        // maxWidth: { xs: '100%', md: '75%' },
+      }}
+    >
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -59,7 +68,7 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
               <TableCell width={50} />
               <TableCell>Date</TableCell>
               <TableCell>Merchant</TableCell>
-              <TableCell>Account</TableCell>
+              <TableCell>Accounts</TableCell>
               <TableCell align='right'>Total</TableCell>
               <TableCell align='right'>Actions</TableCell>
             </TableRow>
