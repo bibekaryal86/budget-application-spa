@@ -88,13 +88,13 @@ export interface AccountRequest {
   name: string
   accountType: string
   bankName: string
-  openingBalance: number
   status: string
+  accountBalance: number
 }
 
 export interface Account extends AccountRequest {
   id: string
-  currentBalance: number
+  accountBalance: number
 }
 
 export interface AccountResponse {
