@@ -19,6 +19,7 @@ export const useInvalidateTransactionQueryKeys = () => {
   const queryClient = useQueryClient()
   return () => {
     void queryClient.invalidateQueries({ queryKey: ['transactions'] })
+    void queryClient.invalidateQueries({ queryKey: ['accounts'] })
     void queryClient.invalidateQueries({ queryKey: ['merchants'] })
     void queryClient.invalidateQueries({ queryKey: ['tags'] })
     void queryClient.invalidateQueries({ queryKey: ['cfSummary'] })

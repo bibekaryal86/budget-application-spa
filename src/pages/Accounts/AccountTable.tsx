@@ -38,8 +38,7 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
             <TableCell>Account</TableCell>
             <TableCell>Type</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell align='right'>Opening Balance</TableCell>
-            <TableCell align='right'>Current Balance</TableCell>
+            <TableCell align='right'>Account Balance</TableCell>
             <TableCell align='center'>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -65,10 +64,7 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
                 <TableCell>{account.accountType}</TableCell>
                 <TableCell>{account.status}</TableCell>
                 <TableCell align='right'>
-                  <Typography>{getFormattedCurrency(account.openingBalance)}</Typography>
-                </TableCell>
-                <TableCell align='right'>
-                  <Typography>{getFormattedCurrency(account.currentBalance)}</Typography>
+                  <Typography>{getFormattedCurrency(account.accountBalance)}</Typography>
                 </TableCell>
                 <TableCell align='center'>
                   <Tooltip title='Edit'>

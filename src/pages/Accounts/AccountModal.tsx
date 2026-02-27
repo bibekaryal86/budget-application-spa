@@ -40,7 +40,7 @@ const DefaultAccountRequest: AccountRequest = {
   name: '',
   accountType: '',
   bankName: '',
-  openingBalance: 0,
+  accountBalance: 0,
   status: '',
 }
 
@@ -50,7 +50,7 @@ function getDefaultAccountFormData(account: Account | null): AccountRequest {
       name: account.name,
       accountType: account.accountType,
       bankName: account.bankName,
-      openingBalance: account.openingBalance,
+      accountBalance: account.accountBalance,
       status: account.status,
     }
   }
@@ -63,7 +63,7 @@ function checkForChanges(formData: AccountRequest, account?: Account | null): bo
       formData.name !== account.name ||
       formData.accountType !== account.accountType ||
       formData.bankName !== account.bankName ||
-      formData.openingBalance !== account.openingBalance ||
+      formData.accountBalance !== account.accountBalance ||
       formData.status !== account.status
     )
   }
@@ -72,7 +72,7 @@ function checkForChanges(formData: AccountRequest, account?: Account | null): bo
     formData.name.trim() !== '' ||
     formData.accountType.trim() != '' ||
     formData.bankName.trim() != '' ||
-    (formData.openingBalance != null && formData.openingBalance != 0) ||
+    (formData.accountBalance != null && formData.accountBalance != 0) ||
     formData.status.trim() != ''
   )
 }
@@ -157,9 +157,6 @@ export const AccountModal: React.FC = () => {
     }
     if (!formData.bankName) {
       errors.bankName = 'Bank is required'
-    }
-    if (formData.openingBalance == null) {
-      errors.openingBalance = 'Opening Balance is required'
     }
     if (!formData.status) {
       errors.status = 'Status is required'
@@ -332,22 +329,11 @@ export const AccountModal: React.FC = () => {
 
                 <Grid size={{ xs: 12, sm: 3 }}>
                   <TextField
-                    label='Opening Balance'
+                    label='Account Balance'
                     type='number'
-                    value={accountFormData.openingBalance}
-                    onChange={(e) => handleInputChange('openingBalance', e.target.value)}
-                    error={!!errors.openingBalance}
-                    helperText={errors.openingBalance}
+                    value={accountFormData.accountBalance}
+                    disabled
                     fullWidth
-                    required
-                    InputProps={{
-                      startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
-                      inputProps: {
-                        min: 0.01,
-                        max: 1000000000,
-                        step: 0.01,
-                      },
-                    }}
                   />
                 </Grid>
               </Grid>
