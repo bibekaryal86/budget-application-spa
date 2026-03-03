@@ -1,4 +1,4 @@
-import type { CategorySummaries, InsightParams, CashFlowSummaries } from '@types'
+import type { CategorySummaries, InsightParams, CashFlowSummaries, AccountSummaries } from '@types'
 import { apiHelperCore } from '@utils'
 
 export const insightService = {
@@ -8,5 +8,9 @@ export const insightService = {
 
   readCategorySummary: async (params: InsightParams): Promise<CategorySummaries> => {
     return await apiHelperCore.get<CategorySummaries, InsightParams>('/v1/insights/cat-summaries', params)
+  },
+
+  readAccountSummary: async (params: InsightParams): Promise<AccountSummaries> => {
+    return await apiHelperCore.get<AccountSummaries, InsightParams>('/v1/insights/acc-summaries', params)
   },
 }

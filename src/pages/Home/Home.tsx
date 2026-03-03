@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import {
   useReadAccounts,
   useReadAccountStatuses,
+  useReadAccountSummaries,
   useReadAccountTypes,
   useReadBanks,
   useReadCategories,
@@ -49,6 +50,7 @@ export const Home: React.FC = () => {
   }
   const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
   const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
+  const { data: asData, isLoading: isAsLoading } = useReadAccountSummaries(insightParams)
 
   const cashFlowMetrics = useMemo(() => {
     const cfSummaries = cfsData?.cfSummaries || null
@@ -107,6 +109,52 @@ export const Home: React.FC = () => {
       previousMonth: previousMonthMap.get(ca.category.id) || 0,
     }))
   }, [csData])
+
+  const netWorthMetrics = useMemo(() => {
+    const aSummaries = asData?.accSummaries || null
+    if (!aSummaries)
+      return {
+        currentAssets: 0,
+        currentDebts: 0,
+        currentWorth: 0,
+        assetsChange: 0,
+        debtsChange: 0,
+        worthChange: 0,
+      }
+
+    const currentMonth = aSummaries.data.length > 0 ? aSummaries.data[0] : null
+    const previousMonth = aSummaries.data.length > 1 ? aSummaries.data[1] : null
+    if (!currentMonth)
+      return {
+        currentAssets: 0,
+        currentDebts: 0,
+        currentWorth: 0,
+        assetsChange: 0,
+        debtsChange: 0,
+        worthChange: 0,
+      }
+
+    const currentAssets = currentMonth.netWorth.ASSETS || 0
+    const currentDebts = currentMonth.netWorth.DEBTS || 0
+    const currentWorth = currentMonth.netWorth.WORTH || 0
+
+    const lastAssets = previousMonth?.netWorth.ASSETS || 0
+    const lastDebts = previousMonth?.netWorth.DEBTS || 0
+    const lastWorth = previousMonth?.netWorth.WORTH || 0
+
+    const assetsChange = currentAssets - lastAssets
+    const debtsChange = currentDebts - lastDebts
+    const worthChange = currentWorth - lastWorth
+
+    return {
+      currentAssets,
+      currentDebts,
+      currentWorth,
+      assetsChange,
+      debtsChange,
+      worthChange,
+    }
+  }, [asData])
 
   const recentTransactions = useMemo(() => {
     const transactions = tData?.transactions || []
@@ -282,6 +330,126 @@ export const Home: React.FC = () => {
                             color={cashFlowMetrics.balanceChange > 0 ? 'success.main' : 'error.main'}
                           >
                             {getFormattedCurrency(cashFlowMetrics.balanceChange)}
+                          </Typography>
+                        </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        <Divider sx={{ my: 4 }} />
+
+        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
+          <Typography variant='h5' component='h2' fontWeight='medium'>
+            {currentMonth} Net Worth
+          </Typography>
+          <Button
+            variant='text'
+            endIcon={<ArrowForward />}
+            onClick={() => void navigate('/insights#cash-flow-summary')}
+          >
+            View Details
+          </Button>
+        </Box>
+
+        {isAsLoading ? (
+          <Box display='flex' justifyContent='center' my={4}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Grid
+              container
+              spacing={1}
+              justifyContent='center'
+              sx={{
+                margin: '0 auto',
+                width: '100%',
+              }}
+            >
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Checkings/Savings
+                        </Typography>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
+                          {getFormattedCurrency(netWorthMetrics.currentAssets)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(false, netWorthMetrics.assetsChange)}
+                          <Typography
+                            variant='body2'
+                            color={netWorthMetrics.assetsChange > 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(netWorthMetrics.assetsChange)}
+                          </Typography>
+                        </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Credit Cards
+                        </Typography>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
+                          {getFormattedCurrency(netWorthMetrics.currentDebts)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(true, netWorthMetrics.debtsChange)}
+                          <Typography
+                            variant='body2'
+                            color={netWorthMetrics.debtsChange < 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(netWorthMetrics.debtsChange)}
+                          </Typography>
+                        </Box>
+                        <Typography variant='body2' color='text.secondary'>
+                          vs last month
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              <Grid sx={{ xs: 12, md: 4 }}>
+                <Card elevation={2}>
+                  <CardContent>
+                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                      <Box>
+                        <Typography variant='body2' color='text.secondary' gutterBottom>
+                          Net Worth
+                        </Typography>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
+                          {getFormattedCurrency(netWorthMetrics.currentWorth)}
+                        </Typography>
+                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                          {getTrendingIcon(false, netWorthMetrics.worthChange)}
+                          <Typography
+                            variant='body2'
+                            color={netWorthMetrics.worthChange > 0 ? 'success.main' : 'error.main'}
+                          >
+                            {getFormattedCurrency(netWorthMetrics.worthChange)}
                           </Typography>
                         </Box>
                         <Typography variant='body2' color='text.secondary'>

@@ -32,3 +32,13 @@ export const useReadCategorySummaries = (params: InsightParams) =>
     }),
     staleTime: 60_000,
   })
+
+export const useReadAccountSummaries = (params: InsightParams) =>
+  useQuery({
+    queryKey: getSummaryKey('accSummary', params),
+    queryFn: () => insightService.readAccountSummary(params),
+    select: (data) => ({
+      accSummaries: data,
+    }),
+    staleTime: 60_000,
+  })
