@@ -231,13 +231,6 @@ export interface CategorySummaries {
   metadata: ResponseMetadata
 }
 
-// export interface AccountSummary {
-//   yearMonth: string
-//   netWorth: Record<string, number>
-//   accounts: Account[]
-// }
-
-// TODO
 export interface AccountSummary {
   yearMonth: string
   netWorth: {
