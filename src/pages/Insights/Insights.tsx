@@ -5,6 +5,7 @@ import { getBeginningOfMonth, getEndOfMonth, getFormattedDate } from '@utils'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
+import { AccountsChart } from './AccountsChart.tsx'
 import { CashFlowChart } from './CashFlowChart.tsx'
 import { CategoriesChart } from './CategoriesChart.tsx'
 import { InsightsSelectorModal } from './InsightsSelectorModal.tsx'
@@ -74,6 +75,12 @@ export const Insights: React.FC = () => {
 
           <Box id='cash-flow-summary' sx={{ mb: 4 }}>
             <CashFlowChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
+          </Box>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Box id='account-summary' sx={{ mb: 4 }}>
+            <AccountsChart beginDate={beginDate} endDate={endDate} selectedMonth={selectedMonth} />
           </Box>
 
           <Divider sx={{ my: 4 }} />

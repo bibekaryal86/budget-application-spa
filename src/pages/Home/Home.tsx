@@ -350,11 +350,7 @@ export const Home: React.FC = () => {
           <Typography variant='h5' component='h2' fontWeight='medium'>
             {currentMonth} Net Worth
           </Typography>
-          <Button
-            variant='text'
-            endIcon={<ArrowForward />}
-            onClick={() => void navigate('/insights#cash-flow-summary')}
-          >
+          <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights#account-summary')}>
             View Details
           </Button>
         </Box>
@@ -380,7 +376,7 @@ export const Home: React.FC = () => {
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
-                          Checkings/Savings
+                          Checking/Savings
                         </Typography>
                         <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
                           {getFormattedCurrency(netWorthMetrics.currentAssets)}
@@ -440,7 +436,7 @@ export const Home: React.FC = () => {
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Net Worth
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
+                        <Typography variant='h6' component='div' fontWeight='bold' color='info.main'>
                           {getFormattedCurrency(netWorthMetrics.currentWorth)}
                         </Typography>
                         <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
