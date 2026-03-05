@@ -1,6 +1,6 @@
 import { ACTION_TYPE } from '@constants'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import { Box, Button, Chip, Container, Paper, Typography } from '@mui/material'
+import { Box, Button, Chip, Container, Divider, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadAccounts } from '@queries'
@@ -10,6 +10,7 @@ import React, { useMemo } from 'react'
 
 import { AccountFilters } from './AccountFilters.tsx'
 import { AccountModal } from './AccountModal.tsx'
+import { AccountSumTable } from './AccountSumTable.tsx'
 import { AccountTable } from './AccountTable.tsx'
 
 export const Accounts: React.FC = () => {
@@ -93,7 +94,13 @@ export const Accounts: React.FC = () => {
         </Paper>
       )}
 
-      {!isLoading && !error && filteredAccounts.length > 0 && <AccountTable accounts={filteredAccounts} />}
+      {!isLoading && !error && filteredAccounts.length > 0 && (
+        <div>
+          <AccountSumTable accounts={filteredAccounts} />
+          <Divider sx={{ my: 5 }} />
+          <AccountTable accounts={filteredAccounts} />
+        </div>
+      )}
 
       {!isLoading && !error && accounts.length > 0 && (
         <Box display='flex' justifyContent='center' mt={3}>
