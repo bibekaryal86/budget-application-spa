@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material'
+import { Box, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { useReadAccountSummaries } from '@queries'
@@ -19,7 +19,7 @@ function valueFormatter(value: number | null) {
   return getFormattedCurrency(value)
 }
 
-function getAccountsSeries(accountSummaries: AccountSummary[]) {
+function getAccountsSeries(accountSummaries: AccountSummary[], successColor: string, errorColor: string) {
   const distinctAccounts = new Map<string, object>()
 
   accountSummaries.forEach((summary) => {
@@ -27,8 +27,9 @@ function getAccountsSeries(accountSummaries: AccountSummary[]) {
       if (!distinctAccounts.has(account.name)) {
         distinctAccounts.set(account.name, {
           dataKey: account.name,
-          stack: account.accountType === 'CREDIT' ? 'debts' : 'assets',
           label: account.name,
+          stack: account.accountType === 'CREDIT' ? 'debts' : 'assets',
+          color: account.accountType === 'CREDIT' ? errorColor : successColor,
           valueFormatter: (v: number | null) => valueFormatter(v),
         })
       }
@@ -64,6 +65,10 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   showCard = true,
   height = 500,
 }) => {
+  const theme = useTheme()
+  const successColor = theme.palette.success.main
+  const errorColor = theme.palette.error.main
+
   const chartSetting = {
     yAxis: [
       {
@@ -84,7 +89,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
     [beginDate, endDate, selectedMonth],
   )
   const { data: accountsSummaries, isLoading } = useReadAccountSummaries(insightParams)
-  const series = getAccountsSeries(accountsSummaries?.accSummaries.data || [])
+  const series = getAccountsSeries(accountsSummaries?.accSummaries.data || [], successColor, errorColor)
   const dataset = getAccountsDatasets(accountsSummaries?.accSummaries.data || [])
 
   const chartContent = (
