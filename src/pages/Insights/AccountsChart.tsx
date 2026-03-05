@@ -1,8 +1,8 @@
-import { Box, Paper, Typography, useTheme } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import { BarChart, LineChart } from '@mui/x-charts'
+import { BarChart } from '@mui/x-charts/BarChart'
 import { useReadAccountSummaries } from '@queries'
-import { defaultInsightParams, type InsightParams } from '@types'
+import { type AccountSummary, defaultInsightParams, type InsightParams } from '@types'
 import { getFormattedCurrency } from '@utils'
 import React, { useMemo } from 'react'
 
@@ -15,6 +15,47 @@ interface AccountsChartProps {
   height?: number
 }
 
+function valueFormatter(value: number | null) {
+  return getFormattedCurrency(value)
+}
+
+function getAccountsSeries(accountSummaries: AccountSummary[]) {
+  const distinctAccounts = new Map<string, object>()
+
+  accountSummaries.forEach((summary) => {
+    summary.accounts.forEach((account) => {
+      if (!distinctAccounts.has(account.name)) {
+        distinctAccounts.set(account.name, {
+          dataKey: account.name,
+          stack: account.accountType === 'CREDIT' ? 'debts' : 'assets',
+          label: account.name,
+          valueFormatter: (v: number | null) => valueFormatter(v),
+        })
+      }
+    })
+  })
+
+  return Array.from(distinctAccounts.values())
+}
+
+function getAccountsDatasets(accountsSummaries: AccountSummary[]) {
+  return accountsSummaries.map((item) => {
+    const accountDetails: { [key: string]: number } = {}
+    if (item.accounts) {
+      item.accounts.forEach((account) => {
+        accountDetails[account.name] = account.accountBalance
+      })
+    }
+    return {
+      assets: item.netWorth.ASSETS,
+      debts: item.netWorth.DEBTS,
+      worths: item.netWorth.WORTH,
+      month: item.yearMonth,
+      ...accountDetails,
+    }
+  })
+}
+
 export const AccountsChart: React.FC<AccountsChartProps> = ({
   beginDate,
   endDate,
@@ -23,7 +64,6 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   showCard = true,
   height = 500,
 }) => {
-  const theme = useTheme()
   const chartSetting = {
     yAxis: [
       {
@@ -33,8 +73,6 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
     ],
     height: height,
   }
-
-  const valueFormatter = (value: number | null) => getFormattedCurrency(value)
 
   const insightParams: InsightParams = useMemo(
     () => ({
@@ -46,45 +84,8 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
     [beginDate, endDate, selectedMonth],
   )
   const { data: accountsSummaries, isLoading } = useReadAccountSummaries(insightParams)
-
-  const dataset =
-    accountsSummaries && accountsSummaries.accSummaries
-      ? accountsSummaries.accSummaries.data.map((item) => ({
-          assets: item.netWorth.ASSETS,
-          debts: item.netWorth.DEBTS,
-          worths: item.netWorth.WORTH,
-          month: item.yearMonth,
-        }))
-      : []
-
-  const series = [
-    {
-      type: 'bar', // Specify this as a bar chart
-      dataKey: 'assets',
-      label: 'Assets',
-      valueFormatter,
-      color: theme.palette.success.main,
-      stack: 'total', // Stack assets and debts
-    },
-    {
-      type: 'bar', // Specify this as a bar chart
-      dataKey: 'debts',
-      label: 'Debts',
-      valueFormatter,
-      color: theme.palette.error.main,
-      stack: 'total', // Stack assets and debts
-    },
-    {
-      type: 'line', // Specify this as a line chart
-      dataKey: 'worths', // This should be 'worths' as in your dataset
-      label: 'Net Worth',
-      valueFormatter,
-      color: theme.palette.info.main,
-      showMark: false,
-      // You likely don't want to stack the Net Worth line with the bars,
-      // so no 'stack' property for this series.
-    },
-  ]
+  const series = getAccountsSeries(accountsSummaries?.accSummaries.data || [])
+  const dataset = getAccountsDatasets(accountsSummaries?.accSummaries.data || [])
 
   const chartContent = (
     <Box>
@@ -102,7 +103,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
             </Typography>
           </Box>
         ) : dataset.length > 0 ? (
-          <LineChart
+          <BarChart
             dataset={dataset}
             xAxis={[
               {
