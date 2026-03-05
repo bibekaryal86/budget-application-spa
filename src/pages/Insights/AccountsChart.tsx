@@ -27,7 +27,7 @@ function getAccountsSeries(accountSummaries: AccountSummary[], successColor: str
       if (!distinctAccounts.has(account.name)) {
         distinctAccounts.set(account.name, {
           dataKey: account.name,
-          // label: account.name,
+          label: account.name,
           stack: account.accountType === 'CREDIT' ? 'debts' : 'assets',
           color: account.accountType === 'CREDIT' ? errorColor : successColor,
           valueFormatter: (v: number | null) => valueFormatter(v),
