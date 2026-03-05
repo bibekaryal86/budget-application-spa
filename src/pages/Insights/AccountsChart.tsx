@@ -120,6 +120,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
             series={series}
             {...chartSetting}
             height={height - 50}
+            hideLegend
           />
         ) : (
           <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
