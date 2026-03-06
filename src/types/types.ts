@@ -169,11 +169,6 @@ export interface TransactionItem extends Omit<TransactionItemRequest, 'transacti
   account: Account
 }
 
-export interface TransactionItemResponse {
-  data: TransactionItem[]
-  metadata: ResponseMetadata
-}
-
 export interface TransactionItemTags {
   data: string[]
   metadata: ResponseMetadata
@@ -236,6 +231,21 @@ export interface CategorySummaries {
   metadata: ResponseMetadata
 }
 
+export interface AccountSummary {
+  yearMonth: string
+  netWorth: {
+    ASSETS: number
+    DEBTS: number
+    WORTH: number
+  }
+  accounts: Account[]
+}
+
+export interface AccountSummaries {
+  data: AccountSummary[]
+  metadata: ResponseMetadata
+}
+
 // Request Params
 export interface CategoryParams {
   catTypeIds: string[] | []
@@ -268,6 +278,7 @@ export const defaultTransactionParams: TransactionParams = {
 export interface InsightParams {
   beginDate: string | null
   endDate: string | null
+  accountIds: string[] | []
   categoryIds: string[] | []
   categoryTypeIds: string[] | []
   topExpenses: number | null
@@ -277,6 +288,7 @@ export interface InsightParams {
 export const defaultInsightParams: InsightParams = {
   beginDate: null,
   endDate: null,
+  accountIds: [],
   categoryIds: [],
   categoryTypeIds: [],
   topExpenses: null,

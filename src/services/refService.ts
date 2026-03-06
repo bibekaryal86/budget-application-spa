@@ -27,6 +27,6 @@ export const refService = {
   },
 
   readTags: async (): Promise<TransactionItemTags> => {
-    return apiHelperCore.get<TransactionItemTags>('/v1/transaction-items/tags')
+    return apiHelperCore.get<TransactionItemTags>('/v1/transactions/tags')
   },
 }
