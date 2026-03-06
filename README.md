@@ -150,12 +150,9 @@ This creates a clean separation:
 
 TODO
 
+- Budget Page
 - Home Page
   - Show unbudgeted but with txn
   - Show overbudget items
   - Show under budget items
-- Insight Page
-  - Show current month and previous month
-  - show option to choose month/year or just year
-  - For cash flow, add graph
 - Tests
