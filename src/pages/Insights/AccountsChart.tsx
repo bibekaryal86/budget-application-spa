@@ -1,6 +1,7 @@
 import { Box, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BarChart } from '@mui/x-charts/BarChart'
+import { LineChart } from '@mui/x-charts/LineChart'
 import { useReadAccountSummaries } from '@queries'
 import { type AccountSummary, defaultInsightParams, type InsightParams } from '@types'
 import { getFormattedCurrency } from '@utils'
@@ -19,7 +20,7 @@ function valueFormatter(value: number | null) {
   return getFormattedCurrency(value)
 }
 
-function getAccountsSeries(accountSummaries: AccountSummary[], successColor: string, errorColor: string) {
+function getAccountsSeries(accountSummaries: AccountSummary[], successColor: string) {
   const distinctAccounts = new Map<string, object>()
 
   accountSummaries.forEach((summary) => {
@@ -28,8 +29,8 @@ function getAccountsSeries(accountSummaries: AccountSummary[], successColor: str
         distinctAccounts.set(account.name, {
           dataKey: account.name,
           label: account.name,
-          stack: account.accountType === 'CREDIT' ? 'debts' : 'assets',
-          color: account.accountType === 'CREDIT' ? errorColor : successColor,
+          stack: 'accounts',
+          color: successColor,
           valueFormatter: (v: number | null) => valueFormatter(v),
         })
       }
@@ -69,16 +70,6 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   const successColor = theme.palette.success.main
   const errorColor = theme.palette.error.main
 
-  const chartSetting = {
-    yAxis: [
-      {
-        label: 'Amounts ($)',
-        width: 75,
-      },
-    ],
-    height: height,
-  }
-
   const insightParams: InsightParams = useMemo(
     () => ({
       ...defaultInsightParams,
@@ -89,8 +80,37 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
     [beginDate, endDate, selectedMonth],
   )
   const { data: accountsSummaries, isLoading } = useReadAccountSummaries(insightParams)
-  const series = getAccountsSeries(accountsSummaries?.accSummaries.data || [], successColor, errorColor)
-  const dataset = getAccountsDatasets(accountsSummaries?.accSummaries.data || [])
+  const barSeries = getAccountsSeries(accountsSummaries?.accSummaries.data || [], successColor)
+  const barDataset = getAccountsDatasets(accountsSummaries?.accSummaries.data || [])
+
+  const lineSeries = [
+    {
+      dataKey: 'worths',
+      label: 'Checking/Savings Less Credit',
+      color: errorColor,
+      valueFormatter: (v: number | null) => valueFormatter(v),
+      showMark: true,
+      curve: 'linear' as const,
+    },
+  ]
+
+  const lineDataset = barDataset.map((item) => ({
+    item,
+    worths: item.worths,
+    month: item.month,
+  }))
+
+  const chartSettings = {
+    yAxis: [
+      {
+        label: 'Amounts ($)',
+        width: 75,
+        min: Math.min(...barDataset.map((d) => Math.min(d.assets, d.debts, d.worths))),
+        max: Math.max(...barDataset.map((d) => Math.max(d.assets, d.debts, d.worths))),
+      },
+    ],
+    height: height,
+  }
 
   const chartContent = (
     <Box>
@@ -107,21 +127,59 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
               Loading net worth summaries...
             </Typography>
           </Box>
-        ) : dataset.length > 0 ? (
-          <BarChart
-            dataset={dataset}
-            xAxis={[
-              {
-                id: 'Months',
-                dataKey: 'month',
-                scaleType: 'band',
-              },
-            ]}
-            series={series}
-            {...chartSetting}
-            height={height - 50}
-            hideLegend
-          />
+        ) : barDataset.length > 0 ? (
+          <Box sx={{ position: 'relative', height: height - 50, width: '100%' }}>
+            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+              <BarChart
+                dataset={barDataset}
+                xAxis={[
+                  {
+                    id: 'Months',
+                    dataKey: 'month',
+                    scaleType: 'band',
+                  },
+                ]}
+                series={barSeries}
+                {...chartSettings}
+                height={height - 50}
+                hideLegend
+              />
+            </Box>
+
+            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+              <LineChart
+                dataset={lineDataset}
+                xAxis={[
+                  {
+                    id: 'Months',
+                    dataKey: 'month',
+                    scaleType: 'band',
+                  },
+                ]}
+                series={lineSeries}
+                {...chartSettings}
+                height={height - 50}
+                grid={{ vertical: false, horizontal: false }}
+                sx={{
+                  '& .MuiChartsAxis-root': {
+                    display: 'none',
+                  },
+                  '& .MuiChartsAxis-line': {
+                    display: 'none',
+                  },
+                  '& .MuiChartsAxis-tick': {
+                    display: 'none',
+                  },
+                  '& .MuiChartsAxis-label': {
+                    display: 'none',
+                  },
+                  '& .MuiChartsGrid-line': {
+                    display: 'none',
+                  },
+                }}
+              />
+            </Box>
+          </Box>
         ) : (
           <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
             <Typography variant='body2' color='text.secondary'>
