@@ -86,7 +86,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   const lineSeries = [
     {
       dataKey: 'worths',
-      label: 'Checking/Savings Less Credit',
+      label: 'Net Worth',
       color: errorColor,
       valueFormatter: (v: number | null) => valueFormatter(v),
       showMark: true,
