@@ -54,7 +54,7 @@ export const Home: React.FC = () => {
 
   const cashFlowMetrics = useMemo(() => {
     const cfSummaries = cfsData?.cfSummaries || null
-    if (!cfSummaries)
+    if (!cfSummaries || cfSummaries.data.length < 1)
       return {
         currentIncome: 0,
         currentExpenses: 0,
@@ -66,15 +66,31 @@ export const Home: React.FC = () => {
         balanceChange: 0,
       }
 
-    const currentIncome = cfSummaries.data[0].cashFlowAmounts.incomes || 0
-    const currentExpenses = cfSummaries.data[0].cashFlowAmounts.expenses || 0
-    const currentSavings = cfSummaries.data[0].cashFlowAmounts.savings || 0
-    const currentBalance = cfSummaries.data[0].cashFlowAmounts.balance || 0
+    const currentMonthIndex = cfSummaries.data.length - 1
+    const lastMonthIndex = cfSummaries.data.length - 2
 
-    const lastIncome = cfSummaries.data[1].cashFlowAmounts.incomes || 0
-    const lastExpenses = cfSummaries.data[1].cashFlowAmounts.expenses || 0
-    const lastInvestments = cfSummaries.data[1].cashFlowAmounts.savings || 0
-    const lastSavings = cfSummaries.data[1].cashFlowAmounts.balance || 0
+    const currentIncome = cfSummaries.data[currentMonthIndex].cashFlowAmounts.incomes || 0
+    const currentExpenses = cfSummaries.data[currentMonthIndex].cashFlowAmounts.expenses || 0
+    const currentSavings = cfSummaries.data[currentMonthIndex].cashFlowAmounts.savings || 0
+    const currentBalance = cfSummaries.data[currentMonthIndex].cashFlowAmounts.balance || 0
+
+    if (currentMonthIndex === 0) {
+      return {
+        currentIncome,
+        currentExpenses,
+        currentSavings,
+        currentBalance,
+        incomeChange: currentIncome,
+        expenseChange: currentExpenses,
+        savingsChange: currentSavings,
+        balanceChange: currentBalance,
+      }
+    }
+
+    const lastIncome = cfSummaries.data[lastMonthIndex].cashFlowAmounts.incomes || 0
+    const lastExpenses = cfSummaries.data[lastMonthIndex].cashFlowAmounts.expenses || 0
+    const lastInvestments = cfSummaries.data[lastMonthIndex].cashFlowAmounts.savings || 0
+    const lastSavings = cfSummaries.data[lastMonthIndex].cashFlowAmounts.balance || 0
 
     const incomeChange = currentIncome - lastIncome
     const expenseChange = currentExpenses - lastExpenses
@@ -112,7 +128,7 @@ export const Home: React.FC = () => {
 
   const netWorthMetrics = useMemo(() => {
     const aSummaries = asData?.accSummaries || null
-    if (!aSummaries)
+    if (!aSummaries || aSummaries.data.length < 1)
       return {
         currentAssets: 0,
         currentDebts: 0,
@@ -122,25 +138,29 @@ export const Home: React.FC = () => {
         worthChange: 0,
       }
 
-    const currentMonth = aSummaries.data.length > 0 ? aSummaries.data[0] : null
-    const previousMonth = aSummaries.data.length > 1 ? aSummaries.data[1] : null
-    if (!currentMonth)
-      return {
-        currentAssets: 0,
-        currentDebts: 0,
-        currentWorth: 0,
-        assetsChange: 0,
-        debtsChange: 0,
-        worthChange: 0,
-      }
+    const currentMonthIndex = aSummaries.data.length - 1
+    const lastMonthIndex = aSummaries.data.length - 2
 
+    const currentMonth = aSummaries.data[currentMonthIndex]
     const currentAssets = currentMonth.netWorth.ASSETS || 0
     const currentDebts = currentMonth.netWorth.DEBTS || 0
     const currentWorth = currentMonth.netWorth.WORTH || 0
 
-    const lastAssets = previousMonth?.netWorth.ASSETS || 0
-    const lastDebts = previousMonth?.netWorth.DEBTS || 0
-    const lastWorth = previousMonth?.netWorth.WORTH || 0
+    if (currentMonthIndex === 0) {
+      return {
+        currentAssets,
+        currentDebts,
+        currentWorth,
+        assetsChange: currentAssets,
+        debtsChange: currentDebts,
+        worthChange: currentWorth,
+      }
+    }
+
+    const previousMonth = aSummaries.data[lastMonthIndex]
+    const lastAssets = previousMonth.netWorth.ASSETS || 0
+    const lastDebts = previousMonth.netWorth.DEBTS || 0
+    const lastWorth = previousMonth.netWorth.WORTH || 0
 
     const assetsChange = currentAssets - lastAssets
     const debtsChange = currentDebts - lastDebts
