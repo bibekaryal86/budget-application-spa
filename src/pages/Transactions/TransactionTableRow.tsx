@@ -34,6 +34,15 @@ function getTxnAccounts(transaction: Transaction): string {
   return uniqueAccountNames.join(', ')
 }
 
+function getTxnAmount(transaction: Transaction): string {
+  if (transaction.merchant === NO_EXPENSE_CATEGORY_TYPES.TRANSFER) {
+    const transferAmount = transaction.items?.[0]?.amount
+    return getFormattedCurrency(transferAmount)
+  } else {
+    return getFormattedCurrency(transaction.totalAmount)
+  }
+}
+
 export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transaction, isSuperUser }) => {
   const [expanded, setExpanded] = useState(false)
   const { openTxnModal } = useTransactionStore()
@@ -135,9 +144,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
               fontWeight: 'bold',
             }}
           >
-            {transaction.merchant === NO_EXPENSE_CATEGORY_TYPES.TRANSFER
-              ? getFormattedCurrency((transaction.totalAmount ?? 0) / 2)
-              : getFormattedCurrency(transaction.totalAmount)}
+            {getTxnAmount(transaction)}
           </Typography>
         </TableCell>
 
