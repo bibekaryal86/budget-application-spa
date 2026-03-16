@@ -23,10 +23,8 @@ import {
   Tooltip,
   Menu,
   MenuItem,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material'
-import { useThemeStore, useAlertStore, useAuthStore } from '@stores'
+import { useThemeStore, useAlertStore, useAuthStore, useMobileStore } from '@stores'
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
@@ -36,8 +34,7 @@ export const Header: React.FC = () => {
   const { mode, toggleTheme } = useThemeStore()
   const { showAlert } = useAlertStore()
   const { isAuthenticated, logout } = useAuthStore()
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const { isMobile } = useMobileStore()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
