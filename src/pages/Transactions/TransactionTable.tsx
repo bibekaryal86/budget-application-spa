@@ -13,7 +13,7 @@ import {
   Typography,
   type SelectChangeEvent,
 } from '@mui/material'
-import { useAuthStore } from '@stores'
+import { useAuthStore, useMobileStore } from '@stores'
 import type { ResponsePageInfo, Transaction } from '@types'
 import React from 'react'
 
@@ -33,6 +33,7 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
   onRowsPerPageChange,
 }) => {
   const { isSuperUser } = useAuthStore()
+  const { isMobile } = useMobileStore()
 
   const handleRowsPerPageChange = (event: SelectChangeEvent<number>) => {
     onRowsPerPageChange(Number(event.target.value))
@@ -65,17 +66,22 @@ export const TransactionsTable: React.FC<TransactionsTableProps> = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell width={50} />
+              {!isMobile && <TableCell width={50} />}
               <TableCell>Date</TableCell>
               <TableCell>Merchant</TableCell>
-              <TableCell>Accounts</TableCell>
+              {!isMobile && <TableCell>Account</TableCell>}
               <TableCell align='right'>Total</TableCell>
               <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {transactions.map((transaction) => (
-              <TransactionTableRow key={transaction.id} transaction={transaction} isSuperUser={isSuperUser} />
+              <TransactionTableRow
+                key={transaction.id}
+                transaction={transaction}
+                isSuperUser={isSuperUser}
+                isMobile={isMobile}
+              />
             ))}
           </TableBody>
         </Table>
