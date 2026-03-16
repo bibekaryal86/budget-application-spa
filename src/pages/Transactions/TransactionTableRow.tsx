@@ -26,6 +26,7 @@ import React, { useState } from 'react'
 interface TransactionTableRowProps {
   transaction: Transaction
   isSuperUser: boolean
+  isMobile: boolean
 }
 
 function getTxnAccounts(transaction: Transaction): string {
@@ -43,7 +44,7 @@ function getTxnAmount(transaction: Transaction): string {
   }
 }
 
-export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transaction, isSuperUser }) => {
+export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transaction, isSuperUser, isMobile }) => {
   const [expanded, setExpanded] = useState(false)
   const { openTxnModal } = useTransactionStore()
 
@@ -81,46 +82,48 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           }
         }}
       >
-        <TableCell
-          sx={{
-            // Prevent click on this cell from triggering row click twice
-            pointerEvents: 'none',
-          }}
-        >
-          <Box
+        {!isMobile && (
+          <TableCell
             sx={{
-              pointerEvents: 'auto',
-              display: 'inline-block',
+              // Prevent click on this cell from triggering row click twice
+              pointerEvents: 'none',
             }}
           >
-            <IconButton
-              className='expand-icon-button'
-              aria-label='expand row'
-              size='small'
-              onClick={(e) => {
-                e.stopPropagation()
-                setExpanded(!expanded)
-              }}
-              disabled={!transaction.items || transaction.items.length === 0}
+            <Box
               sx={{
-                transition: 'transform 0.2s',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                },
-                '&:active': {
-                  transform: 'scale(0.95)',
-                },
-                '&.Mui-disabled': {
-                  pointerEvents: 'none',
-                  opacity: 0.5,
-                },
+                pointerEvents: 'auto',
+                display: 'inline-block',
               }}
             >
-              {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </IconButton>
-          </Box>
-        </TableCell>
+              <IconButton
+                className='expand-icon-button'
+                aria-label='expand row'
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setExpanded(!expanded)
+                }}
+                disabled={!transaction.items || transaction.items.length === 0}
+                sx={{
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                  '&:active': {
+                    transform: 'scale(0.95)',
+                  },
+                  '&.Mui-disabled': {
+                    pointerEvents: 'none',
+                    opacity: 0.5,
+                  },
+                }}
+              >
+                {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </Box>
+          </TableCell>
+        )}
 
         <TableCell>{getFormattedDate(transaction.txnDate)}</TableCell>
 
@@ -130,11 +133,13 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
           </Typography>
         </TableCell>
 
-        <TableCell>
-          <Typography variant='body2' fontWeight='medium'>
-            {getTxnAccounts(transaction)}
-          </Typography>
-        </TableCell>
+        {!isMobile && (
+          <TableCell>
+            <Typography variant='body2' fontWeight='medium'>
+              {getTxnAccounts(transaction)}
+            </Typography>
+          </TableCell>
+        )}
 
         <TableCell align='right'>
           <Typography
@@ -234,7 +239,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                       <TableCell>Account</TableCell>
                       <TableCell>Tags</TableCell>
                       <TableCell align='right'>Amount</TableCell>
-                      <TableCell>Notes</TableCell>
+                      {!isMobile && <TableCell>Notes</TableCell>}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -276,9 +281,11 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
                             {getFormattedCurrency(item.amount)}
                           </Typography>
                         </TableCell>
-                        <TableCell>
-                          <Typography variant='body2'>{item.notes || '-'}</Typography>
-                        </TableCell>
+                        {!isMobile && (
+                          <TableCell>
+                            <Typography variant='body2'>{item.notes || '-'}</Typography>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>

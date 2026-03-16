@@ -3,6 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useReadAccountSummaries } from '@queries'
+import { useMobileStore } from '@stores'
 import { type AccountSummary, defaultInsightParams, type InsightParams } from '@types'
 import { getFormattedCurrency } from '@utils'
 import React, { useMemo } from 'react'
@@ -67,6 +68,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   height = 500,
 }) => {
   const theme = useTheme()
+  const isMobile = useMobileStore()
   const successColor = theme.palette.success.main
   const errorColor = theme.palette.error.main
 
@@ -101,14 +103,22 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   }))
 
   const chartSettings = {
-    yAxis: [
-      {
-        label: 'Amounts ($)',
-        width: 75,
-        min: Math.min(...barDataset.map((d) => Math.min(d.assets, d.debts, d.worths))),
-        max: Math.max(...barDataset.map((d) => Math.max(d.assets, d.debts, d.worths))),
-      },
-    ],
+    yAxis: isMobile
+      ? [
+          {
+            width: 50,
+            min: Math.min(...barDataset.map((d) => Math.min(d.assets, d.debts, d.worths))),
+            max: Math.max(...barDataset.map((d) => Math.max(d.assets, d.debts, d.worths))),
+          },
+        ]
+      : [
+          {
+            label: 'Amounts ($)',
+            width: 75,
+            min: Math.min(...barDataset.map((d) => Math.min(d.assets, d.debts, d.worths))),
+            max: Math.max(...barDataset.map((d) => Math.max(d.assets, d.debts, d.worths))),
+          },
+        ],
     height: height,
   }
 

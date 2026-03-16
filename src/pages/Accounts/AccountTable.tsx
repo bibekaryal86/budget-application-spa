@@ -12,13 +12,14 @@ import {
   Tooltip,
   IconButton,
 } from '@mui/material'
-import { useAuthStore, useAccountStore } from '@stores'
+import { useAuthStore, useAccountStore, useMobileStore } from '@stores'
 import type { Account } from '@types'
 import { getFormattedCurrency } from '@utils'
 import React from 'react'
 
 export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) => {
   const { isSuperUser } = useAuthStore()
+  const { isMobile } = useMobileStore()
   const { openAccountModal } = useAccountStore()
 
   const handleEditClick = (account: Account) => {
@@ -34,10 +35,10 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Bank</TableCell>
+            {!isMobile && <TableCell>Bank</TableCell>}
             <TableCell>Account</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Status</TableCell>
+            {!isMobile && <TableCell>Type</TableCell>}
+            {!isMobile && <TableCell>Status</TableCell>}
             <TableCell align='right'>Account Balance</TableCell>
             <TableCell align='center'>Actions</TableCell>
           </TableRow>
@@ -59,10 +60,11 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
                   },
                 }}
               >
-                <TableCell>{account.bankName}</TableCell>
+                {!isMobile && <TableCell>{account.bankName}</TableCell>}
+
                 <TableCell>{account.name}</TableCell>
-                <TableCell>{account.accountType}</TableCell>
-                <TableCell>{account.status}</TableCell>
+                {!isMobile && <TableCell>{account.accountType}</TableCell>}
+                {!isMobile && <TableCell>{account.status}</TableCell>}
                 <TableCell align='right'>
                   <Typography>{getFormattedCurrency(account.accountBalance)}</Typography>
                 </TableCell>

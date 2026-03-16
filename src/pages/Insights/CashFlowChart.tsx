@@ -2,6 +2,7 @@ import { Box, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { useReadCashFlowSummaries } from '@queries'
+import { useMobileStore } from '@stores'
 import { defaultInsightParams, type InsightParams } from '@types'
 import { getFormattedCurrency } from '@utils'
 import React, { useMemo } from 'react'
@@ -24,13 +25,20 @@ export const CashFlowChart: React.FC<CashFlowChartProps> = ({
   height = 450,
 }) => {
   const theme = useTheme()
+  const isMobile = useMobileStore()
   const chartSetting = {
-    yAxis: [
-      {
-        label: 'Amounts ($)',
-        width: 75,
-      },
-    ],
+    yAxis: isMobile
+      ? [
+          {
+            width: 50,
+          },
+        ]
+      : [
+          {
+            label: 'Amounts ($)',
+            width: 75,
+          },
+        ],
     height: height,
   }
 
