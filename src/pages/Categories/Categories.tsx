@@ -50,9 +50,6 @@ export const Categories: React.FC = () => {
     })
   }
 
-  console.log(selectedCategoryTypeId)
-  console.log(hasActiveFilters)
-
   return (
     <Container maxWidth='md' sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
