@@ -3,7 +3,7 @@ import { Box, Button, Paper, Typography, useTheme } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import {
   BarPlot,
-  ChartContainer,
+  ChartsContainer,
   ChartsClipPath,
   ChartsGrid,
   ChartsTooltipContainer,
@@ -148,7 +148,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
           </Box>
         ) : dataset.length > 0 ? (
           <>
-            <ChartContainer
+            <ChartsContainer
               dataset={dataset}
               yAxis={[
                 {
@@ -181,7 +181,7 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
               <ChartsTooltipContainer trigger='axis'>
                 <CategoriesTrendTooltip dataset={dataset} />
               </ChartsTooltipContainer>
-            </ChartContainer>
+            </ChartsContainer>
           </>
         ) : (
           <Box display='flex' justifyContent='center' alignItems='center' height='100%'>

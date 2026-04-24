@@ -3,7 +3,7 @@ import { Alert, Box, Button, Container, Paper, TextField, Typography } from '@mu
 import CircularProgress from '@mui/material/CircularProgress'
 import { authService } from '@services'
 import { useAlertStore, useAuthStore } from '@stores'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 interface LoginForm {
@@ -23,7 +23,11 @@ export const Login: React.FC = () => {
   const { showAlert } = useAlertStore()
   const { login } = useAuthStore()
 
-  const [mode, setMode] = useState<'login' | 'reset_init' | 'reset_exit'>('login')
+  const [mode, setMode] = useState<'login' | 'reset_init' | 'reset_exit'>(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const isReset = searchParams.get('is_reset')
+    return isReset === 'true' || isReset === 'false' ? 'reset_exit' : 'login'
+  })
 
   const [loginFormData, setLoginFormData] = useState<LoginForm>({
     email: '',
@@ -36,26 +40,16 @@ export const Login: React.FC = () => {
   })
 
   const [loading, setLoading] = useState(false)
-  const [showValidationMessage, setShowValidationMessage] = useState('')
-  const [showResetMessage, setShowResetMessage] = useState('')
-
-  useEffect(() => {
+  const [showValidationMessage, setShowValidationMessage] = useState(() => {
     const searchParams = new URLSearchParams(location.search)
     const isValidated = searchParams.get('is_validated')
+    return isValidated === 'true' ? 'true' : isValidated === 'false' ? 'false' : ''
+  })
+  const [showResetMessage, setShowResetMessage] = useState(() => {
+    const searchParams = new URLSearchParams(location.search)
     const isReset = searchParams.get('is_reset')
-
-    if (isValidated === 'true') {
-      setShowValidationMessage('true')
-    } else if (isValidated === 'false') {
-      setShowValidationMessage('false')
-    } else if (isReset === 'true') {
-      setMode('reset_exit')
-      setShowResetMessage('true')
-    } else if (isReset === 'false') {
-      setMode('reset_exit')
-      setShowResetMessage('false')
-    }
-  }, [location.search, showAlert])
+    return isReset === 'true' ? 'true' : isReset === 'false' ? 'false' : ''
+  })
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
