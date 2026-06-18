@@ -35,7 +35,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^6.0.2",
-    "baseline-browser-mapping": "^2.10.37",
+    "baseline-browser-mapping": "^2.10.38",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
