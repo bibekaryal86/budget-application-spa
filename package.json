@@ -17,8 +17,8 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.1.2",
-    "@mui/x-charts": "^9.7.0",
-    "@mui/x-date-pickers": "^9.7.0",
+    "@mui/x-charts": "^9.8.0",
+    "@mui/x-date-pickers": "^9.8.0",
     "@tanstack/react-query": "^5.96.2",
     "@tanstack/react-query-devtools": "^5.96.2",
     "axios": "^1.18.1",
@@ -35,7 +35,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "baseline-browser-mapping": "^2.10.40",
+    "baseline-browser-mapping": "^2.10.41",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -48,6 +48,6 @@
     "prettier": "^3.9.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.62.1",
-    "vite": "^8.1.2"
+    "vite": "^8.1.3"
   }
 }
