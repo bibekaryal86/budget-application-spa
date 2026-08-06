@@ -22,7 +22,6 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
   setSelectedCategoryId,
   categoryTypesList,
   categoriesList,
-  TextFieldPropsCategoryType = {},
   TextFieldPropsCategory = {},
   size = 'medium',
   fullWidth = true,
@@ -82,20 +81,7 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
         value={categoryTypesList.find((t) => t.id === selectedCategoryTypeId) || null}
         onChange={(_, v) => handleCategoryTypeChange(v?.id || null)}
         renderInput={(params) => {
-          const { InputLabelProps, ...rest } = params
-          return (
-            <TextField
-              {...rest}
-              label='Category Type'
-              size={size}
-              {...TextFieldPropsCategoryType}
-              slotProps={{
-                inputLabel: {
-                  className: InputLabelProps?.className ?? '',
-                },
-              }}
-            />
-          )
+          return <TextField {...params} label='Category Type' size={size} {...TextFieldPropsCategory} />
         }}
       />
       <Autocomplete
@@ -106,20 +92,7 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
         value={filteredCategories.find((c) => c.id === selectedCategoryId) || null}
         onChange={(_, v) => handleCategoryChange(v?.id || null)}
         renderInput={(params) => {
-          const { InputLabelProps, ...rest } = params
-          return (
-            <TextField
-              {...rest}
-              label='Category'
-              size={size}
-              {...TextFieldPropsCategory}
-              slotProps={{
-                inputLabel: {
-                  className: InputLabelProps?.className ?? '',
-                },
-              }}
-            />
-          )
+          return <TextField {...params} label='Category' size={size} {...TextFieldPropsCategory} />
         }}
       />
     </Box>

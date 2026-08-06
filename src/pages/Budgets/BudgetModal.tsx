@@ -10,6 +10,7 @@ import {
   DialogTitle,
   FormControl,
   Grid,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -193,7 +194,7 @@ export const BudgetModal: React.FC = () => {
     <>
       <Dialog open={isOpen} onClose={handleClose} maxWidth='sm' fullWidth aria-labelledby='budget-dialog-title'>
         <DialogTitle id='budget-dialog-title' sx={{ pb: 1 }}>
-          <Box display='flex' alignItems='center' gap={1}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {isDelete ? (
               <>
                 <WarningIcon color='error' />
@@ -229,15 +230,15 @@ export const BudgetModal: React.FC = () => {
                 <Typography variant='subtitle2' gutterBottom>
                   Budget Details
                 </Typography>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant='body2' color='text.secondary'>
                     Category:
                   </Typography>
-                  <Typography variant='body2' fontWeight='medium'>
+                  <Typography variant='body2' sx={{ fontWeight: 'medium' }}>
                     {selectedBudget?.category.name || 'N/A'}
                   </Typography>
                 </Box>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant='body2' color='text.secondary'>
                     Year/Month:
                   </Typography>
@@ -245,11 +246,15 @@ export const BudgetModal: React.FC = () => {
                     {selectedBudget?.budgetYear || '-'} / {selectedBudget?.budgetMonth || '-'} /{' '}
                   </Typography>
                 </Box>
-                <Box display='flex' justifyContent='space-between'>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant='body2' color='text.secondary'>
                     Amount:
                   </Typography>
-                  <Typography variant='body2' fontWeight='bold' color={getAmountColor(selectedBudget?.amount || null)}>
+                  <Typography
+                    variant='body2'
+                    color={getAmountColor(selectedBudget?.amount || null)}
+                    sx={{ fontWeight: 'bold' }}
+                  >
                     {getFormattedCurrency(selectedBudget?.amount || null)}
                   </Typography>
                 </Box>
@@ -290,9 +295,15 @@ export const BudgetModal: React.FC = () => {
                     helperText={errors.amount}
                     fullWidth
                     required
-                    InputProps={{
-                      startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
-                      inputProps: {
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <Typography>$</Typography>
+                          </InputAdornment>
+                        ),
+                      },
+                      htmlInput: {
                         min: 0.01,
                         max: 1000000000,
                         step: 0.01,
@@ -390,7 +401,7 @@ export const BudgetModal: React.FC = () => {
       {(isCreate || isUpdate) && (
         <Dialog open={showUnsavedWarning} onClose={handleCancelClose} maxWidth='xs' fullWidth>
           <DialogTitle>
-            <Typography variant='h6' component='div' fontWeight='bold'>
+            <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }}>
               Unsaved Changes
             </Typography>
           </DialogTitle>

@@ -76,20 +76,20 @@ export const BudgetTable: React.FC<{ budgets: Budget[] }> = ({ budgets }) => {
             return (
               <TableRow key={budget.id} hover>
                 <TableCell>
-                  <Typography fontWeight='medium'>
+                  <Typography sx={{ fontWeight: 'medium' }}>
                     {getMonthName(budget.budgetMonth)} {budget.budgetYear}
                   </Typography>
                 </TableCell>
                 <TableCell>{budget.category.name}</TableCell>
                 <TableCell>{budget.category.categoryType.name}</TableCell>
                 <TableCell align='right'>
-                  <Typography fontWeight='medium'>{getFormattedCurrency(budget.amount)}</Typography>
+                  <Typography sx={{ fontWeight: 'medium' }}>{getFormattedCurrency(budget.amount)}</Typography>
                 </TableCell>
                 <TableCell align='right'>{getFormattedCurrency(spent)}</TableCell>
                 <TableCell align='right'>
                   <Typography
                     color={remaining < 0 ? 'error.main' : 'text.primary'}
-                    fontWeight={remaining < 0 ? 'bold' : 'normal'}
+                    sx={{ fontWeight: remaining < 0 ? 'bold' : 'normal' }}
                   >
                     {getFormattedCurrency(remaining)}
                   </Typography>

@@ -1,9 +1,9 @@
-import { TextField, Paper, MenuItem, type TextFieldProps, Portal } from '@mui/material'
+import { TextField, Paper, MenuItem, type TextFieldProps, Portal, MenuList } from '@mui/material'
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 interface AutoCompleteProps {
   value: string
-  onChange: (merchant: string) => void
+  onChange: (item: string) => void
   dataList: string[]
   label: string
   placeholder?: string
@@ -37,7 +37,7 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
 
   const filteredDataList = useMemo(() => {
     if (!value) return dataList
-    return dataList.filter((merchant) => merchant.toLowerCase().includes(value.toLowerCase()))
+    return dataList.filter((item) => item.toLowerCase().includes(value.toLowerCase()))
   }, [dataList, value])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,8 +46,8 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
     setShowDropdown(true)
   }
 
-  const handleSelect = (merchant: string) => {
-    onChange(merchant)
+  const handleSelect = (item: string) => {
+    onChange(item)
     setShowDropdown(false)
   }
 
@@ -89,19 +89,21 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({
               boxShadow: 3,
             }}
           >
-            {filteredDataList.map((value) => (
-              <MenuItem
-                key={value}
-                onClick={() => handleSelect(value)}
-                sx={{
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                  },
-                }}
-              >
-                {value}
-              </MenuItem>
-            ))}
+            <MenuList>
+              {filteredDataList.map((value) => (
+                <MenuItem
+                  key={value}
+                  onClick={() => handleSelect(value)}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                  }}
+                >
+                  {value}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Paper>
         </Portal>
       )}

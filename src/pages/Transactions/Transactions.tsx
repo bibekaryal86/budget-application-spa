@@ -90,12 +90,14 @@ export const Transactions: React.FC = () => {
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          justifyContent='space-between'
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
           spacing={{ xs: 2, sm: 0 }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+          }}
         >
           <Box>
-            <Typography variant='h4' component='h1' fontWeight='medium'>
+            <Typography variant='h4' component='h1' sx={{ fontWeight: 'medium' }}>
               Transactions
             </Typography>
             <Typography variant='body1' color='text.secondary'>
@@ -130,7 +132,13 @@ export const Transactions: React.FC = () => {
       )}
 
       {isLoading && (
-        <Box display='flex' justifyContent='center' my={4}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            my: 4,
+          }}
+        >
           <CircularProgress />
         </Box>
       )}

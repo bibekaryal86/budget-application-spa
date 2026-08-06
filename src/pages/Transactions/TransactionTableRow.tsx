@@ -128,14 +128,14 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
         <TableCell>{getFormattedDate(transaction.txnDate)}</TableCell>
 
         <TableCell>
-          <Typography variant='body2' fontWeight='medium'>
+          <Typography variant='body2' sx={{ fontWeight: 'medium' }}>
             {transaction.merchant}
           </Typography>
         </TableCell>
 
         {!isMobile && (
           <TableCell>
-            <Typography variant='body2' fontWeight='medium'>
+            <Typography variant='body2' sx={{ fontWeight: 'medium' }}>
               {getTxnAccounts(transaction)}
             </Typography>
           </TableCell>
@@ -166,7 +166,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
               display: 'inline-block',
             }}
           >
-            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+            <Stack direction='row' spacing={1} sx={{ justifyContent: 'flex-end' }}>
               <IconButton
                 className='action-button'
                 size='small'
@@ -224,7 +224,7 @@ export const TransactionTableRow: React.FC<TransactionTableRowProps> = ({ transa
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={expanded} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 2 }}>
-              <Typography variant='subtitle2' gutterBottom fontWeight='medium'>
+              <Typography variant='subtitle2' gutterBottom sx={{ fontWeight: 'medium' }}>
                 Transaction Items
               </Typography>
               {!transaction.items || transaction.items.length === 0 ? (

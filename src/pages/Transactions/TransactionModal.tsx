@@ -365,7 +365,13 @@ export const TransactionModal: React.FC = () => {
         aria-labelledby='transaction-dialog-title'
       >
         <DialogTitle id='transaction-dialog-title' sx={{ pb: 1 }}>
-          <Box display='flex' alignItems='center' gap={1}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
             {isDelete ? (
               <>
                 <WarningIcon color='error' />
@@ -401,25 +407,46 @@ export const TransactionModal: React.FC = () => {
                 <Typography variant='subtitle2' gutterBottom>
                   Transaction Details
                 </Typography>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 1,
+                  }}
+                >
                   <Typography variant='body2' color='text.secondary'>
                     Merchant:
                   </Typography>
-                  <Typography variant='body2' fontWeight='medium'>
+                  <Typography variant='body2' sx={{ fontWeight: 'medium' }}>
                     {selectedTxn?.merchant || 'N/A'}
                   </Typography>
                 </Box>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 1,
+                  }}
+                >
                   <Typography variant='body2' color='text.secondary'>
                     Date:
                   </Typography>
                   <Typography variant='body2'>{getFormattedDate(selectedTxn?.txnDate || null)}</Typography>
                 </Box>
-                <Box display='flex' justifyContent='space-between'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
                   <Typography variant='body2' color='text.secondary'>
                     Amount:
                   </Typography>
-                  <Typography variant='body2' fontWeight='bold' color={getTxnAmountColor(selectedTxn || null)}>
+                  <Typography
+                    variant='body2'
+                    sx={{ fontWeight: 'bold' }}
+                    color={getTxnAmountColor(selectedTxn || null)}
+                  >
                     {getFormattedCurrency(selectedTxn?.totalAmount || null)}
                   </Typography>
                 </Box>
@@ -429,7 +456,7 @@ export const TransactionModal: React.FC = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Stack spacing={1}>
                 <Box>
-                  <Typography variant='subtitle1' gutterBottom fontWeight='medium'>
+                  <Typography variant='subtitle1' gutterBottom sx={{ fontWeight: 'medium' }}>
                     Transaction Details
                   </Typography>
                   <Grid container spacing={1}>
@@ -477,7 +504,7 @@ export const TransactionModal: React.FC = () => {
                         slotProps={{
                           input: {
                             startAdornment: (
-                              <Typography color='text.secondary' mr={1}>
+                              <Typography color='text.secondary' sx={{ mr: 1 }}>
                                 $
                               </Typography>
                             ),
@@ -491,9 +518,16 @@ export const TransactionModal: React.FC = () => {
                 <Divider />
 
                 <Box>
-                  <Box display='flex' justifyContent='space-between' alignItems='center' mb={0.5}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mb: 0.5,
+                    }}
+                  >
                     {' '}
-                    <Typography variant='subtitle1' fontWeight='medium'>
+                    <Typography variant='subtitle1' sx={{ fontWeight: 'medium' }}>
                       Items ({txnFormData.items.length})
                     </Typography>
                     <Button
@@ -524,7 +558,14 @@ export const TransactionModal: React.FC = () => {
                             '&:hover': { backgroundColor: 'action.hover' },
                           }}
                         >
-                          <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              mb: 1,
+                            }}
+                          >
                             {' '}
                             <Typography variant='subtitle2' sx={{ fontSize: '0.9rem' }}>
                               {' '}
@@ -552,25 +593,16 @@ export const TransactionModal: React.FC = () => {
                                 onChange={(_, newValue) => {
                                   handleItemChange(index, 'categoryId', newValue?.id || '')
                                 }}
-                                renderInput={(params) => {
-                                  const { InputLabelProps, ...rest } = params
-
-                                  return (
-                                    <TextField
-                                      {...rest}
-                                      label='Category'
-                                      required
-                                      error={!!itemErrors[`item-${index}-category`]}
-                                      helperText={itemErrors[`item-${index}-category`]}
-                                      size='small'
-                                      slotProps={{
-                                        inputLabel: {
-                                          className: InputLabelProps?.className ?? '',
-                                        },
-                                      }}
-                                    />
-                                  )
-                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label='Category'
+                                    required
+                                    error={!!itemErrors[`item-${index}-category`]}
+                                    helperText={itemErrors[`item-${index}-category`]}
+                                    size='small'
+                                  />
+                                )}
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 5 }}>
@@ -583,25 +615,16 @@ export const TransactionModal: React.FC = () => {
                                 onChange={(_, newValue) => {
                                   handleItemChange(index, 'accountId', newValue?.id || '')
                                 }}
-                                renderInput={(params) => {
-                                  const { InputLabelProps, ...rest } = params
-
-                                  return (
-                                    <TextField
-                                      {...rest}
-                                      label='Account'
-                                      required
-                                      error={!!itemErrors[`item-${index}-account`]}
-                                      helperText={itemErrors[`item-${index}-account`]}
-                                      size='small'
-                                      slotProps={{
-                                        inputLabel: {
-                                          className: InputLabelProps?.className ?? '',
-                                        },
-                                      }}
-                                    />
-                                  )
-                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label='Account'
+                                    required
+                                    error={!!itemErrors[`item-${index}-account`]}
+                                    helperText={itemErrors[`item-${index}-account`]}
+                                    size='small'
+                                  />
+                                )}
                               />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -618,7 +641,7 @@ export const TransactionModal: React.FC = () => {
                                 slotProps={{
                                   input: {
                                     startAdornment: (
-                                      <Typography color='text.secondary' mr={1} fontSize='small'>
+                                      <Typography color='text.secondary' sx={{ fontSize: 'small', mr: 1 }}>
                                         $
                                       </Typography>
                                     ),
@@ -665,12 +688,18 @@ export const TransactionModal: React.FC = () => {
                         borderColor: 'primary.main',
                       }}
                     >
-                      <Box display='flex' justifyContent='space-between' alignItems='center'>
-                        <Typography variant='subtitle2' fontWeight='bold'>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
                           {' '}
                           Total Amount
                         </Typography>
-                        <Typography variant='h6' fontWeight='bold' color='primary' fontSize='1rem'>
+                        <Typography variant='h6' color='primary' sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
                           {' '}
                           {getFormattedCurrency(
                             txnFormData.items.length > 0
@@ -718,7 +747,7 @@ export const TransactionModal: React.FC = () => {
       {(isCreate || isUpdate) && (
         <Dialog open={showUnsavedWarning} onClose={handleCancelClose} maxWidth='xs' fullWidth>
           <DialogTitle>
-            <Typography variant='h6' component='div' fontWeight='bold'>
+            <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }}>
               Unsaved Changes
             </Typography>
           </DialogTitle>

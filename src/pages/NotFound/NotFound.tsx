@@ -17,17 +17,17 @@ export const NotFound: React.FC = () => {
         <Typography
           variant='h1'
           component='h1'
-          fontWeight='bold'
           color='primary'
           sx={{
             fontSize: { xs: '4rem', md: '6rem' },
             mb: 2,
+            fontWeight: 'bold',
           }}
         >
           404
         </Typography>
 
-        <Typography variant='h4' component='h2' gutterBottom fontWeight='medium'>
+        <Typography variant='h4' component='h2' gutterBottom sx={{ fontWeight: 'medium' }}>
           Page Not Found
         </Typography>
 
