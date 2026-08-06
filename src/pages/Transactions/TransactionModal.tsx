@@ -295,21 +295,24 @@ export const TransactionModal: React.FC = () => {
   }
 
   const handleAddItem = () => {
-    setTxnFormData((prev) => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        {
-          id: null,
-          transactionId: selectedTxn?.id || null,
-          categoryId: '',
-          accountId: '',
-          amount: null,
-          tags: [],
-          notes: '',
-        },
-      ],
-    }))
+    setTxnFormData((prev) => {
+      const firstItem = prev.items.length > 0 ? prev.items[0] : null
+      return {
+        ...prev,
+        items: [
+          ...prev.items,
+          {
+            id: null,
+            transactionId: selectedTxn?.id || null,
+            categoryId: firstItem?.categoryId || '',
+            accountId: firstItem?.accountId || '',
+            amount: null,
+            tags: [],
+            notes: '',
+          },
+        ],
+      }
+    })
   }
 
   const handleRemoveItem = (index: number) => {
