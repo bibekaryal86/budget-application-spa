@@ -10,6 +10,20 @@ const COMMON_HEADERS = {
   'x-auth-appid': APP_ID,
 }
 
+let refreshPromise: Promise<boolean> | null = null
+
+const getRefreshPromise = (): Promise<boolean> => {
+  if (!refreshPromise) {
+    refreshPromise = useAuthStore
+      .getState()
+      .refreshTokens()
+      .finally(() => {
+        refreshPromise = null
+      })
+  }
+  return refreshPromise
+}
+
 export const extractAxiosErrorMessage = (error: AxiosError | unknown): string => {
   if (error) {
     if (axios.isAxiosError(error)) {
@@ -114,13 +128,12 @@ const createAxiosInstance = (baseUrl: string): AxiosInstance => {
       ) {
         originalRequest._retryCount += 1
         console.log('Access token expired, attempting refresh...')
-        const refreshSuccess = await useAuthStore.getState().refreshTokens()
+        const refreshSuccess = await getRefreshPromise()
 
         if (refreshSuccess) {
-          const originalRequest = error.config as RequestConfig
-
           // Inject new token
           const newToken = getAccessToken()
+          originalRequest.headers = originalRequest.headers ?? {}
           if (newToken) {
             ;(originalRequest.headers as Record<string, string>).Authorization = `Bearer ${newToken}`
           }
