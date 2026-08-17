@@ -123,8 +123,15 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
   const chartContent = (
     <Box>
       {title && (
-        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-          <Typography variant='h6' fontWeight='medium'>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          <Typography variant='h6' sx={{ fontWeight: 'medium' }}>
             {title}
           </Typography>
           {topExpenses === DEFAULT_TOP_EXPENSES ? (
@@ -140,7 +147,16 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
       )}
       <Box sx={{ height: height, width: '100%' }}>
         {isLoading ? (
-          <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%' gap={2}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 2,
+              height: '100%',
+            }}
+          >
             <CircularProgress size={40} />
             <Typography variant='body2' color='text.secondary'>
               Loading categories breakdown...
@@ -184,7 +200,14 @@ export const CategoriesChart: React.FC<CategoriesChartProps> = ({
             </ChartsContainer>
           </>
         ) : (
-          <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
             <Typography variant='body2' color='text.secondary'>
               No categories data available
             </Typography>

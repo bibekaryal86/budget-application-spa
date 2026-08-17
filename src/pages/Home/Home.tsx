@@ -212,8 +212,8 @@ export const Home: React.FC = () => {
   return (
     <Container maxWidth='sm' sx={{ py: 4 }}>
       <Box sx={{ width: '100%' }}>
-        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-          <Typography variant='h5' component='h2' fontWeight='medium'>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant='h5' component='h2' sx={{ fontWeight: 'medium' }}>
             {currentMonth} Cash Flows
           </Typography>
           <Button
@@ -226,7 +226,7 @@ export const Home: React.FC = () => {
         </Box>
 
         {isCfsLoading ? (
-          <Box display='flex' justifyContent='center' my={4}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <CircularProgress />
           </Box>
         ) : (
@@ -234,24 +234,24 @@ export const Home: React.FC = () => {
             <Grid
               container
               spacing={1}
-              justifyContent='center'
               sx={{
                 margin: '0 auto',
                 width: '100%',
+                justifyContent: 'center',
               }}
             >
               <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Income
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='success.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentIncome)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(false, cashFlowMetrics.incomeChange)}
                           <Typography
                             variant='body2'
@@ -272,15 +272,15 @@ export const Home: React.FC = () => {
               <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Expenses
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='error.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentExpenses)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(true, cashFlowMetrics.expenseChange)}
                           <Typography
                             variant='body2'
@@ -301,15 +301,15 @@ export const Home: React.FC = () => {
               <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Savings
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='warning.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='warning.main'>
                           {getFormattedCurrency(cashFlowMetrics.currentSavings)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(false, cashFlowMetrics.savingsChange)}
                           <Typography
                             variant='body2'
@@ -330,7 +330,7 @@ export const Home: React.FC = () => {
               <Grid sx={{ xs: 12, md: 3 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Balance
@@ -338,12 +338,12 @@ export const Home: React.FC = () => {
                         <Typography
                           variant='h6'
                           component='div'
-                          fontWeight='bold'
+                          sx={{ fontWeight: 'bold' }}
                           color={cashFlowMetrics.currentBalance > 0 ? 'success.main' : 'error.main'}
                         >
                           {getFormattedCurrency(cashFlowMetrics.currentBalance)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(false, cashFlowMetrics.balanceChange)}
                           <Typography
                             variant='body2'
@@ -366,8 +366,8 @@ export const Home: React.FC = () => {
 
         <Divider sx={{ my: 4 }} />
 
-        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-          <Typography variant='h5' component='h2' fontWeight='medium'>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant='h5' component='h2' sx={{ fontWeight: 'medium' }}>
             {currentMonth} Net Worth
           </Typography>
           <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/insights#account-summary')}>
@@ -376,7 +376,7 @@ export const Home: React.FC = () => {
         </Box>
 
         {isAsLoading ? (
-          <Box display='flex' justifyContent='center' my={4}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
             <CircularProgress />
           </Box>
         ) : (
@@ -384,24 +384,24 @@ export const Home: React.FC = () => {
             <Grid
               container
               spacing={1}
-              justifyContent='center'
               sx={{
                 margin: '0 auto',
                 width: '100%',
+                justifyContent: 'center',
               }}
             >
               <Grid sx={{ xs: 12, md: 4 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Checking/Savings
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='success.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='success.main'>
                           {getFormattedCurrency(netWorthMetrics.currentAssets)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(false, netWorthMetrics.assetsChange)}
                           <Typography
                             variant='body2'
@@ -422,15 +422,15 @@ export const Home: React.FC = () => {
               <Grid sx={{ xs: 12, md: 4 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Credit Cards
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='error.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='error.main'>
                           {getFormattedCurrency(netWorthMetrics.currentDebts)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(true, netWorthMetrics.debtsChange)}
                           <Typography
                             variant='body2'
@@ -451,15 +451,15 @@ export const Home: React.FC = () => {
               <Grid sx={{ xs: 12, md: 4 }}>
                 <Card elevation={2}>
                   <CardContent>
-                    <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
                         <Typography variant='body2' color='text.secondary' gutterBottom>
                           Net Worth
                         </Typography>
-                        <Typography variant='h6' component='div' fontWeight='bold' color='info.main'>
+                        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }} color='info.main'>
                           {getFormattedCurrency(netWorthMetrics.currentWorth)}
                         </Typography>
-                        <Box display='flex' alignItems='center' gap={1} sx={{ mt: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                           {getTrendingIcon(false, netWorthMetrics.worthChange)}
                           <Typography
                             variant='body2'
@@ -486,16 +486,16 @@ export const Home: React.FC = () => {
           <Grid
             container
             spacing={1}
-            justifyContent='center'
             sx={{
               margin: '0 auto',
               width: '100%',
+              justifyContent: 'center',
             }}
           >
             <Grid sx={{ xs: 12, md: 12, width: '100%' }}>
               <Paper elevation={2} sx={{ p: 3 }}>
-                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='h6' fontWeight='medium'>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant='h6' sx={{ fontWeight: 'medium' }}>
                     {currentMonth} Top Spending Categories
                   </Typography>
                   <Button
@@ -512,7 +512,7 @@ export const Home: React.FC = () => {
                     No categories data available...
                   </Typography>
                 ) : isCsLoading ? (
-                  <Box display='flex' justifyContent='center' my={4}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
                     <CircularProgress />
                   </Box>
                 ) : (
@@ -533,20 +533,20 @@ export const Home: React.FC = () => {
                             },
                           }}
                         >
-                          <Box display='flex' justifyContent='space-between' alignItems='center'>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Box>
-                              <Typography variant='body1' fontWeight='medium'>
+                              <Typography variant='body1' sx={{ fontWeight: 'medium' }}>
                                 {category.category.name}
                               </Typography>
                               <Typography variant='body2' color='text.secondary'>
                                 {category.category.categoryType.name}
                               </Typography>
                             </Box>
-                            <Box display='flex' flexDirection='column' alignItems='flex-end' gap={0.5}>
-                              <Typography variant='body1' fontWeight='bold' color='error.main'>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
+                              <Typography variant='body1' sx={{ fontWeight: 'bold' }} color='error.main'>
                                 {getFormattedCurrency(category.currentMonth)}
                               </Typography>
-                              <Box display='flex' alignItems='center' gap={0.5}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 {hasChange && (
                                   <Box
                                     component='span'
@@ -597,16 +597,16 @@ export const Home: React.FC = () => {
           <Grid
             container
             spacing={1}
-            justifyContent='center'
             sx={{
               margin: '0 auto',
               width: '100%',
+              justifyContent: 'center',
             }}
           >
             <Grid sx={{ xs: 12, md: 12, width: '100%' }}>
               <Paper elevation={2} sx={{ p: 3 }}>
-                <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
-                  <Typography variant='h6' fontWeight='medium'>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant='h6' sx={{ fontWeight: 'medium' }}>
                     Recent Transactions
                   </Typography>
                   <Button variant='text' endIcon={<ArrowForward />} onClick={() => void navigate('/transactions')}>
@@ -619,7 +619,7 @@ export const Home: React.FC = () => {
                     No transactions data available...
                   </Typography>
                 ) : isTxnLoading ? (
-                  <Box display='flex' justifyContent='center' my={4}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
                     <CircularProgress />
                   </Box>
                 ) : (
@@ -635,16 +635,20 @@ export const Home: React.FC = () => {
                           },
                         }}
                       >
-                        <Box display='flex' justifyContent='space-between' alignItems='center'>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <Box>
-                            <Typography variant='body1' fontWeight='medium'>
+                            <Typography variant='body1' sx={{ fontWeight: 'medium' }}>
                               {transaction.merchant}
                             </Typography>
                             <Typography variant='body2' color='text.secondary'>
                               {transaction.txnDate ? format(new Date(transaction.txnDate), 'MMM dd, yyyy') : 'No date'}
                             </Typography>
                           </Box>
-                          <Typography variant='body1' fontWeight='bold' color={getTxnAmountColor(transaction)}>
+                          <Typography
+                            variant='body1'
+                            color={getTxnAmountColor(transaction)}
+                            sx={{ fontWeight: 'bold' }}
+                          >
                             {getFormattedCurrency(transaction.totalAmount)}
                           </Typography>
                         </Box>

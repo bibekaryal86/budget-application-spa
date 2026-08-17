@@ -59,26 +59,18 @@ export const AutoCompleteMultiple: React.FC<AutoCompleteMultipleProps> = ({
       onInputChange={(_, newInputValue) => {
         onInputChange?.(newInputValue)
       }}
-      renderInput={(params) => {
-        const { InputLabelProps, ...rest } = params
-        return (
-          <TextField
-            {...rest}
-            label={label}
-            placeholder={placeholder}
-            helperText={helperText}
-            error={error}
-            size={size}
-            fullWidth={fullWidth}
-            disabled={disabled}
-            slotProps={{
-              inputLabel: {
-                className: InputLabelProps?.className ?? '',
-              },
-            }}
-          />
-        )
-      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label}
+          placeholder={placeholder}
+          helperText={helperText}
+          error={error}
+          size={size}
+          fullWidth={fullWidth}
+          disabled={disabled}
+        />
+      )}
       size={size}
       fullWidth={fullWidth}
       disabled={disabled}

@@ -62,9 +62,9 @@ export const TransactionFilters: React.FC = () => {
         <Grid
           container
           spacing={0.5}
-          justifyContent='center'
           sx={{
             margin: '0 auto',
+            justifyContent: 'center',
           }}
         >
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -95,21 +95,7 @@ export const TransactionFilters: React.FC = () => {
               getOptionLabel={(o) => o.name}
               value={accountsList.find((a) => a.id === txnFilterAccountId) || null}
               onChange={(_, v) => setTxnFilterAccountId(v?.id || '')}
-              renderInput={(params) => {
-                const { InputLabelProps, ...rest } = params
-                return (
-                  <TextField
-                    {...rest}
-                    label='Account'
-                    size='small'
-                    slotProps={{
-                      inputLabel: {
-                        className: InputLabelProps?.className ?? '',
-                      },
-                    }}
-                  />
-                )
-              }}
+              renderInput={(params) => <TextField {...params} label='Account' size='small' />}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
@@ -131,21 +117,7 @@ export const TransactionFilters: React.FC = () => {
               getOptionLabel={(o) => o}
               value={merchantsList.find((m) => m === txnFilterMerchant) || null}
               onChange={(_, v) => setTxnFilterMerchant(v || '')}
-              renderInput={(params) => {
-                const { InputLabelProps, ...rest } = params
-                return (
-                  <TextField
-                    {...rest}
-                    label='Merchant'
-                    size='small'
-                    slotProps={{
-                      inputLabel: {
-                        className: InputLabelProps?.className ?? '',
-                      },
-                    }}
-                  />
-                )
-              }}
+              renderInput={(params) => <TextField {...params} label='Merchant' size='small' />}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
@@ -159,7 +131,7 @@ export const TransactionFilters: React.FC = () => {
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Stack direction='row' spacing={2} justifyContent='center'>
+            <Stack direction='row' spacing={2} sx={{ justifyContent: 'center' }}>
               <Button
                 variant='outlined'
                 startIcon={<FilterAltOffIcon />}

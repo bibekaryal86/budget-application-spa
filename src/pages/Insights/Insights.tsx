@@ -60,9 +60,22 @@ export const Insights: React.FC = () => {
     <>
       <Container maxWidth='md' sx={{ py: 4 }}>
         <Box sx={{ width: '100%' }}>
-          <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 4 }}>
-            <Box display='flex' alignItems='center' gap={1}>
-              <Typography variant='h5' component='h2' fontWeight='medium'>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 4,
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }}
+            >
+              <Typography variant='h5' component='h2' sx={{ fontWeight: 'medium' }}>
                 {displayText} Insights
               </Typography>
               <IconButton size='small' onClick={() => setOpenModal(true)} sx={{ color: 'primary.main' }}>

@@ -38,12 +38,14 @@ export const Accounts: React.FC = () => {
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          justifyContent='space-between'
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
           spacing={{ xs: 2, sm: 0 }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+          }}
         >
           <Box>
-            <Typography variant='h4' component='h1' fontWeight='medium'>
+            <Typography variant='h4' component='h1' sx={{ fontWeight: 'medium' }}>
               Accounts
             </Typography>
             <Typography variant='body1' color='text.secondary'>
@@ -76,7 +78,7 @@ export const Accounts: React.FC = () => {
       )}
 
       {isLoading && (
-        <Box display='flex' justifyContent='center' my={4}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
           <CircularProgress />
         </Box>
       )}
@@ -103,7 +105,7 @@ export const Accounts: React.FC = () => {
       )}
 
       {!isLoading && !error && accounts.length > 0 && (
-        <Box display='flex' justifyContent='center' mt={3}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Typography variant='body2' color='text.secondary'>
             Showing {filteredAccounts.length} accounts
           </Typography>

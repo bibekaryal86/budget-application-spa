@@ -65,9 +65,9 @@ export const AccountFilters: React.FC = () => {
         <Grid
           container
           spacing={0.5}
-          justifyContent='center'
           sx={{
             margin: '0 auto',
+            justifyContent: 'center',
           }}
         >
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -117,7 +117,13 @@ export const AccountFilters: React.FC = () => {
           </Grid>
 
           <Grid size={{ xs: 12, md: 12 }}>
-            <Stack direction='row' spacing={2} justifyContent='center'>
+            <Stack
+              direction='row'
+              spacing={2}
+              sx={{
+                justifyContent: 'center',
+              }}
+            >
               <Button
                 variant='outlined'
                 startIcon={<FilterAltOffIcon />}

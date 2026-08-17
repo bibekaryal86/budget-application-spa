@@ -70,7 +70,6 @@ export const Header: React.FC = () => {
           variant={isMobile ? 'h6' : 'h5'}
           component={Link}
           to='/'
-          fontWeight='bold'
           sx={{
             flexGrow: 1,
             textDecoration: 'none',
@@ -78,13 +77,14 @@ export const Header: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             gap: 1,
+            fontWeight: 'bold',
           }}
         >
           {isMobile ? 'PETS' : 'Personal Expenses Tracking System'}
         </Typography>
 
         {isAuthenticated && (
-          <Stack direction='row' spacing={1} alignItems='center'>
+          <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
             {isMobile ? (
               // Mobile navigation
               <>

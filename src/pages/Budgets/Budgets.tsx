@@ -28,12 +28,14 @@ export const Budgets: React.FC = () => {
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          justifyContent='space-between'
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
           spacing={{ xs: 2, sm: 0 }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+          }}
         >
           <Box>
-            <Typography variant='h4' component='h1' fontWeight='medium'>
+            <Typography variant='h4' component='h1' sx={{ fontWeight: 'medium' }}>
               Budgets
             </Typography>
             <Typography variant='body1' color='text.secondary'>
@@ -66,7 +68,7 @@ export const Budgets: React.FC = () => {
       )}
 
       {isLoading && (
-        <Box display='flex' justifyContent='center' my={4}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
           <CircularProgress />
         </Box>
       )}
@@ -87,7 +89,7 @@ export const Budgets: React.FC = () => {
       {!isLoading && !error && budgets.length > 0 && <BudgetTable budgets={budgets} />}
 
       {!isLoading && !error && budgets.length > 0 && (
-        <Box display='flex' justifyContent='center' mt={3}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Typography variant='body2' color='text.secondary'>
             Showing {budgets.length} budgets
           </Typography>

@@ -171,7 +171,7 @@ export const Login: React.FC = () => {
           ) : (
             <LockReset sx={{ fontSize: 40, color: 'secondary.main', mr: 2 }} />
           )}
-          <Typography component='h1' variant='h4' fontWeight='bold'>
+          <Typography component='h1' variant='h4' sx={{ fontWeight: 'bold' }}>
             {mode === 'login' ? 'Sign In' : 'Reset Password'}
           </Typography>
         </Box>
@@ -196,7 +196,7 @@ export const Login: React.FC = () => {
             }}
             onClose={() => setShowValidationMessage('')}
           >
-            <Typography variant='body1' fontWeight='medium'>
+            <Typography variant='body1' sx={{ fontWeight: 'medium' }}>
               {showValidationMessage === 'true' ? 'Profile Validated Successfully!' : 'Profile could not be validated!'}
             </Typography>
             <Typography variant='body2'>
@@ -218,7 +218,7 @@ export const Login: React.FC = () => {
             }}
             onClose={() => setShowResetMessage('')}
           >
-            <Typography variant='body1' fontWeight='medium'>
+            <Typography variant='body1' sx={{ fontWeight: 'medium' }}>
               {showResetMessage === 'true' ? 'Profile Reset Started Successfully!' : 'Profile could not be reset!'}
             </Typography>
             <Typography variant='body2'>

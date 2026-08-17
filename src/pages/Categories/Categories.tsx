@@ -55,12 +55,14 @@ export const Categories: React.FC = () => {
       <Box sx={{ mb: 4 }}>
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          justifyContent='space-between'
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
           spacing={{ xs: 2, sm: 0 }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+          }}
         >
           <Box>
-            <Typography variant='h4' component='h1' fontWeight='medium'>
+            <Typography variant='h4' component='h1' sx={{ fontWeight: 'medium' }}>
               Categories
             </Typography>
             <Typography variant='body1' color='text.secondary'>
@@ -83,12 +85,12 @@ export const Categories: React.FC = () => {
           <Grid
             container
             spacing={0.5}
-            justifyContent='center'
             sx={{
               margin: '0 auto',
+              justifyContent: 'center',
             }}
           >
-            <Grid alignSelf='center' size={{ xs: 12, sm: 4, md: 1 }}>
+            <Grid size={{ xs: 12, sm: 4, md: 1 }} sx={{ alignSelf: 'center' }}>
               <Typography variant='h6'>Filters</Typography>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 9 }}>
@@ -131,7 +133,7 @@ export const Categories: React.FC = () => {
         </Box>
       </Paper>
       {isLoading && (
-        <Box display='flex' justifyContent='center' my={4}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
           <CircularProgress />
         </Box>
       )}
@@ -149,7 +151,7 @@ export const Categories: React.FC = () => {
       )}
       <CategoriesTable categories={filteredCategories} />
       {!isLoading && !error && categories.length > 0 && (
-        <Box display='flex' justifyContent='center' mt={3}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
           <Typography variant='body2' color='text.secondary'>
             Showing {filteredCategories.length} categories
           </Typography>

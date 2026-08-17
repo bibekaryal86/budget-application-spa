@@ -202,7 +202,7 @@ export const AccountModal: React.FC = () => {
     <>
       <Dialog open={isOpen} onClose={handleClose} maxWidth='sm' fullWidth aria-labelledby='account-dialog-title'>
         <DialogTitle id='account-dialog-title' sx={{ pb: 1 }}>
-          <Box display='flex' alignItems='center' gap={1}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             {isDelete ? (
               <>
                 <WarningIcon color='error' />
@@ -238,15 +238,20 @@ export const AccountModal: React.FC = () => {
                 <Typography variant='subtitle2' gutterBottom>
                   Account Details
                 </Typography>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box sx={{ display: 'flex', mb: 1, justifyContent: 'space-between' }}>
                   <Typography variant='body2' color='text.secondary'>
                     Name:
                   </Typography>
-                  <Typography variant='body2' fontWeight='medium'>
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      fontWeight: 'medium',
+                    }}
+                  >
                     {selectedAccount?.name || 'N/A'}
                   </Typography>
                 </Box>
-                <Box display='flex' justifyContent='space-between' mb={1}>
+                <Box sx={{ display: 'flex', mb: 1, justifyContent: 'space-between' }}>
                   <Typography variant='body2' color='text.secondary'>
                     Bank:
                   </Typography>
@@ -372,7 +377,13 @@ export const AccountModal: React.FC = () => {
       {(isCreate || isUpdate) && (
         <Dialog open={showUnsavedWarning} onClose={handleCancelClose} maxWidth='xs' fullWidth>
           <DialogTitle>
-            <Typography variant='h6' component='div' fontWeight='bold'>
+            <Typography
+              variant='h6'
+              component='div'
+              sx={{
+                fontWeight: 'bold',
+              }}
+            >
               Unsaved Changes
             </Typography>
           </DialogTitle>

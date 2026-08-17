@@ -125,13 +125,22 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
   const chartContent = (
     <Box>
       {title && (
-        <Typography variant='h6' fontWeight='medium' sx={{ mb: 2 }}>
+        <Typography variant='h6' sx={{ mb: 2, fontWeight: 'medium' }}>
           {title}
         </Typography>
       )}
       <Box sx={{ height: height, width: '100%' }}>
         {isLoading ? (
-          <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' height='100%' gap={2}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 2,
+              height: '100%',
+            }}
+          >
             <CircularProgress size={40} />
             <Typography variant='body2' color='text.secondary'>
               Loading net worth summaries...
@@ -191,7 +200,7 @@ export const AccountsChart: React.FC<AccountsChartProps> = ({
             </Box>
           </Box>
         ) : (
-          <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <Typography variant='body2' color='text.secondary'>
               No accounts data available
             </Typography>
