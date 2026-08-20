@@ -1,0 +1,31 @@
+{
+  "name": "petssvc-bff",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Minimal BFF proxy server for React frontend",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon src/server.ts",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tsc -p tsconfig.node.json",
+    "gcp-build": "",
+    "start": "NODE_ENV=production node dist/server.js",
+    "type-check": "tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.2.0",
+    "nodemon": "^3.1.0",
+    "rimraf": "^6.1.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}

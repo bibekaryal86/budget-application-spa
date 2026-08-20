@@ -2,9 +2,12 @@
 
 ## Overview
 
-A modern, responsive admin portal built with React and TypeScript for managing platforms, profiles, roles, and
-permissions. This application provides a comprehensive interface for system administrators to configure and manage
-access control across multiple platforms.
+A modern, responsive single-page application built with React and TypeScript for managing personal budget and expense
+tracking. The system consists of two components:
+
+- **Frontend SPA**: A React-based user interface for tracking budgets, expenses, and financial data
+- **Backend BFF (Backend for Frontend)**: A Node.js/Express proxy server that sits between the frontend and upstream
+  backend services, handling CORS and routing
 
 This is the frontend for Budget Application [https://github.com/bibekaryal86/budget-application]
 
@@ -32,9 +35,17 @@ This is the frontend for Budget Application [https://github.com/bibekaryal86/bud
 
 ### Tech Stack
 
+#### Backend BFF
+
+- Node.js with TypeScript for type-safe server-side code
+- Express.js 5 as the HTTP server framework
+- node-fetch for proxying requests to upstream services
+- CORS middleware for cross-origin request handling
+- nodemon for hot-reloading during development
+
 #### Frontend Framework
 
-- React 18 with TypeScript for type-safe development
+- React with TypeScript for type-safe development
 - Vite for fast development and optimized builds
 - React Router v6 for client-side navigation
 
@@ -68,6 +79,27 @@ This is the frontend for Budget Application [https://github.com/bibekaryal86/bud
 - Hot Module Replacement (HMR) for fast development cycles
 - Environment Configuration for different deployment stages
 - Build Optimization for production deployments
+
+## Architecture
+
+```
+Browser (React SPA)
+       │
+       ▼
+Backend BFF (Express, :7201)
+  ├── /auth/api/*  ──▶  Auth Service (AUTH_API_BASE_URL)
+  └── /api/*       ──▶  Main API Service (API_BASE_URL)
+```
+
+The BFF acts as a reverse proxy, forwarding all frontend requests to the appropriate upstream service. It handles:
+
+- **CORS**: Enforces allowed origins, methods, and headers centrally so the frontend does not need to deal with
+  cross-origin restrictions
+- **Request proxying**: Forwards HTTP method, body, and headers (excluding `host`) to the upstream service
+- **Cookie pass-through**: Explicitly forwards `set-cookie` headers to maintain session state
+- **Timeout enforcement**: Aborts upstream requests after 15 seconds to prevent hung connections
+- **Graceful shutdown**: Drains in-flight requests before shutting down (20-second window)
+- **Health check**: `GET /api/tests/ping` returns `{ status: 'ok', timestamp: <number> }`
 
 ## Data Flow
 
@@ -108,12 +140,13 @@ This ensures the UI always reflects the latest backend state without manual stat
 
 All network requests flow through a dedicated service layer:
 
-- Axios-based API clients
+- Axios-based API clients pointing to the BFF (`/api/*`, `/auth/api/*`)
 - Centralized error extraction and normalization
 - Consistent request/response handling
 - Shared configuration (base URL, interceptors, headers)
 
-TanStack Query calls these services inside queries and mutations.
+TanStack Query calls these services inside queries and mutations. The BFF then proxies those calls to the appropriate
+upstream service.
 
 #### Data Rendering (UI Components)
 
@@ -134,17 +167,66 @@ This creates a clean separation:
 
 ### Prerequisites
 
-- Node.js 24+
-- npm or yarn package manager
+- Node.js 24+ (frontend), Node.js 24+ (BFF)
+- npm package manager
 
-### Environment Setup
+### Backend BFF Setup
 
-- Create a `.env` file in the root directory
+The BFF lives in the `backend/` directory and must be started before the frontend.
+
+**Environment Setup**
+
+- Create a `backend/.env` file (copy from `backend/.env.example`)
+- Required variables:
+  - `API_BASE_URL` — base URL for the main API service
+  - `AUTH_API_BASE_URL` — base URL for the authentication service
+- Optional variables:
+  - `PORT` — BFF server port (default: `7201`)
+  - `CORS_ORIGINS` — comma-separated allowed origins (e.g. `http://localhost:7101`)
+  - `CORS_HEADERS` — comma-separated allowed request headers
+  - `CORS_METHODS` — comma-separated allowed HTTP methods
+
+**Start BFF development server**
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+**Build for production**
+
+```bash
+cd backend
+npm run build   # compiles TypeScript to dist/
+npm start       # runs dist/server.js with NODE_ENV=production
+```
+
+### Frontend Setup
+
+**Environment Setup**
+
+- Create a `.env` file in the backend and frontend directories
   - `.env.example` is provided for required variables
 
-### Start development server
+**Start development server**
 
-- `npm run dev`
+```bash
+npm run dev
+```
+
+This will start the frontend and backend servers concurrently.
+The frontend will be served at `http://localhost:7101`.
+The backend will be served at `http://localhost:7201`.
+
+**Deploy to GCP App Engine**
+
+1. `npm run build`
+2. `npm run gcp:prepare`
+3. `gcloud init`
+4. `gcloud app deploy gcp/backend/app.yaml`
+5. `gcloud app deploy gcp/frontend/app.yaml`
+6. `gcloud app deploy gcp/dispatch.yaml`
 
 ### Things to do:
 
