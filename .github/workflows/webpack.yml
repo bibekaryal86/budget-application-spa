@@ -23,7 +23,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install
-        run: npm install
+        run: |
+          npm install
+          npm install --prefix backend
+          npm install --prefix frontend
       - name: Prettier
         run: npm run prettier
       - name: Lint
