@@ -2,8 +2,8 @@ import { useAlertStore, useSpinnerStore, getAccessToken, useAuthStore } from '@s
 import type { RequestConfig } from '@types'
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7001/api'
-const BASE_URL_AUTH = import.meta.env.VITE_AUTH_API_BASE_URL || 'http://localhost:7001/auth/api'
+const BASE_URL = '/api'
+const BASE_URL_AUTH = '/auth/api'
 const APP_ID = import.meta.env.VITE_PETSSVC_APPID || '0'
 const COMMON_HEADERS = {
   'Content-Type': 'application/json',

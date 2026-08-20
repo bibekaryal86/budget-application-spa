@@ -1,41 +1,31 @@
 {
-  "name": "petssvc-spa",
+  "name": "petssvc-fullstack",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18.14"
+  },
+  "description": "UI and BFF in one project",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "run-p dev:backend dev:frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "run-p build:backend build:frontend",
+    "build:backend": "npm run build --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
     "prettier": "prettier --check .",
     "prettier:write": "prettier --write .",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^9.3.1",
-    "@mui/material": "^9.3.1",
-    "@mui/x-charts": "^9.11.1",
-    "@mui/x-date-pickers": "^9.11.0",
-    "@tanstack/react-query": "^5.96.2",
-    "@tanstack/react-query-devtools": "^5.96.2",
-    "axios": "^1.19.0",
-    "date-fns": "^4.4.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2",
-    "zustand": "^5.0.15"
+    "type-check": "npm run type-check --prefix backend && npm run type-check --prefix frontend",
+    "gcp:prepare": "npm run gcp:prepare:backend && npm run gcp:prepare:frontend",
+    "gcp:prepare:backend": "rimraf gcp/backend/dist gcp/backend/package.json gcp/backend/package-lock.json && cpy 'backend/dist/**' gcp/backend/dist && cpy backend/package.json backend/package-lock.json gcp/backend --flat",
+    "gcp:prepare:frontend": "rimraf gcp/frontend/dist && cpy 'frontend/dist/**' gcp/frontend/dist"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/node": "^26.2.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@types/react-router-dom": "^5.3.3",
-    "@vitejs/plugin-react": "^6.0.5",
-    "baseline-browser-mapping": "^2.11.15",
+    "cpy-cli": "^7.0.0",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -44,10 +34,13 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.4",
+    "espree": "^11.2.0",
     "globals": "^17.11.0",
+    "nodemon": "^3.1.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.9.6",
+    "rimraf": "^6.1.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.67.0",
-    "vite": "^8.2.1"
+    "typescript-eslint": "^8.67.0"
   }
 }

@@ -25,8 +25,13 @@ export default defineConfig({
     open: false,
     cors: true,
     proxy: {
+      '/auth/api': {
+        target: 'http://localhost:7201',
+        changeOrigin: true,
+        secure: false,
+      },
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:7201',
         changeOrigin: true,
         secure: false,
       },

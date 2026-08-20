@@ -25,6 +25,19 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-.env
-.vite
-gcp/dist
+frontend/dist
+frontend/gcp/dist
+backend/dist
+frontend/.env
+backend/.env
+frontend/node_modules
+backend/node_modules
+frontend/.vite
+
+gcp/backend/app-dot-env.yaml
+gcp/backend/dist
+gcp/backend/package.json
+gcp/backend/package-lock.json
+gcp/frontend/dist
+gcp/frontend/package.json
+gcp/frontend/package-lock.json

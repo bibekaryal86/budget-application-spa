@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "noEmit": true,
+    "paths": {
+      "@components": ["./src/components/index.ts"],
+      "@constants": ["./src/constants/index.ts"],
+      "@pages": ["./src/pages/index.ts"],
+      "@queries": ["./src/queries/index.ts"],
+      "@routes": ["./src/routes/index.ts"],
+      "@services": ["./src/services/index.ts"],
+      "@stores": ["./src/stores/index.ts"],
+      "@styles": ["./src/styles/index.ts"],
+      "@types": ["./src/types/index.ts"],
+      "@utils": ["./src/utils/index.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
