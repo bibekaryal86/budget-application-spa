@@ -14,6 +14,7 @@ export async function proxyRequest(req: Request, res: Response, targetBaseUrl: s
   const timeout = setTimeout(() => controller.abort(), 15000)
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { host, ...headersWithoutHost } = req.headers
 
     // Extract only the headers we need, excluding any undefined values

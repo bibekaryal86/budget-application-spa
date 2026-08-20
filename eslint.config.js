@@ -12,7 +12,14 @@ import tseslint from 'typescript-eslint'
 
 export default defineConfig([
   // Global ignores
-  globalIgnores(['dist', 'node_modules', '.vite', 'coverage', 'eslint.config.js']),
+  globalIgnores([
+    '**/dist/**',
+    '**/node_modules/**',
+    '**/coverage/**',
+    'frontend/.vite',
+    'frontend/vite.config.ts',
+    'eslint.config.js',
+  ]),
   // Shared TS/JS rules for entire repo
   {
     files: ['**/*.{ts,tsx,js}'],
