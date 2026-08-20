@@ -214,18 +214,19 @@ npm start       # runs dist/server.js with NODE_ENV=production
 ```bash
 npm run dev
 ```
+
 This will start the frontend and backend servers concurrently.
 The frontend will be served at `http://localhost:7101`.
 The backend will be served at `http://localhost:7201`.
 
 **Deploy to GCP App Engine**
+
 1. `npm run build`
 2. `npm run gcp:prepare`
 3. `gcloud init`
 4. `gcloud app deploy gcp/backend/app.yaml`
 5. `gcloud app deploy gcp/frontend/app.yaml`
 6. `gcloud app deploy gcp/dispatch.yaml`
-
 
 ### Things to do:
 
