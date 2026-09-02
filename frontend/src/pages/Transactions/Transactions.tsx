@@ -1,6 +1,6 @@
 import { ACTION_TYPE, DEFAULT_PAGE_NUMBER, DEFAULT_PER_PAGE } from '@constants'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import { Box, Button, Chip, Container, Paper, Typography } from '@mui/material'
+import { Box, Button, Chip, Container, Grid, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
@@ -117,53 +117,59 @@ export const Transactions: React.FC = () => {
         </Stack>
       </Box>
 
-      <TransactionFilters />
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TransactionFilters />
+        </Grid>
 
-      {hasActiveFilters && (
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterAltOffIcon color='action' />
-          <Typography variant='body2' color='text.secondary'>
-            {pageInfo.totalItems > 0
-              ? `Showing ${getDisplayRange()} of ${pageInfo.totalItems} transactions`
-              : 'No transactions found with current filters'}
-          </Typography>
-          <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
-        </Box>
-      )}
+        <Grid size={{ xs: 12, md: 9 }}>
+          {hasActiveFilters && (
+            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FilterAltOffIcon color='action' />
+              <Typography variant='body2' color='text.secondary'>
+                {pageInfo.totalItems > 0
+                  ? `Showing ${getDisplayRange()} of ${pageInfo.totalItems} transactions`
+                  : 'No transactions found with current filters'}
+              </Typography>
+              <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
+            </Box>
+          )}
 
-      {isLoading && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            my: 4,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
+          {isLoading && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                my: 4,
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
 
-      {!isLoading && !error && transactions.length === 0 && (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant='h6' gutterBottom>
-            No transactions found
-          </Typography>
-          <Typography variant='body2' color='text.secondary'>
-            {hasActiveFilters
-              ? 'Try adjusting your filters or clear them to see all transactions.'
-              : 'No transactions available. Create your first transaction!'}
-          </Typography>
-        </Paper>
-      )}
+          {!isLoading && !error && transactions.length === 0 && (
+            <Paper sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant='h6' gutterBottom>
+                No transactions found
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                {hasActiveFilters
+                  ? 'Try adjusting your filters or clear them to see all transactions.'
+                  : 'No transactions available. Create your first transaction!'}
+              </Typography>
+            </Paper>
+          )}
 
-      {!isLoading && !error && transactions.length > 0 && (
-        <TransactionsTable
-          transactions={transactions}
-          pageInfo={pageInfo}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-        />
-      )}
+          {!isLoading && !error && transactions.length > 0 && (
+            <TransactionsTable
+              transactions={transactions}
+              pageInfo={pageInfo}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+            />
+          )}
+        </Grid>
+      </Grid>
 
       <TransactionModal key={selectedTxn?.id || 'new'} />
     </Container>

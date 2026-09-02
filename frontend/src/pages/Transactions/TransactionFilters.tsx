@@ -1,6 +1,6 @@
 import { AutoCompleteMultiple, CategoryAndTypesList } from '@components'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import { Typography, TextField, Button, Paper, Stack, Grid, Box, Autocomplete } from '@mui/material'
+import { Typography, TextField, Button, Paper, Stack, Autocomplete } from '@mui/material'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -44,13 +44,22 @@ export const TransactionFilters: React.FC = () => {
     resetTxnState()
   }
 
+  const hasActiveFilters = Boolean(
+    txnFilterBeginDate ||
+    txnFilterEndDate ||
+    txnFilterMerchant ||
+    txnFilterAccountId ||
+    txnFilterCategoryTypeId ||
+    txnFilterCategoryId ||
+    (txnFilterTags && txnFilterTags.length > 0),
+  )
+
   return (
     <Paper
       elevation={0}
       variant='outlined'
       sx={{
-        p: 1,
-        mb: 3,
+        p: 2,
         borderRadius: 1,
         backgroundColor: 'background.default',
       }}
@@ -58,102 +67,75 @@ export const TransactionFilters: React.FC = () => {
       <Typography variant='h6' gutterBottom>
         Filters
       </Typography>
-      <Box sx={{ width: '100%' }}>
-        <Grid
-          container
-          spacing={0.5}
-          sx={{
-            margin: '0 auto',
-            justifyContent: 'center',
-          }}
+      <Stack spacing={2}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label='Start Date'
+            value={txnFilterBeginDate ? new Date(txnFilterBeginDate + 'T00:00:00') : null}
+            onChange={(date) => setTxnFilterBeginDate(getFormattedDate(date))}
+            slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+          />
+        </LocalizationProvider>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label='End Date'
+            value={txnFilterEndDate ? new Date(txnFilterEndDate) : null}
+            onChange={(date) => setTxnFilterEndDate(getFormattedDate(date) || null)}
+            slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+          />
+        </LocalizationProvider>
+
+        <Autocomplete
+          fullWidth
+          size='small'
+          options={accountsList}
+          getOptionLabel={(o) => o.name}
+          value={accountsList.find((a) => a.id === txnFilterAccountId) || null}
+          onChange={(_, v) => setTxnFilterAccountId(v?.id || '')}
+          renderInput={(params) => <TextField {...params} label='Account' size='small' />}
+        />
+
+        <CategoryAndTypesList
+          selectedCategoryTypeId={txnFilterCategoryTypeId || ''}
+          selectedCategoryId={txnFilterCategoryId || ''}
+          setSelectedCategoryTypeId={setTxnFilterCategoryTypeId}
+          setSelectedCategoryId={setTxnFilterCategoryId}
+          categoryTypesList={categoryTypesList}
+          categoriesList={categoriesList}
+          size='small'
+          stacked={true}
+        />
+
+        <Autocomplete
+          fullWidth
+          size='small'
+          options={merchantsList}
+          getOptionLabel={(o) => o}
+          value={merchantsList.find((m) => m === txnFilterMerchant) || null}
+          onChange={(_, v) => setTxnFilterMerchant(v || '')}
+          renderInput={(params) => <TextField {...params} label='Merchant' size='small' />}
+        />
+
+        <AutoCompleteMultiple
+          value={txnFilterTags || []}
+          onChange={(tags: string[]) => setTxnFilterTags(tags)}
+          options={tagsList || []}
+          label='Tags'
+          placeholder='Hit Enter to Add Tags...'
+          size='small'
+        />
+
+        <Button
+          fullWidth
+          variant='outlined'
+          startIcon={<FilterAltOffIcon />}
+          onClick={handleClearFilters}
+          disabled={!hasActiveFilters}
         >
-          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Start Date'
-                value={txnFilterBeginDate ? new Date(txnFilterBeginDate + 'T00:00:00') : null}
-                onChange={(date) => setTxnFilterBeginDate(getFormattedDate(date))}
-                slotProps={{ textField: { fullWidth: true, size: 'small' } }}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='End Date'
-                value={txnFilterEndDate ? new Date(txnFilterEndDate) : null}
-                onChange={(date) => setTxnFilterEndDate(getFormattedDate(date) || null)}
-                slotProps={{ textField: { fullWidth: true, size: 'small' } }}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-            <Autocomplete
-              fullWidth
-              size='small'
-              options={accountsList}
-              getOptionLabel={(o) => o.name}
-              value={accountsList.find((a) => a.id === txnFilterAccountId) || null}
-              onChange={(_, v) => setTxnFilterAccountId(v?.id || '')}
-              renderInput={(params) => <TextField {...params} label='Account' size='small' />}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-            <CategoryAndTypesList
-              selectedCategoryTypeId={txnFilterCategoryTypeId || ''}
-              selectedCategoryId={txnFilterCategoryId || ''}
-              setSelectedCategoryTypeId={setTxnFilterCategoryTypeId}
-              setSelectedCategoryId={setTxnFilterCategoryId}
-              categoryTypesList={categoryTypesList}
-              categoriesList={categoriesList}
-              size='small'
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Autocomplete
-              fullWidth
-              size='small'
-              options={merchantsList}
-              getOptionLabel={(o) => o}
-              value={merchantsList.find((m) => m === txnFilterMerchant) || null}
-              onChange={(_, v) => setTxnFilterMerchant(v || '')}
-              renderInput={(params) => <TextField {...params} label='Merchant' size='small' />}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-            <AutoCompleteMultiple
-              value={txnFilterTags || []}
-              onChange={(tags: string[]) => setTxnFilterTags(tags)}
-              options={tagsList || []}
-              label='Tags'
-              placeholder='Hit Enter to Add Tags...'
-              size='small'
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Stack direction='row' spacing={2} sx={{ justifyContent: 'center' }}>
-              <Button
-                variant='outlined'
-                startIcon={<FilterAltOffIcon />}
-                onClick={handleClearFilters}
-                disabled={
-                  !(
-                    txnFilterBeginDate ||
-                    txnFilterEndDate ||
-                    txnFilterMerchant ||
-                    txnFilterAccountId ||
-                    txnFilterMerchant ||
-                    txnFilterCategoryTypeId ||
-                    txnFilterCategoryId
-                  )
-                }
-              >
-                Clear Filters
-              </Button>
-            </Stack>
-          </Grid>
-        </Grid>
-      </Box>
+          Clear Filters
+        </Button>
+      </Stack>
     </Paper>
   )
 }
