@@ -9,6 +9,7 @@ import { type ResponsePageInfo } from '@types'
 import React, { useMemo, useState } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
+import { TransactionInsights } from './TransactionInsights.tsx'
 import { TransactionModal } from './TransactionModal.tsx'
 import { TransactionsTable } from './TransactionTable.tsx'
 
@@ -43,6 +44,13 @@ export const Transactions: React.FC = () => {
   })
 
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
+  const cashFlowAmounts = useMemo(
+    () => data?.cashFlowAmounts ?? { incomes: 0, expenses: 0, savings: 0, balance: 0 },
+    [data?.cashFlowAmounts],
+  )
+  const categoryAmounts = useMemo(() => data?.categoryAmounts ?? [], [data?.categoryAmounts])
+  const accountAmounts = useMemo(() => data?.accountAmounts ?? [], [data?.accountAmounts])
+
   const pageInfo = useMemo((): ResponsePageInfo => {
     if (!data) {
       return {
@@ -120,11 +128,9 @@ export const Transactions: React.FC = () => {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 3 }}>
           <TransactionFilters />
-        </Grid>
 
-        <Grid size={{ xs: 12, md: 9 }}>
           {hasActiveFilters && (
-            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ mt: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
               <FilterAltOffIcon color='action' />
               <Typography variant='body2' color='text.secondary'>
                 {pageInfo.totalItems > 0
@@ -134,7 +140,9 @@ export const Transactions: React.FC = () => {
               <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
             </Box>
           )}
+        </Grid>
 
+        <Grid size={{ xs: 12, md: 9 }}>
           {isLoading && (
             <Box
               sx={{
@@ -159,7 +167,13 @@ export const Transactions: React.FC = () => {
               </Typography>
             </Paper>
           )}
-
+          {!isLoading && !error && transactions.length > 0 && (
+            <TransactionInsights
+              cashFlowAmounts={cashFlowAmounts}
+              categoryAmounts={categoryAmounts}
+              accountAmounts={accountAmounts}
+            />
+          )}
           {!isLoading && !error && transactions.length > 0 && (
             <TransactionsTable
               transactions={transactions}

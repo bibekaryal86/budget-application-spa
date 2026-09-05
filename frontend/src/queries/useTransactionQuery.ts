@@ -25,6 +25,9 @@ export const useReadTransactions = (params: TransactionParams = defaultTransacti
     queryFn: () => txnService.readTransactions(params),
     select: (data) => ({
       transactions: data.data.transactions,
+      cashFlowAmounts: data.data.cashFlowAmounts,
+      categoryAmounts: data.data.categoryAmounts,
+      accountAmounts: data.data.accountAmounts,
       pageInfo: data.metadata.responsePageInfo,
     }),
     staleTime: 60_000,
