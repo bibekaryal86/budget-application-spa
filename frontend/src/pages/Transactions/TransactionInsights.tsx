@@ -1,14 +1,13 @@
+import { NO_EXP_CAT_TYPES } from '@constants'
 import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
 import { BarChart } from '@mui/x-charts/BarChart'
 import { PieChart } from '@mui/x-charts/PieChart'
-import type { AccountAmount, CashFlowAmounts, CategoryAmount } from '@types'
+import type { CashFlowAmounts, CategoryAmount } from '@types'
 import React, { useMemo } from 'react'
 
 interface TransactionInsightsProps {
   cashFlowAmounts: CashFlowAmounts
   categoryAmounts: CategoryAmount[]
-  accountAmounts: AccountAmount[]
-  isLoading?: boolean
 }
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -17,11 +16,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 })
 
-export const TransactionInsights: React.FC<TransactionInsightsProps> = ({
-  cashFlowAmounts,
-  categoryAmounts,
-  accountAmounts,
-}) => {
+export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFlowAmounts, categoryAmounts }) => {
   const theme = useTheme()
 
   const cashFlowData = useMemo(
@@ -34,18 +29,16 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({
   )
 
   const sortedCategoryAmounts = useMemo(
-    () => [...(categoryAmounts ?? [])].sort((a, b) => b.amount - a.amount).slice(0, 8),
+    () =>
+      [...(categoryAmounts ?? [])]
+        .filter((c) => !NO_EXP_CAT_TYPES.includes(c.category.categoryType.name))
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 8),
     [categoryAmounts],
-  )
-
-  const sortedAccountAmounts = useMemo(
-    () => [...(accountAmounts ?? [])].sort((a, b) => b.amount - a.amount),
-    [accountAmounts],
   )
 
   const hasCashFlow = cashFlowData.some((d) => d.value > 0)
   const hasCategoryData = sortedCategoryAmounts.length > 0
-  const hasAccountData = sortedAccountAmounts.length > 0
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -88,7 +81,16 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({
                 category: c.category.name,
                 amount: c.amount,
               }))}
-              xAxis={[{ scaleType: 'band', dataKey: 'category', tickLabelStyle: { fontSize: 11 } }]}
+              xAxis={[
+                {
+                  scaleType: 'band',
+                  dataKey: 'category',
+                  tickLabelStyle: { fontSize: 10, angle: -35, textAnchor: 'end' },
+                  height: 55,
+                  tickInterval: (_1, _2) => true,
+                },
+              ]}
+              yAxis={[{ valueFormatter: (v: number) => currencyFormatter.format(v) }]}
               series={[
                 {
                   dataKey: 'amount',
@@ -96,8 +98,8 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({
                   valueFormatter: (v) => currencyFormatter.format(v ?? 0),
                 },
               ]}
-              height={220}
-              margin={{ top: 10, bottom: 40, left: 40, right: 10 }}
+              height={200}
+              margin={{ top: 10, bottom: 10, left: 60, right: 10 }}
             />
           ) : (
             <EmptyState />
@@ -105,35 +107,35 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({
         </Paper>
 
         {/* Net amount by account */}
-        <Paper variant='outlined' sx={{ p: 2, flex: 1, minWidth: 0 }}>
-          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-            By Account
-          </Typography>
-          {hasAccountData ? (
-            <BarChart
-              dataset={sortedAccountAmounts.map((a) => ({
-                account: a.account.name,
-                amount: a.amount,
-              }))}
-              yAxis={[{ scaleType: 'band', dataKey: 'account', tickLabelStyle: { fontSize: 11 } }]}
-              xAxis={[{ valueFormatter: (v: number) => currencyFormatter.format(v) }]}
-              series={[
-                {
-                  dataKey: 'amount',
-                  valueFormatter: (v) => currencyFormatter.format(v ?? 0),
-                },
-              ]}
-              layout='horizontal'
-              height={220}
-              margin={{ top: 10, bottom: 20, left: 90, right: 10 }}
-              colors={sortedAccountAmounts.map((a) =>
-                a.amount >= 0 ? theme.palette.success.main : theme.palette.error.main,
-              )}
-            />
-          ) : (
-            <EmptyState />
-          )}
-        </Paper>
+        {/*<Paper variant='outlined' sx={{ p: 2, flex: 1, minWidth: 0 }}>*/}
+        {/*  <Typography variant='subtitle2' color='text.secondary' gutterBottom>*/}
+        {/*    By Account*/}
+        {/*  </Typography>*/}
+        {/*  {hasAccountData ? (*/}
+        {/*    <BarChart*/}
+        {/*      dataset={sortedAccountAmounts.map((a) => ({*/}
+        {/*        account: a.account.name,*/}
+        {/*        amount: a.amount,*/}
+        {/*      }))}*/}
+        {/*      yAxis={[{ scaleType: 'band', dataKey: 'account', tickLabelStyle: { fontSize: 11 } }]}*/}
+        {/*      xAxis={[{ valueFormatter: (v: number) => currencyFormatter.format(v) }]}*/}
+        {/*      series={[*/}
+        {/*        {*/}
+        {/*          dataKey: 'amount',*/}
+        {/*          valueFormatter: (v) => currencyFormatter.format(v ?? 0),*/}
+        {/*        },*/}
+        {/*      ]}*/}
+        {/*      layout='horizontal'*/}
+        {/*      height={220}*/}
+        {/*      margin={{ top: 10, bottom: 20, left: 90, right: 10 }}*/}
+        {/*      colors={sortedAccountAmounts.map((a) =>*/}
+        {/*        a.amount >= 0 ? theme.palette.success.main : theme.palette.error.main,*/}
+        {/*      )}*/}
+        {/*    />*/}
+        {/*  ) : (*/}
+        {/*    <EmptyState />*/}
+        {/*  )}*/}
+        {/*</Paper>*/}
       </Stack>
     </Box>
   )

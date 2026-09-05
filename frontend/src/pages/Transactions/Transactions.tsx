@@ -49,7 +49,6 @@ export const Transactions: React.FC = () => {
     [data?.cashFlowAmounts],
   )
   const categoryAmounts = useMemo(() => data?.categoryAmounts ?? [], [data?.categoryAmounts])
-  const accountAmounts = useMemo(() => data?.accountAmounts ?? [], [data?.accountAmounts])
 
   const pageInfo = useMemo((): ResponsePageInfo => {
     if (!data) {
@@ -168,11 +167,7 @@ export const Transactions: React.FC = () => {
             </Paper>
           )}
           {!isLoading && !error && transactions.length > 0 && (
-            <TransactionInsights
-              cashFlowAmounts={cashFlowAmounts}
-              categoryAmounts={categoryAmounts}
-              accountAmounts={accountAmounts}
-            />
+            <TransactionInsights cashFlowAmounts={cashFlowAmounts} categoryAmounts={categoryAmounts} />
           )}
           {!isLoading && !error && transactions.length > 0 && (
             <TransactionsTable
