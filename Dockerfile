@@ -20,7 +20,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # STAGE 3: PRODUCTION IMAGE #
-FROM nginx:1.31.4-alpine
+FROM nginx:1.31.5-alpine
 RUN apk add --no-cache nodejs
 
 WORKDIR /usr/src/app/backend
