@@ -16,6 +16,8 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 })
 
+const shortCurrencyFormatter = (v: number) => `$${Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`
+
 export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFlowAmounts, categoryAmounts }) => {
   const theme = useTheme()
 
@@ -87,10 +89,16 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFl
                   dataKey: 'category',
                   tickLabelStyle: { fontSize: 10, angle: -35, textAnchor: 'end' },
                   height: 55,
-                  tickInterval: (_1, _2) => true,
+                  tickInterval: (_, _i) => true,
                 },
               ]}
-              yAxis={[{ valueFormatter: (v: number) => currencyFormatter.format(v) }]}
+              yAxis={[
+                {
+                  valueFormatter: shortCurrencyFormatter,
+                  width: 45,
+                  tickLabelStyle: { fontSize: 11 },
+                },
+              ]}
               series={[
                 {
                   dataKey: 'amount',
@@ -99,7 +107,7 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFl
                 },
               ]}
               height={200}
-              margin={{ top: 10, bottom: 10, left: 60, right: 10 }}
+              margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
             />
           ) : (
             <EmptyState />
