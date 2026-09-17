@@ -1,5 +1,5 @@
 import { AutoComplete, AutoCompleteMultiple } from '@components'
-import { ACTION_TYPE } from '@constants'
+import { ACTION_TYPE, NO_EXPENSE_CATEGORY_TYPES } from '@constants'
 import { Warning as WarningIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import {
   Alert,
@@ -297,20 +297,26 @@ export const TransactionModal: React.FC = () => {
   const handleAddItem = () => {
     setTxnFormData((prev) => {
       const firstItem = prev.items.length > 0 ? prev.items[0] : null
+      const newItem = {
+        id: null,
+        transactionId: selectedTxn?.id || null,
+        categoryId: firstItem?.categoryId || '',
+        accountId: firstItem?.accountId || '',
+        amount: null,
+        tags: [],
+        notes: '',
+      }
+
+      if (!firstItem && txnFormData.merchant === NO_EXPENSE_CATEGORY_TYPES.TRANSFER) {
+        return {
+          ...prev,
+          items: [...prev.items, newItem, newItem],
+        }
+      }
+
       return {
         ...prev,
-        items: [
-          ...prev.items,
-          {
-            id: null,
-            transactionId: selectedTxn?.id || null,
-            categoryId: firstItem?.categoryId || '',
-            accountId: firstItem?.accountId || '',
-            amount: null,
-            tags: [],
-            notes: '',
-          },
-        ],
+        items: [...prev.items, newItem],
       }
     })
   }
