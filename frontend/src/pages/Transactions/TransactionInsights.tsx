@@ -107,42 +107,46 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFl
         </Paper>
 
         {/* Spending by category */}
-        <Paper variant='outlined' sx={{ p: 2, flex: 1.3, minWidth: 0 }}>
+        <Paper variant='outlined' sx={{ p: 2, flex: 1.3, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
             Spending by Category
           </Typography>
+
           {hasCategoryData ? (
-            <BarChart
-              dataset={sortedCategoryAmounts.map((c) => ({
-                category: c.category.name,
-                amount: c.amount,
-              }))}
-              xAxis={[
-                {
-                  scaleType: 'band',
-                  dataKey: 'category',
-                  tickLabelStyle: { fontSize: 10, angle: -35, textAnchor: 'end' },
-                  height: 55,
-                  tickInterval: (_, _i) => true,
-                },
-              ]}
-              yAxis={[
-                {
-                  valueFormatter: shortCurrencyFormatter,
-                  width: 45,
-                  tickLabelStyle: { fontSize: 11 },
-                },
-              ]}
-              series={[
-                {
-                  dataKey: 'amount',
-                  color: theme.palette.primary.main,
-                  valueFormatter: (v) => currencyFormatter.format(v ?? 0),
-                },
-              ]}
-              height={200}
-              margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            />
+            <Box sx={{ flex: 1, minHeight: 200, position: 'relative' }}>
+              <BarChart
+                dataset={sortedCategoryAmounts.map((c) => ({
+                  category: c.category.name,
+                  amount: c.amount,
+                }))}
+                xAxis={[
+                  {
+                    scaleType: 'band',
+                    dataKey: 'category',
+                    disableLine: true,
+                    disableTicks: true,
+                    tickLabelStyle: { display: 'none' },
+                    height: 0,
+                  },
+                ]}
+                yAxis={[
+                  {
+                    valueFormatter: shortCurrencyFormatter,
+                    width: 30,
+                    tickLabelStyle: { fontSize: 11 },
+                  },
+                ]}
+                series={[
+                  {
+                    dataKey: 'amount',
+                    color: theme.palette.primary.main,
+                    valueFormatter: (v) => currencyFormatter.format(v ?? 0),
+                  },
+                ]}
+                margin={{ top: 10, bottom: 4, left: 0, right: 8 }}
+                // no `height` prop — fill the Box
+              />
+            </Box>
           ) : (
             <EmptyState />
           )}
