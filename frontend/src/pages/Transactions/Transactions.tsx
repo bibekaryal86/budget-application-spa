@@ -1,6 +1,6 @@
 import { ACTION_TYPE, DEFAULT_PAGE_NUMBER, DEFAULT_PER_PAGE } from '@constants'
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff'
-import { Box, Button, Chip, Container, Paper, Typography } from '@mui/material'
+import { Box, Button, Chip, Container, Grid, Paper, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
@@ -9,6 +9,7 @@ import { type ResponsePageInfo } from '@types'
 import React, { useMemo, useState } from 'react'
 
 import { TransactionFilters } from './TransactionFilters.tsx'
+import { TransactionInsights } from './TransactionInsights.tsx'
 import { TransactionModal } from './TransactionModal.tsx'
 import { TransactionsTable } from './TransactionTable.tsx'
 
@@ -43,6 +44,12 @@ export const Transactions: React.FC = () => {
   })
 
   const transactions = useMemo(() => data?.transactions ?? [], [data?.transactions])
+  const cashFlowAmounts = useMemo(
+    () => data?.cashFlowAmounts ?? { incomes: 0, expenses: 0, savings: 0, balance: 0 },
+    [data?.cashFlowAmounts],
+  )
+  const categoryAmounts = useMemo(() => data?.categoryAmounts ?? [], [data?.categoryAmounts])
+
   const pageInfo = useMemo((): ResponsePageInfo => {
     if (!data) {
       return {
@@ -117,53 +124,61 @@ export const Transactions: React.FC = () => {
         </Stack>
       </Box>
 
-      <TransactionFilters />
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TransactionFilters />
 
-      {hasActiveFilters && (
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterAltOffIcon color='action' />
-          <Typography variant='body2' color='text.secondary'>
-            {pageInfo.totalItems > 0
-              ? `Showing ${getDisplayRange()} of ${pageInfo.totalItems} transactions`
-              : 'No transactions found with current filters'}
-          </Typography>
-          <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
-        </Box>
-      )}
+          {hasActiveFilters && (
+            <Box sx={{ mt: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <FilterAltOffIcon color='action' />
+              <Typography variant='body2' color='text.secondary'>
+                {pageInfo.totalItems > 0
+                  ? `Showing ${getDisplayRange()} of ${pageInfo.totalItems} transactions`
+                  : 'No transactions found with current filters'}
+              </Typography>
+              <Chip label='Filters Active' size='small' color='primary' variant='outlined' />
+            </Box>
+          )}
+        </Grid>
 
-      {isLoading && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            my: 4,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
+        <Grid size={{ xs: 12, md: 9 }}>
+          {isLoading && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                my: 4,
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
 
-      {!isLoading && !error && transactions.length === 0 && (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Typography variant='h6' gutterBottom>
-            No transactions found
-          </Typography>
-          <Typography variant='body2' color='text.secondary'>
-            {hasActiveFilters
-              ? 'Try adjusting your filters or clear them to see all transactions.'
-              : 'No transactions available. Create your first transaction!'}
-          </Typography>
-        </Paper>
-      )}
-
-      {!isLoading && !error && transactions.length > 0 && (
-        <TransactionsTable
-          transactions={transactions}
-          pageInfo={pageInfo}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-        />
-      )}
+          {!isLoading && !error && transactions.length === 0 && (
+            <Paper sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant='h6' gutterBottom>
+                No transactions found
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                {hasActiveFilters
+                  ? 'Try adjusting your filters or clear them to see all transactions.'
+                  : 'No transactions available. Create your first transaction!'}
+              </Typography>
+            </Paper>
+          )}
+          {!isLoading && !error && transactions.length > 0 && (
+            <TransactionInsights cashFlowAmounts={cashFlowAmounts} categoryAmounts={categoryAmounts} />
+          )}
+          {!isLoading && !error && transactions.length > 0 && (
+            <TransactionsTable
+              transactions={transactions}
+              pageInfo={pageInfo}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+            />
+          )}
+        </Grid>
+      </Grid>
 
       <TransactionModal key={selectedTxn?.id || 'new'} />
     </Container>

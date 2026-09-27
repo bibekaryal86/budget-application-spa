@@ -187,8 +187,15 @@ export interface Transaction extends Omit<TransactionRequest, 'items'> {
   items: TransactionItem[]
 }
 
+export interface TransactionInsightsResponse {
+  transactions: Transaction[]
+  cashFlowAmounts: CashFlowAmounts
+  categoryAmounts: CategoryAmount[]
+  accountAmounts: AccountAmount[]
+}
+
 export interface TransactionResponse {
-  data: Transaction[]
+  data: TransactionInsightsResponse
   metadata: ResponseMetadata
 }
 
@@ -244,6 +251,11 @@ export interface AccountSummary {
 export interface AccountSummaries {
   data: AccountSummary[]
   metadata: ResponseMetadata
+}
+
+export interface AccountAmount {
+  account: Account
+  amount: number
 }
 
 // Request Params

@@ -13,6 +13,7 @@ interface CategoryAndTypesListProps {
   TextFieldPropsCategory?: Partial<TextFieldProps>
   size?: 'small' | 'medium'
   fullWidth?: boolean
+  stacked?: boolean
 }
 
 export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
@@ -25,6 +26,7 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
   TextFieldPropsCategory = {},
   size = 'medium',
   fullWidth = true,
+  stacked = false,
 }) => {
   const filteredCategories = useMemo(() => {
     if (!categoriesList) return []
@@ -68,8 +70,8 @@ export const CategoryAndTypesList: React.FC<CategoryAndTypesListProps> = ({
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
-        gap: 0.5,
+        flexDirection: stacked ? 'column' : 'row',
+        gap: stacked ? 2 : 0.5,
         width: '100%',
       }}
     >

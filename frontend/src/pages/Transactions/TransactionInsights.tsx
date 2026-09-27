@@ -1,0 +1,203 @@
+import { NO_EXP_CAT_TYPES } from '@constants'
+import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
+import { BarChart } from '@mui/x-charts/BarChart'
+import { PieChart } from '@mui/x-charts/PieChart'
+import type { CashFlowAmounts, CategoryAmount } from '@types'
+import React, { useMemo } from 'react'
+
+interface TransactionInsightsProps {
+  cashFlowAmounts: CashFlowAmounts
+  categoryAmounts: CategoryAmount[]
+}
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+})
+
+const shortCurrencyFormatter = (v: number) => `$${Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`
+
+export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFlowAmounts, categoryAmounts }) => {
+  const theme = useTheme()
+
+  const cashFlowData = useMemo(
+    () => [
+      { id: 'income', label: 'Income', value: cashFlowAmounts?.incomes ?? 0, color: theme.palette.success.main },
+      { id: 'expenses', label: 'Expenses', value: cashFlowAmounts?.expenses ?? 0, color: theme.palette.error.main },
+      { id: 'savings', label: 'Savings', value: cashFlowAmounts?.savings ?? 0, color: theme.palette.info.main },
+    ],
+    [cashFlowAmounts, theme],
+  )
+
+  const sortedCategoryAmounts = useMemo(
+    () =>
+      [...(categoryAmounts ?? [])]
+        .filter((c) => !NO_EXP_CAT_TYPES.includes(c.category.categoryType.name))
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 8),
+    [categoryAmounts],
+  )
+
+  const hasCashFlow = cashFlowData.some((d) => d.value > 0)
+  const hasCategoryData = sortedCategoryAmounts.length > 0
+
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+        {/* Cash flow: income / expenses / savings */}
+        <Paper variant='outlined' sx={{ p: 2, flex: 1, minWidth: 0 }}>
+          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+            Cash Flow
+          </Typography>
+
+          {hasCashFlow ? (
+            <Box sx={{ position: 'relative', width: '100%' }}>
+              {/* Center label overlay */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 220, // match pie chart height
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pointerEvents: 'none',
+                  zIndex: 1,
+                }}
+              >
+                <Typography variant='caption' color='text.secondary'>
+                  Balance
+                </Typography>
+                <Typography
+                  variant='caption'
+                  color={cashFlowAmounts?.balance >= 0 ? 'success.main' : 'error.main'}
+                  sx={{ fontWeight: 600 }}
+                >
+                  {currencyFormatter.format(cashFlowAmounts?.balance ?? 0)}
+                </Typography>
+              </Box>
+
+              <PieChart
+                series={[
+                  {
+                    data: cashFlowData,
+                    innerRadius: 40,
+                    outerRadius: 80,
+                    paddingAngle: 2,
+                    cornerRadius: 2,
+                    valueFormatter: (item) => currencyFormatter.format(item.value),
+                  },
+                ]}
+                height={220}
+                slotProps={{
+                  legend: {
+                    direction: 'horizontal',
+                    position: { vertical: 'bottom', horizontal: 'center' },
+                  },
+                }}
+              />
+            </Box>
+          ) : (
+            <EmptyState />
+          )}
+        </Paper>
+
+        {/* Spending by category */}
+        <Paper variant='outlined' sx={{ p: 2, flex: 1.3, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+            Spending by Category
+          </Typography>
+
+          {hasCategoryData ? (
+            <Box sx={{ flex: 1, minHeight: 200, position: 'relative' }}>
+              <BarChart
+                dataset={sortedCategoryAmounts.map((c) => ({
+                  category: c.category.name,
+                  amount: c.amount,
+                }))}
+                xAxis={[
+                  {
+                    scaleType: 'band',
+                    dataKey: 'category',
+                    disableLine: true,
+                    disableTicks: true,
+                    tickLabelStyle: { display: 'none' },
+                    height: 0,
+                  },
+                ]}
+                yAxis={[
+                  {
+                    valueFormatter: shortCurrencyFormatter,
+                    width: 30,
+                    tickLabelStyle: { fontSize: 11 },
+                  },
+                ]}
+                series={[
+                  {
+                    dataKey: 'amount',
+                    color: theme.palette.primary.main,
+                    valueFormatter: (v) => currencyFormatter.format(v ?? 0),
+                  },
+                ]}
+                margin={{ top: 10, bottom: 4, left: 0, right: 8 }}
+                // no `height` prop — fill the Box
+              />
+            </Box>
+          ) : (
+            <EmptyState />
+          )}
+        </Paper>
+
+        {/* Net amount by account */}
+        {/*<Paper variant='outlined' sx={{ p: 2, flex: 1, minWidth: 0 }}>*/}
+        {/*  <Typography variant='subtitle2' color='text.secondary' gutterBottom>*/}
+        {/*    By Account*/}
+        {/*  </Typography>*/}
+        {/*  {hasAccountData ? (*/}
+        {/*    <BarChart*/}
+        {/*      dataset={sortedAccountAmounts.map((a) => ({*/}
+        {/*        account: a.account.name,*/}
+        {/*        amount: a.amount,*/}
+        {/*      }))}*/}
+        {/*      yAxis={[{ scaleType: 'band', dataKey: 'account', tickLabelStyle: { fontSize: 11 } }]}*/}
+        {/*      xAxis={[{ valueFormatter: (v: number) => currencyFormatter.format(v) }]}*/}
+        {/*      series={[*/}
+        {/*        {*/}
+        {/*          dataKey: 'amount',*/}
+        {/*          valueFormatter: (v) => currencyFormatter.format(v ?? 0),*/}
+        {/*        },*/}
+        {/*      ]}*/}
+        {/*      layout='horizontal'*/}
+        {/*      height={220}*/}
+        {/*      margin={{ top: 10, bottom: 20, left: 90, right: 10 }}*/}
+        {/*      colors={sortedAccountAmounts.map((a) =>*/}
+        {/*        a.amount >= 0 ? theme.palette.success.main : theme.palette.error.main,*/}
+        {/*      )}*/}
+        {/*    />*/}
+        {/*  ) : (*/}
+        {/*    <EmptyState />*/}
+        {/*  )}*/}
+        {/*</Paper>*/}
+      </Stack>
+    </Box>
+  )
+}
+
+const EmptyState: React.FC = () => (
+  <Box
+    sx={{
+      height: 220,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Typography variant='body2' color='text.secondary'>
+      No data for current filters
+    </Typography>
+  </Box>
+)
