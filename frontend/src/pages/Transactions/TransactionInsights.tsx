@@ -50,23 +50,57 @@ export const TransactionInsights: React.FC<TransactionInsightsProps> = ({ cashFl
           <Typography variant='subtitle2' color='text.secondary' gutterBottom>
             Cash Flow
           </Typography>
+
           {hasCashFlow ? (
-            <PieChart
-              series={[
-                {
-                  data: cashFlowData,
-                  innerRadius: 40,
-                  outerRadius: 80,
-                  paddingAngle: 2,
-                  cornerRadius: 2,
-                  valueFormatter: (item) => currencyFormatter.format(item.value),
-                },
-              ]}
-              height={220}
-              slotProps={{
-                legend: { direction: 'horizontal', position: { vertical: 'bottom', horizontal: 'center' } },
-              }}
-            />
+            <Box sx={{ position: 'relative', width: '100%' }}>
+              {/* Center label overlay */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 220, // match pie chart height
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pointerEvents: 'none',
+                  zIndex: 1,
+                }}
+              >
+                <Typography variant='caption' color='text.secondary'>
+                  Balance
+                </Typography>
+                <Typography
+                  variant='caption'
+                  color={cashFlowAmounts?.balance >= 0 ? 'success.main' : 'error.main'}
+                  sx={{ fontWeight: 600 }}
+                >
+                  {currencyFormatter.format(cashFlowAmounts?.balance ?? 0)}
+                </Typography>
+              </Box>
+
+              <PieChart
+                series={[
+                  {
+                    data: cashFlowData,
+                    innerRadius: 40,
+                    outerRadius: 80,
+                    paddingAngle: 2,
+                    cornerRadius: 2,
+                    valueFormatter: (item) => currencyFormatter.format(item.value),
+                  },
+                ]}
+                height={220}
+                slotProps={{
+                  legend: {
+                    direction: 'horizontal',
+                    position: { vertical: 'bottom', horizontal: 'center' },
+                  },
+                }}
+              />
+            </Box>
           ) : (
             <EmptyState />
           )}
