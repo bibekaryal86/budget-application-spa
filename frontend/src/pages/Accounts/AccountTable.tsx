@@ -1,21 +1,10 @@
-import { ACTION_TYPE, ASSET_ACCOUNT_TYPES, DEBT_ACCOUNT_TYPES } from '@constants'
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-  Tooltip,
-  IconButton,
-} from '@mui/material'
+import { ACTION_TYPE } from '@constants'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 import { useAuthStore, useAccountStore, useMobileStore } from '@stores'
 import type { Account } from '@types'
-import { getFormattedCurrency } from '@utils'
 import React from 'react'
+
+import { AccountTableRow } from './AccountTableRow.tsx'
 
 export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) => {
   const { isSuperUser } = useAuthStore()
@@ -35,6 +24,7 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell padding='checkbox' />
             {!isMobile && <TableCell>Bank</TableCell>}
             <TableCell>Account</TableCell>
             {!isMobile && <TableCell>Type</TableCell>}
@@ -44,47 +34,16 @@ export const AccountTable: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
           </TableRow>
         </TableHead>
         <TableBody>
-          {accounts.map((account) => {
-            return (
-              <TableRow
-                key={account.id}
-                hover
-                sx={{
-                  '& td': {
-                    fontWeight: 'medium',
-                    color: ASSET_ACCOUNT_TYPES.includes(account.accountType)
-                      ? 'success.main'
-                      : DEBT_ACCOUNT_TYPES.includes(account.accountType)
-                        ? 'error.main'
-                        : 'warning.main',
-                  },
-                }}
-              >
-                {!isMobile && <TableCell>{account.bankName}</TableCell>}
-
-                <TableCell>{account.name}</TableCell>
-                {!isMobile && <TableCell>{account.accountType}</TableCell>}
-                {!isMobile && <TableCell>{account.status}</TableCell>}
-                <TableCell align='right'>
-                  <Typography>{getFormattedCurrency(account.accountBalance)}</Typography>
-                </TableCell>
-                <TableCell align='center'>
-                  <Tooltip title='Edit'>
-                    <IconButton size='small' onClick={() => handleEditClick(account)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {isSuperUser && (
-                    <Tooltip title='Delete'>
-                      <IconButton size='small' onClick={() => handleDeleteClick(account)} color='error'>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </TableCell>
-              </TableRow>
-            )
-          })}
+          {accounts.map((account) => (
+            <AccountTableRow
+              key={account.id}
+              account={account}
+              isMobile={isMobile}
+              isSuperUser={isSuperUser}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+            />
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
