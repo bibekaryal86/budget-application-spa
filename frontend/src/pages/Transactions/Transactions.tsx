@@ -4,7 +4,7 @@ import { Box, Button, Chip, Container, Grid, Paper, Typography } from '@mui/mate
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import { useReadTransactions } from '@queries'
-import { useTransactionStore } from '@stores'
+import { useMobileStore, useTransactionStore } from '@stores'
 import { type ResponsePageInfo } from '@types'
 import React, { useMemo, useState } from 'react'
 
@@ -14,6 +14,8 @@ import { TransactionModal } from './TransactionModal.tsx'
 import { TransactionsTable } from './TransactionTable.tsx'
 
 export const Transactions: React.FC = () => {
+  const { isMobile } = useMobileStore()
+
   const {
     txnFilterBeginDate,
     txnFilterEndDate,
@@ -166,7 +168,7 @@ export const Transactions: React.FC = () => {
               </Typography>
             </Paper>
           )}
-          {!isLoading && !error && transactions.length > 0 && (
+          {!isMobile && !isLoading && !error && transactions.length > 0 && (
             <TransactionInsights cashFlowAmounts={cashFlowAmounts} categoryAmounts={categoryAmounts} />
           )}
           {!isLoading && !error && transactions.length > 0 && (
