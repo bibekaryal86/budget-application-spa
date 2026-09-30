@@ -6,10 +6,6 @@ import React from 'react'
 export const AccountBalanceHistoryTable: React.FC<{ histories?: AccountBalanceHistory[] }> = ({ histories = [] }) => {
   return (
     <Box sx={{ m: 1, mx: { xs: 0, sm: 4 } }}>
-      <Typography variant='subtitle2' gutterBottom>
-        Balance History
-      </Typography>
-
       {histories.length === 0 ? (
         <Typography variant='body2' color='text.secondary' sx={{ py: 1 }}>
           No balance history yet.
@@ -23,12 +19,17 @@ export const AccountBalanceHistoryTable: React.FC<{ histories?: AccountBalanceHi
             </TableRow>
           </TableHead>
           <TableBody>
-            {histories.map((history) => (
-              <TableRow key={history.yearMonth}>
-                <TableCell>{history.yearMonth}</TableCell>
-                <TableCell align='right'>{getFormattedCurrency(history.balance)}</TableCell>
-              </TableRow>
-            ))}
+            {histories.map((history, index) => {
+              const isBold = index === 0 || index === 1
+              return (
+                <TableRow key={history.yearMonth}>
+                  <TableCell sx={{ fontWeight: isBold ? 'bold' : 'normal' }}>{history.yearMonth}</TableCell>
+                  <TableCell align='right' sx={{ fontWeight: isBold ? 'bold' : 'normal' }}>
+                    {getFormattedCurrency(history.balance)}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       )}
