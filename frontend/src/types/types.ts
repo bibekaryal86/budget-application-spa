@@ -92,9 +92,15 @@ export interface AccountRequest {
   accountBalance: number
 }
 
+export interface AccountBalanceHistory {
+  yearMonth: string
+  balance: number
+}
+
 export interface Account extends AccountRequest {
   id: string
   accountBalance: number
+  accountBalanceHistories: AccountBalanceHistory[]
 }
 
 export interface AccountResponse {
