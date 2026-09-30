@@ -8,7 +8,7 @@ export const AccountBalanceHistoryTable: React.FC<{ histories?: AccountBalanceHi
     <Box sx={{ m: 1, mx: { xs: 0, sm: 4 } }}>
       {histories.length === 0 ? (
         <Typography variant='body2' color='text.secondary' sx={{ py: 1 }}>
-          No balance history yet.
+          No balance history yet...
         </Typography>
       ) : (
         <Table size='small'>
