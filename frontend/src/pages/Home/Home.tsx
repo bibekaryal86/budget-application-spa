@@ -16,7 +16,14 @@ import {
 } from '@queries'
 import { useReadCashFlowSummaries } from '@queries'
 import { defaultInsightParams, defaultTransactionParams, type InsightParams } from '@types'
-import { getBeginningOfMonth, getEndOfMonth, getFormattedCurrency, getTxnAmountColor } from '@utils'
+import {
+  getBeginningOfMonth,
+  getEndOfMonth,
+  getFormattedCurrency,
+  getFormattedDate,
+  getMonthBefore,
+  getTxnAmountColor,
+} from '@utils'
 import { format } from 'date-fns'
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -38,8 +45,8 @@ export const Home: React.FC = () => {
 
   const { data: tData, isLoading: isTxnLoading } = useReadTransactions({
     ...defaultTransactionParams,
-    beginDate: getBeginningOfMonth(now),
-    endDate: getEndOfMonth(now),
+    beginDate: getMonthBefore(now),
+    endDate: getFormattedDate(now),
   })
   const insightParams: InsightParams = {
     ...defaultInsightParams,
@@ -49,7 +56,7 @@ export const Home: React.FC = () => {
     topExpenses: 7,
   }
   const { data: cfsData, isLoading: isCfsLoading } = useReadCashFlowSummaries(insightParams)
-  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries(insightParams)
+  const { data: csData, isLoading: isCsLoading } = useReadCategorySummaries({ ...insightParams, totalMonths: 1 })
   const { data: asData, isLoading: isAsLoading } = useReadAccountSummaries(insightParams)
 
   const cashFlowMetrics = useMemo(() => {
