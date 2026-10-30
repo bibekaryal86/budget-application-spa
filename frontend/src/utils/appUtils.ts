@@ -51,4 +51,7 @@ export const getBeginningOfMonth = (date: Date): string =>
 export const getEndOfMonth = (date: Date): string =>
   getFormattedDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))
 
+export const getMonthBefore = (date: Date): string =>
+  getFormattedDate(new Date(date.getFullYear(), date.getMonth() - 1, 1))
+
 export const isNullOrEmpty = (v: string | null | undefined) => v == null || v.trim() === ''
