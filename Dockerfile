@@ -1,5 +1,5 @@
 # STAGE 1: BUILD FRONTEND #
-FROM node:24-alpine AS build-frontend
+FROM node:26-alpine AS build-frontend
 WORKDIR /usr/src/app
 COPY tsconfig.base.json ./
 WORKDIR /usr/src/app/frontend
@@ -9,7 +9,7 @@ COPY frontend/ .
 RUN npm run build
 
 # STAGE 2: BUILD BACKEND #
-FROM node:24-alpine AS build-backend
+FROM node:26-alpine AS build-backend
 WORKDIR /usr/src/app
 COPY tsconfig.base.json ./
 WORKDIR /usr/src/app/backend
